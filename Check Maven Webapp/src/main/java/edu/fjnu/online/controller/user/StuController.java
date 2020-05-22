@@ -149,7 +149,7 @@ public class StuController {
 //		         System.out.print(":");
 //		         System.out.println(session.getAttribute(haha.nextElement()));
 //		      }
-//			session.removeAttribute("userName");
+			session.removeAttribute("userName");
 			return "/user/login.jsp";
 		}
 		return "/user/login.jsp";			
