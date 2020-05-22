@@ -89,6 +89,14 @@
 			<version>2.0.1</version>
 		</dependency>
 
+		<!-- https://mvnrepository.com/artifact/javax.servlet/servlet-api -->
+		<dependency>
+		    <groupId>javax.servlet</groupId>
+		    <artifactId>servlet-api</artifactId>
+		    <version>3.0-alpha-1</version>
+		    <scope>provided</scope>
+		</dependency>
+		
 		<dependency>
 			<groupId>javax.servlet.jsp.jstl</groupId>
 			<artifactId>jstl-api</artifactId>
@@ -121,5 +129,16 @@
 
 	<build>
 		<finalName>Check</finalName>
+		<plugins>
+			<plugin>
+			    <groupId>org.apache.maven.plugins</groupId>
+			    <artifactId>maven-compiler-plugin</artifactId>
+			    <version>3.8.0</version>
+			    <configuration>
+			        <release>11</release>  <!--or <release>10</release>-->
+			        <!-- <failOnMissingWebXml>false</failOnMissingWebXml> -->
+			    </configuration>
+			</plugin>
+		</plugins>
 	</build>
 </project>

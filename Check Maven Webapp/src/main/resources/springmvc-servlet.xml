@@ -22,7 +22,7 @@
 	<context:component-scan base-package="edu.fjnu.online.controller"/>
 	<!-- 内部资源视图解析器 -->
 	<bean id="jspInternalResourceViewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
-		<property name="prefix" value="/WEB-INF/pages/"/>
+		<property name="prefix" value="/WEB-INF/pages/"/><!-- /WEB-INF/pages/ -->
 		<property name="suffix" value=""/>
 	</bean>
 </beans>	

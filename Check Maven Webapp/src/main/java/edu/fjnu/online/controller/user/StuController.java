@@ -17,6 +17,8 @@ import edu.fjnu.online.service.GradeService;
 import edu.fjnu.online.service.UserService;
 import edu.fjnu.online.util.MD5Util;
 
+import java.util.Enumeration;
+
 @Controller
 public class StuController {
 	@Autowired
@@ -27,6 +29,7 @@ public class StuController {
 	@RequestMapping("/toLogin.action")
 	public String toUserLogin(User user, Model model, HttpSession session){
 		if(session.getAttribute("userName")!= null){
+			System.out.println("Logged in, go to "+"/user/index.jsp");
 			return "/user/index.jsp";
 		}
 		if(session.getAttribute("user")== null){
@@ -34,6 +37,7 @@ public class StuController {
 		}
 		List<User> dataList = userService.find(user);
 		model.addAttribute("dataList", dataList);
+		System.out.println("Not logged in, go to "+"/user/login.jsp");
 		return "/user/login.jsp";			
 	}
 		
@@ -47,8 +51,10 @@ public class StuController {
 	@RequestMapping("/user/toIndex.action")
 	public String toIndex(User user, Model model, HttpSession session){
 		if(session.getAttribute("userName")!= null){
+			System.out.println("Logged in, go to "+"/user/index.jsp");
 			return "/user/index.jsp";
 		}else{
+			System.out.println("Not logged in, go to "+"forward:/toLogin.action");
 			return "forward:/toLogin.action";
 		}
 	}
@@ -136,7 +142,14 @@ public class StuController {
 	@RequestMapping("/user/exitSys.action")
 	public String exitSystem(User user, Model model, HttpSession session){
 		if(session.getAttribute("userName")!= null){
-			session.removeAttribute("userName");
+//			System.out.print(model.toString());
+//			Enumeration<String> haha = session.getAttributeNames();
+//			while (haha.hasMoreElements()){
+//		         System.out.print(haha.nextElement());
+//		         System.out.print(":");
+//		         System.out.println(session.getAttribute(haha.nextElement()));
+//		      }
+//			session.removeAttribute("userName");
 			return "/user/login.jsp";
 		}
 		return "/user/login.jsp";			
