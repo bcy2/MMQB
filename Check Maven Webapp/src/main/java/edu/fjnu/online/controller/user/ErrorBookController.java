@@ -34,12 +34,22 @@ public class ErrorBookController {
 	TypeService typeService;
 	@Autowired
 	UserService userService;
-	//跳转到我的错题本页面
+	//跳转到Review Misdids页面
 	@RequestMapping("/toMyBooksPage.action")
 	public String toMyBooksPage(User user, Model model, HttpSession session){
-		if(session.getAttribute("user")== null){
+		if(session.getAttribute("user")== null){//delete?
 			session.setAttribute("user", userService.get(user.getUserId()));
 		}
+//		else {
+//			System.out.println("user:"+session.getAttribute("user"));
+//		}
+//		temp security implementation
+		if(session.getAttribute("userName") == null){
+			return "redirect:/toLogin.action";
+		}
+//		else {
+//			System.out.println("userName:"+session.getAttribute("userName"));
+//		}
 		List<ErrorBook> errorBookList = bookService.find(new ErrorBook());
 		List<Grade> gradeList = gradeService.find(new Grade());
 		List<Course> courseList = courseService.find(new Course());

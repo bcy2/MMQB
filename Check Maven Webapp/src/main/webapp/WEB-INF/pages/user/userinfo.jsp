@@ -9,7 +9,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
-<title>在线考试系统</title>
+<title>Major Maths Question Bank</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <script type="application/x-javascript"> 
@@ -55,13 +55,13 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					
 					<div class="collapse navbar-collapse nav-wil" id="bs-example-navbar-collapse-1">
 						<ul class="nav navbar-nav">
-							<li><a class="hvr-overline-from-center button2" href="${ctx}/user/toIndex.action?userId=${user.userId}">首页</a></li>
-							<li><a class="hvr-overline-from-center button2  active" href="${ctx}/toUserInfo.action?userId=${user.userId}">个人中心</a></li>
+							<li><a class="hvr-overline-from-center button2" href="${ctx}/user/toIndex.action?userId=${user.userId}">Home</a></li>
+							<li><a class="hvr-overline-from-center button2  active" href="${ctx}/toUserInfo.action?userId=${user.userId}">My Info</a></li>
 							<!-- <li><a class="hvr-overline-from-center button2" href="onlinecheck.html">在线考试</a></li> -->
-							<li><a class="hvr-overline-from-center button2" href="${ctx}/toScoreQry.action?userId=${user.userId}">成绩查询</a></li>
-							<li><a class="hvr-overline-from-center button2" href="${ctx}/toMyBooksPage.action?userId=${user.userId}">我的错题本</a></li>
-							<li><a class="hvr-overline-from-center button2" href="${ctx}/toMyPaperPage.action?userId=${user.userId}">我的试卷</a></li>
-							<li><a class="hvr-overline-from-center button2" href="${ctx}/toAbout.action">关于</a></li>
+							<li><a class="hvr-overline-from-center button2" href="${ctx}/toScoreQry.action?userId=${user.userId}">Review Papers</a></li>
+							<li><a class="hvr-overline-from-center button2" href="${ctx}/toMyBooksPage.action?userId=${user.userId}">Review Misdids</a></li>
+							<li><a class="hvr-overline-from-center button2" href="${ctx}/toMyPaperPage.action?userId=${user.userId}">Start Working!</a></li>
+							<li><a class="hvr-overline-from-center button2" href="${ctx}/toAbout.action">About MMQB</a></li>
 						</ul>
 						<div class="search-box">
 							<div id="sb-search" class="sb-search">
@@ -139,7 +139,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	</form>
 	<h3 class="t-button">
 		<a href="javascript:;"><span class="label label-success" onclick="update()">&nbsp;更&nbsp;新&nbsp;</span></a>
-		<a href="${ctx}/user/toIndex.action"><span class="label label-info">返回首页</span></a>
+		<a href="${ctx}/user/toIndex.action"><span class="label label-info">返回Home</span></a>
 	</h3>
 </div>
 <script src="${ctx}/js/bootstrap.js"></script>

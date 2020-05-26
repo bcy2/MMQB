@@ -20,11 +20,12 @@ jQuery(function($){
         // Components
         slide_links        : 'blank',    // Individual links for each slide (Options: false, 'num', 'name', 'blank')
         slides             : [    // Slideshow Images
-                                 {image : '../images/backgrounds/1.jpg'},
-                                 {image : '../images/backgrounds/2.jpg'},
-                                 {image : '../images/backgrounds/3.jpg'}
+                                 {image : 'images/backgrounds/1.jpg'},
+                                 {image : 'images/backgrounds/2.jpg'},
+                                 {image : 'images/backgrounds/3.jpg'}
                              ]
 
     });
+    console.log(window.location.href);
 
 });

@@ -9,7 +9,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
-<title>在线考试系统</title>
+<title>Major Maths Question Bank</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <script type="application/x-javascript"> 
@@ -19,6 +19,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	function hideURLbar(){ 
 		window.scrollTo(0,1); 
 	} 
+	
 </script>
 <link href="${ctx}/css/bootstrap.css" rel="stylesheet" type="text/css" media="all" />
 <link href="${ctx}/css/style.css" rel="stylesheet" type="text/css" media="all" />
@@ -35,6 +36,54 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	});
 	function exitSystem(){
 		window.location.href = "${ctx}/user/exitSys.action"	;
+	}
+
+	// to integrate
+	function hideAll() {
+	    var hideableSections = document.querySelectorAll('.questionItem');
+	    /* document.querySelectorAll() will return a JavaScript object
+	       containing all nodes which match the query. Since you are
+	       passing '.hideable-section' the returned object will contain
+	       all elements with that class. */
+	    for (var i = 0; i < hideableSections.length; i++) {
+	        hideableSections[i].style.display = 'none';
+	    }
+	}
+	
+	function showAll() {
+	    var hideableSections = document.querySelectorAll('.questionItem');
+	    /* document.querySelectorAll() will return a JavaScript object
+	       containing all nodes which match the query. Since you are
+	       passing '.hideable-section' the returned object will contain
+	       all elements with that class. */
+	    for (var i = 0; i < hideableSections.length; i++) {
+	        hideableSections[i].style.display = 'block';
+	    }
+	}
+	
+	function showOneType(className) {
+	    hideAll(); /* This will hide all of the sections with
+	                         the class .hideable-section */
+	    var hideableSections = document.querySelectorAll(className);
+	    for (var i = 0; i < hideableSections.length; i++) {
+	        hideableSections[i].style.display = 'block';
+	    }
+	}
+	
+	function type(typeId){
+		switch(typeId) {
+	     case 1:
+	    	showOneType(".MCQ");
+	        break;
+	     case 4:
+	    	showOneType(".FBQ");
+	        break;
+	     case 5:
+	    	showOneType(".MAQ");
+		    break;
+	     default:
+	    	hideAll();
+		}
 	}
 </script>
 
@@ -56,13 +105,13 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					
 					<div class="collapse navbar-collapse nav-wil" id="bs-example-navbar-collapse-1">
 						<ul class="nav navbar-nav">
-							<li><a class="hvr-overline-from-center button2" href="${ctx}/user/toIndex.action">首页</a></li>
-							<li><a class="hvr-overline-from-center button2" href="${ctx}/toUserInfo.action?userId=${user.userId}">个人中心</a></li>
+							<li><a class="hvr-overline-from-center button2" href="${ctx}/user/toIndex.action">Home</a></li>
+							<li><a class="hvr-overline-from-center button2" href="${ctx}/toUserInfo.action?userId=${user.userId}">My Info</a></li>
 <!-- 							<li><a class="hvr-overline-from-center button2" href="onlinecheck.html">在线考试</a></li> -->
-							<li><a class="hvr-overline-from-center button2" href="${ctx}/toScoreQry.action?userId=${user.userId}">成绩查询</a></li>
-							<li><a class="hvr-overline-from-center button2  active" href="${ctx}/toMyBooksPage.action?userId=${user.userId}">我的错题本</a></li>
-							<li><a class="hvr-overline-from-center button2" href="${ctx}/toMyPaperPage.action?userId=${user.userId}">我的试卷</a></li>
-							<li><a class="hvr-overline-from-center button2" href="${ctx}/toAbout.action">关于</a></li>
+							<li><a class="hvr-overline-from-center button2" href="${ctx}/toScoreQry.action?userId=${user.userId}">Review Papers</a></li>
+							<li><a class="hvr-overline-from-center button2  active" href="${ctx}/toMyBooksPage.action?userId=${user.userId}">Review Misdids</a></li>
+							<li><a class="hvr-overline-from-center button2" href="${ctx}/toMyPaperPage.action?userId=${user.userId}">Start Working!</a></li>
+							<li><a class="hvr-overline-from-center button2" href="${ctx}/toAbout.action">About MMQB</a></li>
 						</ul>
 						<div class="search-box">
 							<div id="sb-search" class="sb-search">
@@ -76,23 +125,27 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 </div>
 <!-- <div class="typrography"> -->
 	 <div class="container">
-			<div class="grid_3 grid_5">
+			<div class="grid_4 grid_5">
 			  <h5 class="typ1 t-button">
-				<span>年级：</span>
+				<!-- <span>Grade:</span> -->
+				<a href="#"><span class="label label-success" onclick="showAll()">Show all</span></a>
+			  </h5>
+<%-- 			  <h5 class="typ1 t-button">
+				<span>Grade:</span>
 				<c:forEach items="${grade}" var="grade">
-					<a href="#"><span class="label label-success" onclick="grade()">${grade.gradeName}</span></a>
+					<a href="#"><span class="label label-success" onclick="grade(${grade.gradeId})">${grade.gradeName}</span></a>
 				</c:forEach>
 			  </h5>
 			  <h5 class="typ1 t-button">
-				<span>科目：</span>
+				<span>Course:</span>
 				<c:forEach items="${course}" var="course">
-					<a href="#"><span class="label label-success" onclick="course()">${course.courseName}</span></a>
+					<a href="#"><span class="label label-success" onclick="course(${course.courseId})">${course.courseName}</span></a>
 				</c:forEach>
-			  </h5>
+			  </h5> --%>
 			  <h5 class="typ1 t-button">
-				<span>题型：</span>
+				<span>Type:</span>
 				<c:forEach items="${type}" var="type">
-					<a href="#"><span class="label label-success" onclick="type()">${type.typeName}</span></a>
+					<a href="#"><span class="label label-success" onclick="type(${type.typeId})">${type.typeName}</span></a>
 				</c:forEach>
 			  </h5>
 			</div>	  
@@ -101,34 +154,46 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				 <div class="progress-bar progress-bar-warning" style="width: 20%"><span class="sr-only">20% Complete (warning)</span></div>
 				 <div class="progress-bar progress-bar-danger" style="width: 10%"><span class="sr-only">10% Complete (danger)</span></div>
 			</div>
-			<!-- 选择题 -->
 			
 			
 			<c:forEach items="${requestScope.errorBook }" var="errorBook">
-				<p><h4 class="bars" align="left">${errorBook.question.quesName }</h4></p>
 				<c:if test="${errorBook.question.typeId==1}">
-					<div class="input-group">
-						<input name="userType" type="radio" value="1"/><font size="4">${errorBook.question.optionA }</font></br>
-						<input name="userType" type="radio" value="1"/><font size="4">${errorBook.question.optionB }</font></br>
-						<input name="userType" type="radio" value="1"/><font size="4">${errorBook.question.optionC }</font></br>
-						<input name="userType" type="radio" value="1"/><font size="4">${errorBook.question.optionD }</font></br>
-						<p><h4 class="bars"><font color="blue">我的答案：${errorBook.userAnswer } </font></h4></p>
-						<p><h4 class="bars">标准答案：${errorBook.question.answer }（ ${errorBook.question.answerDetail }）</h4></p>
-						<p><h4 class="bars"><font color="red">解析：${errorBook.question.remark }</font></h4></p>
+					<div class="questionItem MCQ">
+					<!-- 选择题 -->
+						<p><h4 class="bars" align="left">${errorBook.question.quesName }</h4></p>
+						<div class="input-group">
+							<input name="userType" type="radio" value="1"/><font size="4">${errorBook.question.optionA }</font></br>
+							<input name="userType" type="radio" value="1"/><font size="4">${errorBook.question.optionB }</font></br>
+							<input name="userType" type="radio" value="1"/><font size="4">${errorBook.question.optionC }</font></br>
+							<input name="userType" type="radio" value="1"/><font size="4">${errorBook.question.optionD }</font></br>
+							<p><h4 class="bars"><font color="blue">My answer：${errorBook.userAnswer } </font></h4></p>
+							<p><h4 class="bars">Correct answer：${errorBook.question.answer }（ ${errorBook.question.answerDetail }）</h4></p>
+							<p><h4 class="bars"><font color="red">Explanation:：${errorBook.question.remark }</font></h4></p>
+						</div>
 					</div>
 				</c:if>
+				
 				<c:if test="${errorBook.question.typeId==4}">
-					<div class="input-group">
-						<p><h4 class="bars"><font color="blue">我的答案：${errorBook.userAnswer } </font></h4></p>
-						<p><h4 class="bars">标准答案：${errorBook.question.answer }（ ${errorBook.question.answerDetail }）</h4></p>
-						<p><h4 class="bars"><font color="red">解析：${errorBook.question.remark }</font></h4></p>
+					<div class="questionItem FBQ">
+					<!-- 填空题 -->
+					<p><h4 class="bars" align="left">${errorBook.question.quesName }</h4></p>
+						<div class="input-group">
+							<p><h4 class="bars"><font color="blue">My answer：${errorBook.userAnswer } </font></h4></p>
+							<p><h4 class="bars">Correct answer：${errorBook.question.answer }（ ${errorBook.question.answerDetail }）</h4></p>
+							<p><h4 class="bars"><font color="red">Explanation:：${errorBook.question.remark }</font></h4></p>
+						</div>
 					</div>
 				</c:if>
+				
 				<c:if test="${errorBook.question.typeId==5}">
-					<div class="input-group">
-						<p><h4 class="bars"><font color="blue">我的答案：${errorBook.userAnswer } </font></h4></p>
-						<p><h4 class="bars">标准答案：${errorBook.question.answer }（ ${errorBook.question.answerDetail }）</h4></p>
-						<p><h4 class="bars"><font color="red">解析：${errorBook.question.remark }</font></h4></p>
+					<div class="questionItem MAQ">
+					<!-- 多选题 -->
+					<p><h4 class="bars" align="left">${errorBook.question.quesName }</h4></p>
+						<div class="input-group">
+							<p><h4 class="bars"><font color="blue">My answer：${errorBook.userAnswer } </font></h4></p>
+							<p><h4 class="bars">Correct answer：${errorBook.question.answer }（ ${errorBook.question.answerDetail }）</h4></p>
+							<p><h4 class="bars"><font color="red">Explanation:：${errorBook.question.remark }</font></h4></p>
+						</div>
 					</div>
 				</c:if>
 				

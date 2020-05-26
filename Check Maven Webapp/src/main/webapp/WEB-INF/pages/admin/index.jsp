@@ -14,7 +14,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <link rel="stylesheet" type="text/css" href="${ctx}/css/jquery.dialog.css" />
 <link rel="stylesheet" href="${ctx}/css/index.css" />
 
-<title>在线考试后台管理系统</title>
+<title>MM Question Bank - Admin Panel</title>
 </head>
 
 <body>
@@ -25,14 +25,14 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
         	<div class="top-light"></div>
              <h1 class="logo"></h1> 
             <div class="login-info ue-clear">
-                <div class="welcome ue-clear"><span>欢迎您,</span><a href="javascript:;" class="user-name">${userName }</a></div>
+                <div class="welcome ue-clear"><span>Welcome, </span><a href="javascript:;" class="user-name">${userName }</a><span>.</span></div>
 <!--                 <div class="login-msg ue-clear">
                     <a href="javascript:;" class="msg-txt">消息</a>
                     <a href="javascript:;" class="msg-num">10</a>
                 </div> -->
             </div>
             <div class="toolbar ue-clear">
-                <a href="javascript:;" class="home-btn">首页</a>
+                <a href="javascript:;" class="home-btn">Home</a>
                 <a href="javascript:;" class="quit-btn exit"></a>
             </div>
         </div>
@@ -77,12 +77,12 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     </div>
     <div id="ft" class="ue-clear">
     	<div class="ft-left">
-            <span>福建师范大学</span>
-            <em>Online&nbsp;Exame&nbsp;System</em>
+            <span>Major Maths</span>
+            <em>Online&nbsp;Question&nbsp;Bank</em>
         </div>
         <div class="ft-right">
-            <span>Automation</span>
-            <em>V1.0</em>
+            <span>Koding Kingdom (HK) Ltd.</span>
+            <em>V0.1</em>
         </div>
     </div>
 </div>
@@ -90,12 +90,12 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	<div class="dialog-content">
     	<div class="ui-dialog-icon"></div>
         <div class="ui-dialog-text">
-        	<p class="dialog-content">你确定要退出系统？</p>
-            <p class="tips">如果是请点击“确定”，否则点“取消”</p>
+        	<p class="dialog-content">Sure to log out?</p>
+            <p class="tips">Click "Yes" to log out, click "Cancel" to go back.</p>
             
             <div class="buttons">
-                <input type="button" class="button long2 ok" value="确定" id="btn_ok"/>
-                <input type="button" class="button long2 normal" value="取消" />
+                <input type="button" class="button long2 ok" value="Yes" id="btn_ok"/>
+                <input type="button" class="button long2 normal" value="Cancel" />
             </div>
         </div>
         

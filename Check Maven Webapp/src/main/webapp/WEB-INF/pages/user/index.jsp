@@ -9,7 +9,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
-<title>在线考试系统</title>
+<title>Major Maths Question Bank</title>
 <!-- for-mobile-apps -->
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -61,13 +61,13 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 					
 					<div class="collapse navbar-collapse nav-wil" id="bs-example-navbar-collapse-1">
 						<ul class="nav navbar-nav">
-							<li><a class="hvr-overline-from-center button2  active" href="${ctx}/user/toIndex.action">首页</a></li>
-							<li><a class="hvr-overline-from-center button2" href="${ctx}/toUserInfo.action?userId=${user.userId}">个人中心</a></li>
+							<li><a class="hvr-overline-from-center button2  active" href="${ctx}/user/toIndex.action">Home</a></li>
+							<li><a class="hvr-overline-from-center button2" href="${ctx}/toUserInfo.action?userId=${user.userId}">My Info</a></li>
 <!-- 							<li><a class="hvr-overline-from-center button2" href="onlinecheck.html">在线考试</a></li> -->
-							<li><a class="hvr-overline-from-center button2" href="${ctx}/toScoreQry.action?userId=${user.userId}">成绩查询</a></li>
-							<li><a class="hvr-overline-from-center button2" href="${ctx}/toMyBooksPage.action?userId=${user.userId}">我的错题本</a></li>
-							<li><a class="hvr-overline-from-center button2" href="${ctx}/toMyPaperPage.action?userId=${user.userId}">我的试卷</a></li>
-							<li><a class="hvr-overline-from-center button2" href="${ctx}/toAbout.action">关于</a></li>
+							<li><a class="hvr-overline-from-center button2" href="${ctx}/toScoreQry.action?userId=${user.userId}">Review Papers</a></li>
+							<li><a class="hvr-overline-from-center button2" href="${ctx}/toMyBooksPage.action?userId=${user.userId}">Review Misdids</a></li>
+							<li><a class="hvr-overline-from-center button2" href="${ctx}/toMyPaperPage.action?userId=${user.userId}">Start Working!</a></li>
+							<li><a class="hvr-overline-from-center button2" href="${ctx}/toAbout.action">About MMQB</a></li>
 						</ul>
 						<div class="search-box">
 							<div id="sb-search" class="sb-search">
@@ -104,22 +104,22 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 				<ul class="rslides" id="slider3">
 					<li>
 						<div class="banner-info">
-							<h3>Make A Huge Difference Start Your Career journey With Us</h3>
+							<h3>Welcome to MMQB</h3>
 						</div>
 					</li>
 					<li>
 						<div class="banner-info">
-							<h3>Learning Online Becomes Easier And Faster</h3>
+							<h3>Welcome to MMQB again</h3>
 						</div>
 					</li>
 					<li>
 						<div class="banner-info">
-							<h3>Make A Huge Difference Start Your Career journey With Us</h3>
+							<h3>Welcome to MMQB again again</h3>
 						</div>
 					</li>
 					<li>
 						<div class="banner-info">
-							<h3>Learning Online Becomes Easier And Faster</h3>
+							<h3>Welcome to MMQB again again again</h3>
 						</div>
 					</li>
 				</ul>

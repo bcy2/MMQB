@@ -9,7 +9,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
-<title>在线考试系统</title>
+<title>Major Maths Question Bank</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <script type="application/x-javascript"> 
@@ -18,7 +18,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	}, false);
 	function hideURLbar(){ 
 		window.scrollTo(0,1); 
-	} 
+	}
+	function exitSystem(){
+		window.location.href = "${ctx}/user/exitSys.action"	;
+	}
 </script>
 <link href="${ctx}/css/bootstrap.css" rel="stylesheet" type="text/css" media="all" />
 <link href="${ctx}/css/style.css" rel="stylesheet" type="text/css" media="all" />
@@ -53,13 +56,13 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					
 					<div class="collapse navbar-collapse nav-wil" id="bs-example-navbar-collapse-1">
 						<ul class="nav navbar-nav">
-							<li><a class="hvr-overline-from-center button2" href="${ctx}/user/toIndex.action">首页</a></li>
-							<li><a class="hvr-overline-from-center button2" href="${ctx}/toUserInfo.action?userId=${user.userId}">个人中心</a></li>
+							<li><a class="hvr-overline-from-center button2" href="${ctx}/user/toIndex.action">Home</a></li>
+							<li><a class="hvr-overline-from-center button2" href="${ctx}/toUserInfo.action?userId=${user.userId}">My Info</a></li>
 <!-- 							<li><a class="hvr-overline-from-center button2" href="onlinecheck.html">在线考试</a></li> -->
-							<li><a class="hvr-overline-from-center button2" href="${ctx}/toScoreQry.action?userId=${user.userId}">成绩查询</a></li>
-							<li><a class="hvr-overline-from-center button2" href="${ctx}/toMyBooksPage.action?userId=${user.userId}">我的错题本</a></li>
-							<li><a class="hvr-overline-from-center button2" href="${ctx}/toMyPaperPage.action?userId=${user.userId}">我的试卷</a></li>
-							<li><a class="hvr-overline-from-center button2  active" href="${ctx}/toAbout.action">关于</a></li>
+							<li><a class="hvr-overline-from-center button2" href="${ctx}/toScoreQry.action?userId=${user.userId}">Review Papers</a></li>
+							<li><a class="hvr-overline-from-center button2" href="${ctx}/toMyBooksPage.action?userId=${user.userId}">Review Misdids</a></li>
+							<li><a class="hvr-overline-from-center button2" href="${ctx}/toMyPaperPage.action?userId=${user.userId}">Start Working!</a></li>
+							<li><a class="hvr-overline-from-center button2  active" href="${ctx}/toAbout.action">About MMQB</a></li>
 						</ul>
 						<div class="search-box">
 							<div id="sb-search" class="sb-search">
@@ -75,7 +78,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <div class="about-bottom-last">
 	<div class="container">
 				<div class="help-info">
-					<h3 class="tittle">在线考试系统</h3>
+					<h3 class="tittle">Major Maths Question Bank</h3>
 				</div>
 				<div class="client-say-grids">
 					<div class="col-md-3 client-say-grid">
@@ -84,7 +87,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 						qui blanditiis praesentium voluptatum 
 						deleniti atque corrupti quos dolores 
 						et quas molestias excepturi sint </p>
-						<h4>界面简洁</h4>
+						<h4>111</h4>
 					</div>
 					<div class="col-md-3 client-say-grid">
 						<p>At vero eos et accusamus 
@@ -92,7 +95,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 						qui blanditiis praesentium voluptatum 
 						deleniti atque corrupti quos dolores 
 						et quas molestias excepturi sint </p>
-						<h4>操作简单</h4>
+						<h4>222</h4>
 					</div>
 					<div class="col-md-3 client-say-grid">
 						<p>At vero eos et accusamus 
@@ -100,7 +103,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 						qui blanditiis praesentium voluptatum 
 						deleniti atque corrupti quos dolores 
 						et quas molestias excepturi sint </p>
-						<h4>响应速度快</h4>
+						<h4>333</h4>
 					</div>
 					<div class="col-md-3 client-say-grid">
 						<p>At vero eos et accusamus 
@@ -108,7 +111,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 						qui blanditiis praesentium voluptatum 
 						deleniti atque corrupti quos dolores 
 						et quas molestias excepturi sint </p>
-						<h4>可扩展性高</h4>
+						<h4>444</h4>
 					</div>
 					<div class="clearfix"></div>
 				</div>
@@ -120,27 +123,27 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	<div class="container">
 		<div class="footer-grids">
 			<div class="col-md-3 footer-grid">
-				<h3>简洁美观</h3>
+				<h3>a</h3>
 				<ul>
 					<li><a href="#">SUMMER CAMPS</a></li>
 					<li><a href="#">CELEBRATIONS</a></li>
 				</ul>
 			</div>
 			<div class="col-md-3 footer-grid">
-				<h3>联系地址</h3>
+				<h3>b</h3>
 				<ul>
-					<li><a href="#">福州闽侯上街</a></li>
+					<li><a href="#">KK</a></li>
 				</ul>
 			</div>
 			<div class="col-md-3 footer-grid">
-				<h3>联系电话</h3>
+				<h3>c</h3>
 				<ul>
-					<li><a href="#">+86 183****1234</a></li>
+					<li><a href="#">+852 12341234</a></li>
 					<li><a href="#">0591 55555555</a></li>
 				</ul>
 			</div>
 			<div class="col-md-3 footer-grid">
-				<h3>响应速度快</h3>
+				<h3>d</h3>
 				<ul>
 					<li><a href="#">PRESENTATIONS</a></li>
 					<li><a href="#">SEMINARS</a></li>

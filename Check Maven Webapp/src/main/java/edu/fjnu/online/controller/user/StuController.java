@@ -54,8 +54,8 @@ public class StuController {
 			System.out.println("Logged in, go to "+"/user/index.jsp");
 			return "/user/index.jsp";
 		}else{
-			System.out.println("Not logged in, go to "+"forward:/toLogin.action");
-			return "forward:/toLogin.action";
+			System.out.println("Not logged in, go to "+"redirect:/toLogin.action");
+			return "redirect:/toLogin.action";
 		}
 	}
 	
@@ -74,16 +74,16 @@ public class StuController {
 		if(loginUser!=null && loginUser.getUserType() ==0){
 			if(loginUser.getUserState()==0 ){
 				item.setErrorNo("1");
-				item.setErrorInfo("该账号尚未通过审核!");
+				item.setErrorInfo("Account not verified!");
 			}else{
 				item.setErrorNo("0");
-				item.setErrorInfo("登录成功!");
+				item.setErrorInfo("login successful!");
 				session.setAttribute("userName", loginUser.getUserName());
 				session.setAttribute("user", loginUser);
 			}
 		}else{
 			item.setErrorNo("1");
-			item.setErrorInfo("账号不存在或用户名密码错误!");
+			item.setErrorInfo("Wrong username / password!");
 		}
 		return item;
 	}
@@ -112,6 +112,11 @@ public class StuController {
 	public String toUserInfo(User user, Model model, HttpSession session){
 		User loginUser = (User) session.getAttribute("user");
 		user = userService.getStu(loginUser);
+//		temp security implementation
+		if(session.getAttribute("userName") == null){
+			return "redirect:/toLogin.action";
+		}
+//		System.out.println("user"+session.getAttribute("user"));//null when logged out
 		Grade grade = gradeService.get(Integer.parseInt(user.getGrade()));
 		user.setGrade(grade.getGradeName());
 		model.addAttribute("user", user);
@@ -127,7 +132,11 @@ public class StuController {
 	 */
 	@RequestMapping("/updateUserInfo.action")
 	public String updateUserInfo(String newPwd,User user, Model model, HttpSession session){
-		if(newPwd!= null && newPwd.trim().length()>0){
+//		temp security implementation
+		if(session.getAttribute("userName") == null){
+			return "redirect:/toLogin.action";
+		}
+		if(newPwd!= null && newPwd.trim().length()>0){//password length
 			user.setUserPwd(newPwd);
 		}
 		userService.update(user);
@@ -138,8 +147,8 @@ public class StuController {
 		return "redirect:/user/toIndex.action";			
 	}
 	
-	//跳转到登录页面
-	@RequestMapping("/user/exitSys.action")
+	// 跳转到登录页面
+	 @RequestMapping("/user/exitSys.action")
 	public String exitSystem(User user, Model model, HttpSession session){
 		if(session.getAttribute("userName")!= null){
 //			System.out.print(model.toString());
@@ -150,14 +159,20 @@ public class StuController {
 //		         System.out.println(session.getAttribute(haha.nextElement()));
 //		      }
 			session.removeAttribute("userName");
-			return "/user/login.jsp";
+//			return "/user/login.jsp";
 		}
-		return "/user/login.jsp";			
+//		newly added
+		session.invalidate();
+		return "redirect:/toLogin.action";			
 	}
 	
 	//跳转到前台登录页面
 	@RequestMapping("/toAbout.action")
 	public String toAbout(User user, Model model, HttpSession session){
+//		temp security implementation
+		if(session.getAttribute("userName") == null){
+			return "redirect:/toLogin.action";
+		}
 		User loginUser = (User) session.getAttribute("user");
 		model.addAttribute("user", loginUser);
 		return "/user/about.jsp";			

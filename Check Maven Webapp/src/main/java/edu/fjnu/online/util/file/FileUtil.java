@@ -918,7 +918,7 @@ public class FileUtil {
       Document doc=builder.parse("links.xml");
       doc.normalize();
        //---取得变量----
-      String text="Wudong's Homepage";
+      String text="Wudong's Home";
       String url="www.wudong.com";
       String author="Wudong Liu";
       String discription="A site from Wudong Liu, give u lots of suprise!!!";

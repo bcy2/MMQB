@@ -54,7 +54,7 @@ public class PaperMgController {
 	@Autowired
 	ErrorBookService bookService;
 	
-	//跳转到成绩查询页面
+	//跳转到Review Papers页面
 	@RequestMapping("/toScoreQry.action")
 	public String toScoreQry(User user, Model model, HttpSession session){
 		if("".equals(user.getUserId()) || user==null){
@@ -64,6 +64,10 @@ public class PaperMgController {
 			session.setAttribute("user", userService.get(user.getUserId()));
 		}
 		user = userService.getStu(user);
+//		temp security implementation
+		if(session.getAttribute("userName") == null){
+			return "redirect:/toLogin.action";
+		}
 		List<Paper> paper = paperService.getUserPaperById(user.getUserId());
 		Course course = null;
 		for(Paper p : paper){
@@ -85,7 +89,18 @@ public class PaperMgController {
 	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@RequestMapping("/qrypaper.action")
-	public String qrypaper(String paperId,String userId,Model model, HttpSession session){
+	public String qrypaper(User user,String paperId,String userId,Model model, HttpSession session){
+		if("".equals(user.getUserId()) || user.getUserId()==null){
+			user = (User) session.getAttribute("user");
+		}
+		if(session.getAttribute("user")== null){
+			session.setAttribute("user", userService.get(user.getUserId()));
+		}
+		user = userService.getStu(user);
+//		temp security implementation
+		if(session.getAttribute("userName") == null){
+			return "redirect:/toLogin.action";
+		}
 		Map map = new HashMap();
 		map.put("paperId", paperId);
 		map.put("userId", userId);
@@ -124,6 +139,7 @@ public class PaperMgController {
 		}
 		
 		model.addAttribute("paper", paper);
+		model.addAttribute("user", user);
 		return "/user/qrypaper.jsp";			
 	}
 	
@@ -226,7 +242,18 @@ public class PaperMgController {
 	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@RequestMapping("/qryPaperDetail.action")
-	public String qryPaperDetail(String paperId,String userId,Model model, HttpSession session){
+	public String qryPaperDetail(User user,String paperId,String userId,Model model, HttpSession session){
+		if("".equals(user.getUserId()) || user.getUserId()==null){
+			user = (User) session.getAttribute("user");
+		}
+		if(session.getAttribute("user")== null){
+			session.setAttribute("user", userService.get(user.getUserId()));
+		}
+		user = userService.getStu(user);
+//		temp security implementation
+		if(session.getAttribute("userName") == null){
+			return "redirect:/toLogin.action";
+		}
 		Map map = new HashMap();
 		map.put("paperId", paperId);
 		map.put("userId", userId);
@@ -265,6 +292,7 @@ public class PaperMgController {
 		}
 		
 		model.addAttribute("paper", paper);
+		model.addAttribute("user", user);
 		return "/user/paperdetail.jsp";			
 	}
 	
@@ -285,6 +313,10 @@ public class PaperMgController {
 			session.setAttribute("user", userService.get(user.getUserId()));
 		}
 		user = userService.getStu(user);
+//		temp security implementation
+		if(session.getAttribute("userName") == null){
+			return "redirect:/toLogin.action";
+		}
 		Map map =new HashMap();
 		map.put("userId", user.getUserId());
 		//List<Paper> paper = paperService.getUserPaperById(user.getUserId());
