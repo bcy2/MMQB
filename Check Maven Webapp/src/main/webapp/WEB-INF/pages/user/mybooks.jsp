@@ -168,7 +168,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 							<input name="userType" type="radio" value="1"/><font size="4">${errorBook.question.optionD }</font></br>
 							<p><h4 class="bars"><font color="blue">My answer：${errorBook.userAnswer } </font></h4></p>
 							<p><h4 class="bars">Correct answer：${errorBook.question.answer }（ ${errorBook.question.answerDetail }）</h4></p>
-							<p><h4 class="bars"><font color="red">Explanation:：${errorBook.question.remark }</font></h4></p>
+							<p><h4 class="bars"><font color="red">Remarks:：${errorBook.question.remark }</font></h4></p>
 						</div>
 					</div>
 				</c:if>
@@ -180,7 +180,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 						<div class="input-group">
 							<p><h4 class="bars"><font color="blue">My answer：${errorBook.userAnswer } </font></h4></p>
 							<p><h4 class="bars">Correct answer：${errorBook.question.answer }（ ${errorBook.question.answerDetail }）</h4></p>
-							<p><h4 class="bars"><font color="red">Explanation:：${errorBook.question.remark }</font></h4></p>
+							<p><h4 class="bars"><font color="red">Remarks:：${errorBook.question.remark }</font></h4></p>
 						</div>
 					</div>
 				</c:if>
@@ -192,7 +192,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 						<div class="input-group">
 							<p><h4 class="bars"><font color="blue">My answer：${errorBook.userAnswer } </font></h4></p>
 							<p><h4 class="bars">Correct answer：${errorBook.question.answer }（ ${errorBook.question.answerDetail }）</h4></p>
-							<p><h4 class="bars"><font color="red">Explanation:：${errorBook.question.remark }</font></h4></p>
+							<p><h4 class="bars"><font color="red">Remarks:：${errorBook.question.remark }</font></h4></p>
 						</div>
 					</div>
 				</c:if>

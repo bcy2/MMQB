@@ -25,11 +25,20 @@ public class StuController {
 	UserService userService;
 	@Autowired
 	GradeService gradeService;
+	
+	public void showAllAttributes(HttpSession session){
+		Enumeration<String> attributes = session.getAttributeNames();
+		System.out.println("All attributes:");
+		while (attributes.hasMoreElements()) {
+		    String attribute = (String) attributes.nextElement();
+		    System.out.println(attribute+" : "+session.getAttribute(attribute));
+		}
+		System.out.println("End.");
+	}
 	//跳转到前台登录页面
 	@RequestMapping("/toLogin.action")
 	public String toUserLogin(User user, Model model, HttpSession session){
 		if(session.getAttribute("userName")!= null){
-			System.out.println("Logged in, go to "+"/user/index.jsp");
 			return "/user/index.jsp";
 		}
 		if(session.getAttribute("user")== null){
@@ -37,7 +46,6 @@ public class StuController {
 		}
 		List<User> dataList = userService.find(user);
 		model.addAttribute("dataList", dataList);
-		System.out.println("Not logged in, go to "+"/user/login.jsp");
 		return "/user/login.jsp";			
 	}
 		
@@ -50,11 +58,9 @@ public class StuController {
 	 */
 	@RequestMapping("/user/toIndex.action")
 	public String toIndex(User user, Model model, HttpSession session){
-		if(session.getAttribute("userName")!= null){
-			System.out.println("Logged in, go to "+"/user/index.jsp");
+		if(session.getAttribute("user")!= null){
 			return "/user/index.jsp";
 		}else{
-			System.out.println("Not logged in, go to "+"redirect:/toLogin.action");
 			return "redirect:/toLogin.action";
 		}
 	}
@@ -113,7 +119,7 @@ public class StuController {
 		User loginUser = (User) session.getAttribute("user");
 		user = userService.getStu(loginUser);
 //		temp security implementation
-		if(session.getAttribute("userName") == null){
+		if(session.getAttribute("user") == null){
 			return "redirect:/toLogin.action";
 		}
 //		System.out.println("user"+session.getAttribute("user"));//null when logged out
@@ -133,7 +139,7 @@ public class StuController {
 	@RequestMapping("/updateUserInfo.action")
 	public String updateUserInfo(String newPwd,User user, Model model, HttpSession session){
 //		temp security implementation
-		if(session.getAttribute("userName") == null){
+		if(session.getAttribute("user") == null){
 			return "redirect:/toLogin.action";
 		}
 		if(newPwd!= null && newPwd.trim().length()>0){//password length
@@ -150,7 +156,7 @@ public class StuController {
 	// 跳转到登录页面
 	 @RequestMapping("/user/exitSys.action")
 	public String exitSystem(User user, Model model, HttpSession session){
-		if(session.getAttribute("userName")!= null){
+		if(session.getAttribute("user")!= null){
 //			System.out.print(model.toString());
 //			Enumeration<String> haha = session.getAttributeNames();
 //			while (haha.hasMoreElements()){
@@ -170,7 +176,7 @@ public class StuController {
 	@RequestMapping("/toAbout.action")
 	public String toAbout(User user, Model model, HttpSession session){
 //		temp security implementation
-		if(session.getAttribute("userName") == null){
+		if(session.getAttribute("user") == null){
 			return "redirect:/toLogin.action";
 		}
 		User loginUser = (User) session.getAttribute("user");

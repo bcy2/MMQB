@@ -49,7 +49,7 @@ public class User
 		return userPwd;
 	}
 	public void setUserPwd(String userPwd) {
-		this.userPwd = MD5Encrypt(userPwd);
+		this.userPwd = encryptData(userPwd);
 	}
 	public String getGrade() {
 		return grade;
@@ -116,11 +116,6 @@ public class User
 		this.remark = remark;
 	}
 	
-	@Override
-	public String toString() {
-		return super.toString();
-	}
-	
 	/**
 	 * Encodes a string 2 MD5
 	 * 
@@ -128,7 +123,7 @@ public class User
 	 * @return Encoded String
 	 * @throws NoSuchAlgorithmException
 	 */
-	public static String MD5Encrypt(String str) {
+	public static String encryptData(String str) {
 		if (str == null || str.length() == 0) {
 			throw new IllegalArgumentException("String to encript cannot be null or zero length");
 		}
@@ -148,6 +143,11 @@ public class User
 			e.printStackTrace();
 		}
 		return hexString.toString();
+	}
+	
+	@Override
+	public String toString() {
+		return super.toString();
 	}
 	
 }

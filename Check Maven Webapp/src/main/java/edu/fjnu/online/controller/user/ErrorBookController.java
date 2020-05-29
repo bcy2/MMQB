@@ -37,18 +37,13 @@ public class ErrorBookController {
 	//跳转到Review Misdids页面
 	@RequestMapping("/toMyBooksPage.action")
 	public String toMyBooksPage(User user, Model model, HttpSession session){
-		if(session.getAttribute("user")== null){//delete?
-			session.setAttribute("user", userService.get(user.getUserId()));
+//		temp security implementation
+		if(session.getAttribute("user")== null){
+			return "redirect:/toLogin.action";
+//			session.setAttribute("user", userService.get(user.getUserId()));
 		}
 //		else {
 //			System.out.println("user:"+session.getAttribute("user"));
-//		}
-//		temp security implementation
-		if(session.getAttribute("userName") == null){
-			return "redirect:/toLogin.action";
-		}
-//		else {
-//			System.out.println("userName:"+session.getAttribute("userName"));
 //		}
 		List<ErrorBook> errorBookList = bookService.find(new ErrorBook());
 		List<Grade> gradeList = gradeService.find(new Grade());
@@ -65,16 +60,16 @@ public class ErrorBookController {
 	}
 	
 	//跳转到前台登录页面
-	@RequestMapping("/getBooks.action")
-	public String getBooks(User user, Model model, HttpSession session){
-		List<Grade> gradeList = gradeService.find(new Grade());
-		List<Course> courseList = courseService.find(new Course());
-		List<Type> typeList = typeService.find(new Type());
-		List<ErrorBook> errorBookList = bookService.getBookInfo(new HashMap());
-		model.addAttribute("grade", gradeList);
-		model.addAttribute("course", courseList);
-		model.addAttribute("type", typeList);
-		return "/user/mybooks.jsp";			
-	}
+//	@RequestMapping("/getBooks.action")
+//	public String getBooks(User user, Model model, HttpSession session){
+//		List<Grade> gradeList = gradeService.find(new Grade());
+//		List<Course> courseList = courseService.find(new Course());
+//		List<Type> typeList = typeService.find(new Type());
+//		List<ErrorBook> errorBookList = bookService.getBookInfo(new HashMap());
+//		model.addAttribute("grade", gradeList);
+//		model.addAttribute("course", courseList);
+//		model.addAttribute("type", typeList);
+//		return "/user/mybooks.jsp";			
+//	}
 	
 }
