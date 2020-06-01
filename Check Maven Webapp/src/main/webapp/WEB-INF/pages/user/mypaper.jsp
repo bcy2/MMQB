@@ -61,8 +61,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 							<li><a class="hvr-overline-from-center button2" href="${ctx}/user/toIndex.action?userId=${user.userId}">Home</a></li>
 							<li><a class="hvr-overline-from-center button2" href="${ctx}/toUserInfo.action?userId=${user.userId}">My Info</a></li>
 							<!-- <li><a class="hvr-overline-from-center button2" href="onlinecheck.html">在线考试</a></li> -->
-							<li><a class="hvr-overline-from-center button2" href="${ctx}/toScoreQry.action?userId=${user.userId}">Review Papers</a></li>
-							<li><a class="hvr-overline-from-center button2" href="${ctx}/toMyBooksPage.action?userId=${user.userId}">Review Misdids</a></li>
+							<li><a class="hvr-overline-from-center button2" href="${ctx}/toScoreQry.action?userId=${user.userId}">Review Quizzes</a></li>
+							<li><a class="hvr-overline-from-center button2" href="${ctx}/toMyBooksPage.action?userId=${user.userId}">Review Mistakes</a></li>
 							<li><a class="hvr-overline-from-center button2  active" href="${ctx}/toMyPaperPage.action?userId=${user.userId}">Start Working!</a></li>
 							<li><a class="hvr-overline-from-center button2" href="${ctx}/toAbout.action">About MMQB</a></li>
 						</ul>
@@ -81,12 +81,12 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
             <table class="table table-bordered">
               <thead>
                 <tr>
-                  <th>试卷名称</th>
-                  <th>试卷科目</th>
-				  <th>开始时间</th>
-				  <th>结束时间</th>
-                  <th>最后得分</th>
-                  <th>试卷状态</th>
+                  <th>Quiz name</th>
+                  <th>Quiz topic</th>
+				  <th>Start time</th>
+				  <th>Finish time</th>
+                  <th>Score</th>
+                  <th>Quiz Status</th>
                 </tr>
               </thead>
               <tbody>

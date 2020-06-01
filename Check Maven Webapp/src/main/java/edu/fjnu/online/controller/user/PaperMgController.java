@@ -33,7 +33,9 @@ import edu.fjnu.online.service.GradeService;
 import edu.fjnu.online.service.PaperService;
 import edu.fjnu.online.service.QuestionService;
 import edu.fjnu.online.service.UserService;
+import edu.fjnu.online.service.EmailService;
 import edu.fjnu.online.util.Computeclass;
+import edu.fjnu.online.util.EmailThread;
 /**
  * 试卷综合管理
  * @author hspcadmin
@@ -54,6 +56,9 @@ public class PaperMgController {
 	QuestionService questionService;
 	@Autowired
 	ErrorBookService bookService;
+	
+	@Autowired
+	EmailService emailService;
 	
 	//跳转到Review Papers页面
 	@RequestMapping("/toScoreQry.action")
@@ -530,7 +535,7 @@ public class PaperMgController {
 		String delimiter = "answer=";
 		String stuAnswer = json.substring(json.indexOf(delimiter)+delimiter.length());
 		stuAnswer = URLDecoder.decode(stuAnswer, "UTF-8");
-		System.out.println("Student Ans:"+stuAnswer);
+		System.out.println("Student Ans:"+stuAnswer+"\n================");
 		
 //		String paperId = paper.getPaperId();
 //		//答案临时存放
@@ -548,8 +553,8 @@ public class PaperMgController {
 //		String []ids = paperInfo.getQuestionId().split(",");
 //		List<Question> question = new ArrayList<Question>();
 //		Question ques = null;
-//		int endScore = 0;
-//		ErrorBook book = new ErrorBook();
+		int endScore = 0;
+		ErrorBook book = new ErrorBook();
 //		book.setUserId(user.getUserId());
 //		System.out.println("answer:"+answer);
 //		for(int i = 1 ;i<answer.length;i++){
@@ -618,11 +623,21 @@ public class PaperMgController {
 			msgItem.setErrorInfo("Correct");
 		}else {
 			msgItem.setErrorInfo("Wrong");
+			book.setQuestion(ques);
+			book.setCourseId(ques.getCourseId());
+			book.setGradeId(ques.getGradeId());
+			book.setUserAnswer(stuAnswer);
+			bookService.insert(book);
 		}
 		
 		if(currentQ == paperQuesIdx.length) {
 			msgItem.setErrorNo("1");
 			session.removeAttribute("currentQuestion");
+			if (true) {
+				System.out.println("Sending email...");
+//				new Thread(() -> doWork(someParam)).start();
+				emailService.sendMail("john.yue@kodingkingdom.com", "Your kid sucks:)", String.format("%s finished %s questions.", user.getUserName(), String.valueOf(paperQuesIdx.length)));//change to parent email
+			}
 			return msgItem;	
 		}
 		

@@ -59,8 +59,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 							<li><a class="hvr-overline-from-center button2" href="${ctx}/user/toIndex.action">Home</a></li>
 							<li><a class="hvr-overline-from-center button2" href="${ctx}/toUserInfo.action?userId=${user.userId}">My Info</a></li>
 <!-- 							<li><a class="hvr-overline-from-center button2" href="onlinecheck.html">在线考试</a></li> -->
-							<li><a class="hvr-overline-from-center button2" href="${ctx}/toScoreQry.action?userId=${user.userId}">Review Papers</a></li>
-							<li><a class="hvr-overline-from-center button2" href="${ctx}/toMyBooksPage.action?userId=${user.userId}">Review Misdids</a></li>
+							<li><a class="hvr-overline-from-center button2" href="${ctx}/toScoreQry.action?userId=${user.userId}">Review Quizzes</a></li>
+							<li><a class="hvr-overline-from-center button2" href="${ctx}/toMyBooksPage.action?userId=${user.userId}">Review Mistakes</a></li>
 							<li><a class="hvr-overline-from-center button2" href="${ctx}/toMyPaperPage.action?userId=${user.userId}">Start Working!</a></li>
 							<li><a class="hvr-overline-from-center button2  active" href="${ctx}/toAbout.action">About MMQB</a></li>
 						</ul>
