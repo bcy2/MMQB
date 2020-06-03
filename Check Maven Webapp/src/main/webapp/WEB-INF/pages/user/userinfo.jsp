@@ -59,12 +59,12 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 							<span class="icon-bar"></span>
 							<span class="icon-bar"></span>
 						</button>
-					   	<h3><span>Welcome, <font color="blue">${userName }</font>.</span></h3>
+					   	<h3><span style="color: white;">Welcome, <font color="blue">${userName }</font>.</span></h3>
 					</div>
 					
 					<div class="collapse navbar-collapse nav-wil" id="bs-example-navbar-collapse-1">
 						<ul class="nav navbar-nav">
-							<li><a class="hvr-overline-from-center button2" href="${ctx}/user/toIndex.action?userId=${user.userId}">Home</a></li>
+							<li><a class="hvr-overline-from-center button2" href="${ctx}/toIndex.action?userId=${user.userId}">Home</a></li>
 							<li><a class="hvr-overline-from-center button2  active" href="${ctx}/toUserInfo.action?userId=${user.userId}">My Info</a></li>
 							<!-- <li><a class="hvr-overline-from-center button2" href="onlinecheck.html">在线考试</a></li> -->
 							<li><a class="hvr-overline-from-center button2" href="${ctx}/toScoreQry.action?userId=${user.userId}">Review Quizzes</a></li>
@@ -128,11 +128,13 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			</div>
 		  </div>
 		  <div role="tabpanel" class="tab-pane fade" id="profile" aria-labelledby="profile-tab">
+		  <c:if test="${'hide!!!'}">
 			<div class="input-group">
 			  <span class="input-group-addon" id="basic-addon1">Original password:</span>
 			  <input type="password" class="form-control" name="userPwd" id="userPwd"
 			  		value="${user.userPwd }" readonly="readonly">
 			</div>
+			</c:if>
 			<div class="input-group">
 			  <span class="input-group-addon" id="basic-addon1">New password:</span>
 			  <input type="password" class="form-control"
@@ -148,7 +150,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	</form>
 	<h3 class="t-button">
 		<a href="javascript:;"><span class="label label-success" onclick="update()">Update</span></a>
-		<a href="${ctx}/user/toIndex.action"><span class="label label-info">Cancel</span></a>
+		<a href="${ctx}/toIndex.action"><span class="label label-info">Cancel</span></a>
 	</h3>
 </div>
 <script src="${ctx}/js/bootstrap.js"></script>
@@ -162,6 +164,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		var newPwd = $("#newPwd").val();
 		if(pwd!= newPwd){
 			alert("Passwords don't match, please check.");
+			return;
+		}
+		if(pwd && pwd.length<6){
+			alert("Password has to consist of at least 6 characters.");
 			return;
 		}
 		document.myform.attributes["action"].value = "${ctx}/updateUserInfo.action"; 

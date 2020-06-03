@@ -25,7 +25,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
         	<div class="top-light"></div>
              <h1 class="logo"></h1> 
             <div class="login-info ue-clear">
-                <div class="welcome ue-clear"><span>Welcome, </span><a href="javascript:;" class="user-name">${userName }</a><span>.</span></div>
+                <div class="welcome ue-clear"><span style="color: white;">Welcome, </span><a href="javascript:;" class="user-name">${userName }</a><span>.</span></div>
 <!--                 <div class="login-msg ue-clear">
                     <a href="javascript:;" class="msg-txt">消息</a>
                     <a href="javascript:;" class="msg-num">10</a>

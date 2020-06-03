@@ -18,6 +18,7 @@ import edu.fjnu.online.service.UserService;
 import edu.fjnu.online.util.MD5Util;
 
 import java.util.Enumeration;
+import java.util.regex.*;
 
 @Controller
 public class StuController {
@@ -56,7 +57,7 @@ public class StuController {
 	 * @param session
 	 * @return
 	 */
-	@RequestMapping("/user/toIndex.action")
+	@RequestMapping("/toIndex.action")
 	public String toIndex(User user, Model model, HttpSession session){
 		if(session.getAttribute("user")!= null){
 			return "/user/index.jsp";
@@ -109,20 +110,36 @@ public class StuController {
 	 */
 	@RequestMapping("/addUserInfo.action")
 	public String addUserInfo(User user, Model model, HttpSession session){
+		String userId = user.getUserId();
+		String userName = user.getUserName();
+		String userPwd = user.getUserPwd();
+		String userGrade = user.getGrade();
+		String userEmail = user.getEmail();
+		String userTel = user.getTelephone();
+		String userAddr = user.getAddress();
+		
+		String emailPatternString = "^\\w+([\\.-]?\\w+)*@\\w+([\\.-]?\\w+)*(\\.\\w{2,3})+$";
+		String numPattern = "^[0-9]{8}$";
+		
+		if (userId.length()<6 || userName.equals("") || userPwd.length()<6 || userGrade.equals("") || !userEmail.matches(emailPatternString) || !userTel.matches(numPattern) || userAddr.equals("")) {
+			return "/user/badReg.jsp";
+		}
 		userService.insert(user);
-		return "redirect:/toLogin.action";			
+		return "redirect:/toLogin.action";
 	}
 	
 	//跳转到前台登录页面
 	@RequestMapping("/toUserInfo.action")
 	public String toUserInfo(User user, Model model, HttpSession session){
-		User loginUser = (User) session.getAttribute("user");
-		user = userService.getStu(loginUser);
 //		temp security implementation
 		if(session.getAttribute("user") == null){
 			return "redirect:/toLogin.action";
 		}
 //		System.out.println("user"+session.getAttribute("user"));//null when logged out
+		
+		User loginUser = (User) session.getAttribute("user");
+		user = userService.getStu(loginUser);
+
 		Grade grade = gradeService.get(Integer.parseInt(user.getGrade()));
 		user.setGrade(grade.getGradeName());
 		model.addAttribute("user", user);
@@ -142,7 +159,9 @@ public class StuController {
 		if(session.getAttribute("user") == null){
 			return "redirect:/toLogin.action";
 		}
-		if(newPwd!= null && newPwd.trim().length()>0){//password length
+		if(newPwd!= null && newPwd.trim().length() >= 6){//password length >= 6
+			//密码加密
+			newPwd = MD5Util.getData(newPwd);
 			user.setUserPwd(newPwd);
 		}
 		userService.update(user);
@@ -150,7 +169,7 @@ public class StuController {
 		if(session.getAttribute("user")== null){
 			session.setAttribute("user", userService.getStu(user));
 		}
-		return "redirect:/user/toIndex.action";			
+		return "redirect:/toIndex.action";			
 	}
 	
 	// 跳转到登录页面

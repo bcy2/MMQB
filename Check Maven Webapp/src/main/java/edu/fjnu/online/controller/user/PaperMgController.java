@@ -35,7 +35,7 @@ import edu.fjnu.online.service.QuestionService;
 import edu.fjnu.online.service.UserService;
 import edu.fjnu.online.service.EmailService;
 import edu.fjnu.online.util.Computeclass;
-import edu.fjnu.online.util.EmailThread;
+//import edu.fjnu.online.util.EmailThread;
 /**
  * 试卷综合管理
  * @author hspcadmin
@@ -68,7 +68,7 @@ public class PaperMgController {
 			return "redirect:/toLogin.action";
 		}
 		
-		if("".equals(user.getUserId()) || user==null){
+		if("".equals(user.getUserId()) || user.getUserId()==null){
 			user = (User) session.getAttribute("user");
 		}
 //		if(session.getAttribute("user")== null){
@@ -121,10 +121,10 @@ public class PaperMgController {
 		List<Question> desList = new ArrayList<Question>();
 		for(int i = 0;i<ids.length;i++){
 			question = questionService.get(Integer.parseInt(ids[i]));
-			if("1".equals(question.getTypeId())){//单选
+			if("1".equals(question.getTypeId())){//MCQ
 				selList.add(question);
 			}
-			if("4".equals(question.getTypeId())){//填空
+			if("4".equals(question.getTypeId())){//FBQ
 				inpList.add(question);
 			}
 			if("5".equals(question.getTypeId())){//简答题
@@ -220,6 +220,7 @@ public class PaperMgController {
 		
 		model.addAttribute("paper", paper);
 		model.addAttribute("user", user);
+		session.setAttribute("paperId", paperId);
 		
 		// newly added
 		if(session.getAttribute("currentQuestion") == null){
@@ -238,7 +239,7 @@ public class PaperMgController {
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@RequestMapping("/toMyPaperPage.action")
-	public String toMyPaperPage(User user,Model model, HttpSession session){
+	public String toMyPaperPage(User user, Model model, HttpSession session){
 //		temp security implementation
 		if(session.getAttribute("user") == null){
 			return "redirect:/toLogin.action";
@@ -375,127 +376,22 @@ public class PaperMgController {
 	@ResponseBody
 	public MsgItem prevQuestion(@RequestBody String json, Paper paper, Model model, HttpSession session) throws UnsupportedEncodingException{
 		int currentQ = (Integer) session.getAttribute("currentQuestion");
-//		System.out.println("Q:"+ String.valueOf(currentQ));
-		
-//		User user = (User) session.getAttribute("user");
-//		String paperId = paper.getPaperId();
-//		Map map = new HashMap();
-//		map.put("paperId", paperId);
-//		map.put("userId", user.getUserId());
-//		Paper paperInfo = paperService.getPaperDetail(map);
-//		System.out.println("Qs:"+ paperInfo.getQuestionId());
-//		String [] paperQuesIdx = paperInfo.getQuestionId().split(",");
 		
 		currentQ -= 1;
 		session.setAttribute("currentQuestion", currentQ);
 		
-//		String currentQId = paperQuesIdx[currentQ-1];
-//		System.out.println("QId:"+ String.valueOf(currentQId));
-//		Question ques = null;
-//		ques = questionService.get(Integer.parseInt(currentQId));
-//		//数据库对应的答案
-//		String answer = ques.getAnswer();
-//		answer = URLDecoder.decode(answer,"UTF-8");
-//		System.out.println("Ans:"+answer);
-		//System.out.println(json);//paperId=sj005&answer=%E5%93%A5%E5%93%A5
-//		String delimiter = "answer=";
-//		String stuAnswer = json.substring(json.indexOf(delimiter)+delimiter.length());
-//		stuAnswer = URLDecoder.decode(stuAnswer, "UTF-8");
-//		System.out.println("Student Ans:"+stuAnswer);
+		User user = (User) session.getAttribute("user");
+		String paperId = paper.getPaperId();
+		Map map = new HashMap();
+		map.put("paperId", paperId);
+		map.put("userId", user.getUserId());
+		paper = paperService.getPaperDetail(map);
 		
-//		String paperId = paper.getPaperId();
-//		//答案临时存放
-//		String ans = paper.getScore();
-//		ans = URLDecoder.decode(ans,"UTF-8");
-//		String [] answer = null;
-//		if(ans.contains("&")){
-//			answer = ans.split("&");
-//		}
-//		Map map = new HashMap();
-//		User user = (User) session.getAttribute("user");
-//		map.put("paperId", paperId);
-//		map.put("userId", user.getUserId());
-//		Paper paperInfo = paperService.getPaperDetail(map);
-//		String []ids = paperInfo.getQuestionId().split(",");
-//		List<Question> question = new ArrayList<Question>();
-//		Question ques = null;
-//		int endScore = 0;
-//		ErrorBook book = new ErrorBook();
-//		book.setUserId(user.getUserId());
-//		System.out.println("answer:"+answer);
-//		for(int i = 1 ;i<answer.length;i++){
-//			System.out.println("==========");
-//			String[] str = answer[i].split("=");
-//			System.out.println("str:"+str);
-//			//题号
-//			String str1 = str[0];
-//			System.out.println("str1:"+str1);
-//			ques = questionService.get(Integer.parseInt(str1));
-//			//数据库对应的答案
-//			String answer1 = ques.getAnswer();
-//			if(str.length>1){
-//				//学生的答案
-//				String str2 = str[1];
-//				System.out.println("str2:"+str2);
-//				if(!"5".equals(ques.getTypeId())){//判断是否为简答题
-//					if(str2.equals(answer1)){//如果用户答案和数据库中的答案一致
-//						endScore+=5;
-//					}else{//插入错题本
-//						book.setQuestion(ques);
-//						book.setCourseId(ques.getCourseId());
-//						book.setGradeId(ques.getGradeId());
-//						book.setUserAnswer(str2);
-//						bookService.insert(book);
-//					}
-//				}else{//为简答题的时候
-//					String strA = answer1;
-//					String strB = URLDecoder.decode(str2, "UTF-8");//转码
-//					//计算相似
-//					double d = Computeclass.SimilarDegree(strA, strB);
-//					BigDecimal bg = new BigDecimal(d*5).setScale(1, RoundingMode.DOWN);
-//			        d = bg.doubleValue();
-//			        endScore+=d;
-//			        if(d<=2){//如果小于2分，认定错误
-//			        	book.setQuestion(ques);
-//						book.setCourseId(ques.getCourseId());
-//						book.setGradeId(ques.getGradeId());
-//						book.setUserAnswer(str2);
-//						bookService.insert(book);
-//			        }
-//				}
-//			}
-//		}
-//		System.out.println("最后得分："+endScore);
-//		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");  
-//		Date currentTime = new Date();//得到当前系统时间  
-//		String endTime = formatter.format(currentTime); //将日期时间格式化  
-//		map.put("beginTime", paper.getBeginTime());
-//		map.put("endTime", endTime);
-//		map.put("score", endScore);
-//		//将考试的试卷状态改为2
-//		map.put("paperState", "2");
-//		paperService.updateUserPaper(map);
-//		if(session.getAttribute("user")== null){
-//			session.setAttribute("user", user);
-//		}
-//		MsgItem msgItem = new MsgItem();
-//		msgItem.setErrorNo("1");
-//		msgItem.setErrorInfo("试卷提交成功，本次考试得分："+endScore +"分");
-//		return msgItem;		
+		model.addAttribute("user", user);
+		model.addAttribute("paper", paper);
+		
 		MsgItem msgItem = new MsgItem();
 		msgItem.setErrorNo("0");
-//		msgItem.setRemark(String.format("The answer is: %s %nExplanation: %s %nRemarks: %s", answer, ques.getAnswerDetail(), ques.getRemark()));
-//		if (answer.equalsIgnoreCase(stuAnswer)) {
-//			msgItem.setErrorInfo("Correct");
-//		}else {
-//			msgItem.setErrorInfo("Wrong");
-//		}
-//		
-//		if(currentQ == paperQuesIdx.length) {
-//			msgItem.setErrorNo("1");
-//			session.removeAttribute("currentQuestion");
-//			return msgItem;	
-//		}
 		
 		return msgItem;	
 	}
@@ -515,14 +411,14 @@ public class PaperMgController {
 		int currentQ = (Integer) session.getAttribute("currentQuestion");
 		System.out.println("Q:"+ String.valueOf(currentQ));
 		
-		User user = (User) session.getAttribute("user");
+		final User user = (User) session.getAttribute("user");
 		String paperId = paper.getPaperId();
 		Map map = new HashMap();
 		map.put("paperId", paperId);
 		map.put("userId", user.getUserId());
-		Paper paperInfo = paperService.getPaperDetail(map);
-		System.out.println("Qs:"+ paperInfo.getQuestionId());
-		String [] paperQuesIdx = paperInfo.getQuestionId().split(",");
+		paper = paperService.getPaperDetail(map);
+		System.out.println("Qs:"+ paper.getQuestionId());
+		final String [] paperQuesIdx = paper.getQuestionId().split(",");
 		String currentQId = paperQuesIdx[currentQ-1];
 		System.out.println("QId:"+ String.valueOf(currentQId));
 		Question ques = null;
@@ -616,34 +512,111 @@ public class PaperMgController {
 //		msgItem.setErrorNo("1");
 //		msgItem.setErrorInfo("试卷提交成功，本次考试得分："+endScore +"分");
 //		return msgItem;		
+		model.addAttribute("user", user);
+		model.addAttribute("paper", paper);
+		
 		MsgItem msgItem = new MsgItem();
 		msgItem.setErrorNo("0");
-		msgItem.setRemark(String.format("The answer is: %s %nExplanation: %s %nRemarks: %s", answer, ques.getAnswerDetail(), ques.getRemark()));
+//		msgItem.setRemark(String.format("The answer is: %s %nExplanation: %s %nRemarks: %s", answer, ques.getAnswerDetail(), ques.getRemark()));
+		msgItem.setQuesAns(answer);
+		msgItem.setQuesExp(ques.getAnswerDetail());
+		msgItem.setRemark(ques.getRemark());
 		if (answer.equalsIgnoreCase(stuAnswer)) {
-			msgItem.setErrorInfo("Correct");
+			msgItem.setErrorInfo("T");
 		}else {
-			msgItem.setErrorInfo("Wrong");
-			book.setQuestion(ques);
-			book.setCourseId(ques.getCourseId());
-			book.setGradeId(ques.getGradeId());
-			book.setUserAnswer(stuAnswer);
-			bookService.insert(book);
+			msgItem.setErrorInfo("F");
+//			book.setQuestion(ques);
+//			book.setCourseId(ques.getCourseId());
+//			book.setGradeId(ques.getGradeId());
+//			book.setUserAnswer(stuAnswer);
+//			bookService.insert(book);
 		}
 		
 		if(currentQ == paperQuesIdx.length) {
 			msgItem.setErrorNo("1");
-			session.removeAttribute("currentQuestion");
-			if (true) {
-				System.out.println("Sending email...");
-//				new Thread(() -> doWork(someParam)).start();
-				emailService.sendMail("john.yue@kodingkingdom.com", "Your kid sucks:)", String.format("%s finished %s questions.", user.getUserName(), String.valueOf(paperQuesIdx.length)));//change to parent email
+//			session.removeAttribute("currentQuestion");
+			Boolean sendEmailBoolean = false;
+			final String parentEmailString = "john.yue@kodingkingdom.com";
+			final String emailTitleString = "Your kid sucks:)";
+			if (sendEmailBoolean) {
+				System.out.println("Sending email to " + parentEmailString);
+				new Thread(new Runnable() {
+					@Override
+					public void run() {
+						emailService.sendMail(parentEmailString, emailTitleString, String.format("%s finished %s questions.", user.getUserName(), String.valueOf(paperQuesIdx.length)));//change to parent email
+					}
+				}).start();
+//				emailService.sendMail("john.yue@kodingkingdom.com", "Your kid sucks:)", String.format("%s finished %s questions.", user.getUserName(), String.valueOf(paperQuesIdx.length)));//change to parent email
 			}
 			return msgItem;	
 		}
 		
+		return msgItem;	
+	}
+	
+	/**
+	 * next question
+	 * @param paper
+	 * @param model
+	 * @param session
+	 * @return
+	 * @throws UnsupportedEncodingException
+	 */
+	@SuppressWarnings("unchecked")
+	@RequestMapping("/nextQuestion.action")
+	@ResponseBody
+	public MsgItem nextQuestion(@RequestBody String json, Paper paper, Model model, HttpSession session) throws UnsupportedEncodingException{
+		int currentQ = (Integer) session.getAttribute("currentQuestion");
+		
 		currentQ += 1;
 		session.setAttribute("currentQuestion", currentQ);
 		
+		User user = (User) session.getAttribute("user");
+		String paperId = paper.getPaperId();
+		Map map = new HashMap();
+		map.put("paperId", paperId);
+		map.put("userId", user.getUserId());
+		paper = paperService.getPaperDetail(map);
+		
+		model.addAttribute("user", user);
+		model.addAttribute("paper", paper);
+		
+		MsgItem msgItem = new MsgItem();
+		msgItem.setErrorNo("0");
+		
+//		if(currentQ == paperQuesIdx.length) {
+//			msgItem.setErrorNo("1");
+//			session.removeAttribute("currentQuestion");
+//		}
+		
 		return msgItem;	
+	}
+	
+	/**
+	 * finish quiz
+	 * @param paper
+	 * @param model
+	 * @param session
+	 * @return
+	 */
+	@RequestMapping("/finishQuiz.action")
+	public String finishQuiz(User user, Model model, HttpSession session){
+//		temp security implementation
+		if(session.getAttribute("user") == null){
+			return "redirect:/toLogin.action";
+		}
+		
+		if("".equals(user.getUserId()) || user.getUserId()==null){
+			user = (User) session.getAttribute("user");
+		}
+		
+		user = userService.getStu(user);
+		model.addAttribute("user", user);
+//		model.addAttribute("paper", paper);
+		
+		session.removeAttribute("currentQuestion");
+		session.removeAttribute("paperId");
+		
+		return "forward:/toScoreQry.action";
 	}
 }

@@ -129,12 +129,12 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 							<span class="icon-bar"></span>
 							<span class="icon-bar"></span>
 						</button>
-					   	<h3><span>Welcome, <font color="blue">${userName }</font>.</span></h3>
+					   	<h3><span style="color: white;">Welcome, <font color="blue">${userName }</font>.</span></h3>
 					</div>
 					
 					<div class="collapse navbar-collapse nav-wil" id="bs-example-navbar-collapse-1">
 						<ul class="nav navbar-nav">
-							<li><a class="hvr-overline-from-center button2" href="${ctx}/user/toIndex.action">Home</a></li>
+							<li><a class="hvr-overline-from-center button2" href="${ctx}/toIndex.action">Home</a></li>
 							<li><a class="hvr-overline-from-center button2" href="${ctx}/toUserInfo.action?userId=${user.userId}">My Info</a></li>
 <!-- 							<li><a class="hvr-overline-from-center button2" href="onlinecheck.html">在线考试</a></li> -->
 							<li><a class="hvr-overline-from-center button2 active" href="${ctx}/toScoreQry.action?userId=${user.userId}">Review Quizzes</a></li>

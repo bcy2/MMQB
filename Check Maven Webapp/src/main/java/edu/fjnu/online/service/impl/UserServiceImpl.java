@@ -56,6 +56,7 @@ public class UserServiceImpl implements UserService {
 	public User login(User user) {
 		// TODO Auto-generated method stub
 		User u = get(user.getUserId());
+//		System.out.println("userId: "+user.getUserId());
 		if(u!=null){
 			String userPwd = MD5Util.getData(user.getUserPwd());
 			if(userPwd.equals(u.getUserPwd())){

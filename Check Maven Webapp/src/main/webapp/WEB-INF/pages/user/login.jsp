@@ -32,7 +32,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 
         <div class="page-container">
             <h1>Login</h1>
-            <form action="${ctx}/user/toIndex.action" method="post" name="myform" id="myform">
+            <form action="${ctx}/toIndex.action" method="post" name="myform" id="myform">
                 <input type="text" name="userId" id="userId" class="username" placeholder="Username">
                 <input type="password" name="userPwd" id="userPwd" class="password" placeholder="Password">
                <%--  <span>${message }</span> --%>
@@ -58,7 +58,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     				if(data.errorNo != "0"){
     					alert(data.errorInfo);
     				}else{
-    					document.myform.attributes["action"].value = "${ctx}/user/toIndex.action"; 
+    					document.myform.attributes["action"].value = "${ctx}/toIndex.action"; 
     					$("form").submit();
     				}
         		},"json");

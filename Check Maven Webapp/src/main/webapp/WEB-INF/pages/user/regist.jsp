@@ -25,16 +25,53 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	function regist(){
 		var Pwd = $("#Pwd").val();
 		var userPwd =$("#userPwd").val();
-		if(Pwd ==""){
-			alert("登录密码不能为空");
+		var userId = $("#userId").val();
+		var userName = $("#userName").val();
+		var email = $("#email").val();
+		var tel = $("#telephone").val();
+		var address = $("#address").val();
+		
+		if(userId.length<6){
+			alert("User account has to consist of at least 6 characters.");
 			return;
 		}
-		if(userPwd ==""){
-			alert("确认密码不能为空");
+		if(userName == ""){
+			alert("User name is empty!");
+			$("#userName").focus();
 			return;
 		}
+		if(Pwd.length<6){
+			alert("Password has to consist of at least 6 characters.");
+			return;
+		}
+/* 		if(userPwd ==""){
+			alert("Confirm password is empty!");
+			return;
+		} */
 		if(Pwd!=userPwd){
-			alert("两次密码不一致，请重新输入！");
+			alert("Passwords don't match, please check.");
+			return;
+		}
+		
+		if ($("input:radio[name='grade']:checked").length === 0){
+			alert("Choose a grade!");
+			return;
+		}
+		var mailFormat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+		if(!email.match(mailFormat)){
+			alert("Email format is wrong!");
+			$("#email").focus();
+			return;
+		}
+		var numbersFormat = /^[0-9]{8}$/;
+		if(tel.length != 8 || !tel.match(numbersFormat)){
+			alert("Phone Number format is wrong!");
+			$("#tel").focus();
+			return;
+		}
+		if(address == ""){
+			alert("Address is empty!");
+			$("#address").focus();
 			return;
 		}
 		document.myform.attributes["action"].value = "${ctx}/addUserInfo.action"; 
@@ -44,8 +81,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	function checkUserId(){
 		var userId = $("#userId").val();
 		var tipInfo = $("#tipInfo").val();
-		if(userId == ""){
-			$("#tipInfo").html("请输入账号");
+		if(userId.length<6){
+			$("#tipInfo").html("User account has to consist of at least 6 characters.");
 			$("#userId").focus();
 			return;
 		}
@@ -56,6 +93,13 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	        dataType: "json",
 	        success: function(data){
 	        	$("#tipInfo").html(data.errorInfo);
+	        	if(data.errorNo == "1"){
+	    			$("#userId").focus();
+	    			return;
+	    		}
+/* 	        	else if (data.errorNo == "0"){
+	    			$("#tipInfo").css("color","green");
+	    		} */
 	        }
 	    });
 	}
@@ -63,18 +107,18 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	function checkPwd(){
 		var Pwd = $("#Pwd").val();
 		var userPwd =$("#userPwd").val();
-		if(Pwd ==""){
-			alert("登录密码不能为空");
+		if(Pwd.length<6){
+			alert("Password has to consist of at least 6 characters.");
 			return;
 		}
-		if(userPwd ==""){
-			alert("确认密码不能为空");
+/* 		if(userPwd ==""){
+			alert("Confirm password is empty!");
 			return;
-		}
-		if(Pwd!=userPwd){
-			alert("两次密码不一致，请重新输入！");
+		} */
+/* 		if(Pwd!=userPwd){
+			alert("Passwords don't match, please check.");
 			return;
-		}
+		} */
 		
 	}
 	
@@ -82,25 +126,24 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 </head>
 <body>
     <div class="page-container">
-        <h1>用户注册</h1>
-        <form action="${ctx}/user/toIndex.action" method="post" name="myform" id="myform">
-            <input type="text" name="userId" id="userId" class="username" placeholder="用户账号" onblur="checkUserId()"><br><span style="color: red" id="tipInfo">${message }</span><br>
-            <input type="text" name="userName" id="userName" placeholder="用户昵称">
-            <input type="password" name="Pwd" id="Pwd" class="password" placeholder="登录密码">
-            <input type="password" name="userPwd" id="userPwd" class="password" placeholder="确认密码" onblur="checkPwd()"><br/>
+        <h1>Sign up for an account</h1>
+        <form action="${ctx}/toIndex.action" method="post" name="myform" id="myform">
+            <input type="text" name="userId" id="userId" class="username" placeholder="User account" onblur="checkUserId()"><br><span style="color: red" id="tipInfo">${message }</span><br>
+            <input type="text" name="userName" id="userName" placeholder="User nickname">
+            <input type="password" name="Pwd" id="Pwd" class="password" placeholder="Login password" onblur="checkPwd()">
+            <input type="password" name="userPwd" id="userPwd" class="password" placeholder="Confirm password"><br/>
             <c:forEach items="${grade}" var="grade">
-				<input type="radio" checked="checked" name="grade" value="${grade.gradeId }" 
-					class="radio" />${grade.gradeName } &nbsp;
+				<input type="radio" name="grade" checked="checked" value="${grade.gradeId }" class="radio" />${grade.gradeName } &nbsp;
 			</c:forEach>
-            <input type="text" name="email" id="email" class="username" placeholder="邮箱">
-            <input type="text" name="telphone" id="telphone" placeholder="联系电话">
-            <input type="text" name="address" id="address" placeholder="联系地址">
-            <button type="button" onclick="regist()">注册</button>
+            <input type="text" name="email" id="email" class="username" placeholder="Contact email: xxx@xxx.xxx">
+            <input type="text" name="telephone" id="telephone" placeholder="8-digit Contact phone: xxxxxxxx">
+            <input type="text" name="address" id="address" placeholder="Address">
+            <button type="button" onclick="regist()">Sign up</button>
             <div class="error"><span>${message }</span></div>
         </form>
         <div class="connect"></div>
     </div>
-    <div align="center">我已经有一个账号，我要 <a href="${ctx}/toLogin.action" target="_self">登录</a></div>
+    <div align="center">I have an account, <a href="${ctx}/toLogin.action" target="_self">Log in</a>!</div>
 </body>
 
 </html>

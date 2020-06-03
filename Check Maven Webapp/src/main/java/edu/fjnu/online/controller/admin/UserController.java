@@ -58,7 +58,7 @@ public class UserController extends BaseController{
 			session.setAttribute("userName", loginUser.getUserName());
 			return "/admin/index.jsp";
 		}else{
-			model.addAttribute("message", "用户名或密码输入错误！！！");
+			model.addAttribute("message", "Wrong username / password!");
 			return "/admin/login.jsp";
 		}
 	}
@@ -73,9 +73,9 @@ public class UserController extends BaseController{
 	public String checkAccount(String userId, Model model){
 		User userInfo = userService.get(userId);
 		if(userInfo!= null){
-			model.addAttribute("message", "该账号已经存在");
+			model.addAttribute("message", "Account already exists.");
 		}else{
-			model.addAttribute("message", "<font color='green'>验证通过</font>");
+			model.addAttribute("message", "<font color='green'>OK!</font>");
 		}
 		model.addAttribute("userId", userId);
 		return "/admin/info-reg.jsp";
@@ -94,10 +94,11 @@ public class UserController extends BaseController{
 		User user = userService.get(userId);
 		if(user!=null){
 			msgItem.setErrorNo("1");
-			msgItem.setErrorInfo("账号已经存在");
+			msgItem.setErrorInfo("Account already exists.");
 		}else{
 			msgItem.setErrorNo("0");
-			msgItem.setErrorInfo("<font color='green'>验证通过</font>");
+			msgItem.setErrorInfo("<font color='green'>OK!</font>");
+//			msgItem.setErrorInfo("验证通过");
 		}
 		return msgItem;
 	} 
