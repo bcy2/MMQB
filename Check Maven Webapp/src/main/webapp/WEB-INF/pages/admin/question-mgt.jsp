@@ -10,6 +10,17 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <html>
 <head>
 <meta charset="utf-8">
+<!-- <script>
+MathJax = {
+  tex: {
+    inlineMath: [['$', '$'], ['\\(', '\\)']]
+  },
+  svg: {
+    fontCache: 'global'
+  }
+};
+</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script> -->
 <link rel="stylesheet" href="${ctx}/css/base.css" />
 <link rel="stylesheet" href="${ctx}/css/info-mgt.css" />
 <link rel="stylesheet" href="${ctx}/css/WdatePicker.css" />
@@ -19,6 +30,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <body>
 <div class="title"><h2>题目管理</h2></div>
 <form action="${ctx}/deleteQuestion.action" method="post" name="myform" id="myform">
+<!-- <div>
+When \(a \ne 0\), there are two solutions to \(ax^2 + bx + c = 0\) and they are
+$$x = {-b \pm \sqrt{b^2-4ac} \over 2a}.$$
+</div> -->
 <div class="table-operate ue-clear">
 	<a href="#" class="add" onclick="addUser()">添加</a>
     <a href="javascript:;" class="del" onclick="deleteUser()">删除</a>

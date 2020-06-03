@@ -25,7 +25,7 @@ public class Paper {
 	private String allowTime;
 	/**分数*/
 	private String score;
-	/**试卷状态 0:准备考试1:尚未开始2:已完成*/
+	/**试卷状态 0:准备考试1:Ready to start2:已完成*/
 	private String paperState;
 	public Paper() {
 		
