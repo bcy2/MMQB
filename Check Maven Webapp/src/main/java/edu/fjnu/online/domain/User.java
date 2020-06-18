@@ -13,9 +13,9 @@ import java.security.NoSuchAlgorithmException;
  */
 public class User
 {
-	/**用户账号*/
+	/**用户账号, unique string, in db is username*/
 	private String userId;
-	/**用户昵称*/
+	/**用户昵称for display, by default userId, in db is nickname*/
 	private String userName;
 	/**用户密码*/
 	private String userPwd;
@@ -33,6 +33,82 @@ public class User
 	private String address;
 	/**备注*/
 	private String remark;
+	
+//	Newly added for all roles
+	private int userIdGlobal;
+	
+	private String userFirstName;
+	
+	private String userLastName;
+	
+	private String authority;
+	
+//	Newly added for students
+	private String parentName;
+	
+	private String parentEmail;
+	
+	private String parentPwd;
+	
+	private int rewardPoints;//game_time in sql
+	
+	private String curriculum;
+	
+	
+	public int getUserIdGlobal() {
+		return userIdGlobal;
+	}
+	public void setUserIdGlobal(int userIdGlobal) {
+		this.userIdGlobal = userIdGlobal;
+	}
+	public String getUserFirstName() {
+		return userFirstName;
+	}
+	public void setUserFirstName(String userFirstName) {
+		this.userFirstName = userFirstName;
+	}
+	public String getUserLastName() {
+		return userLastName;
+	}
+	public void setUserLastName(String userLastName) {
+		this.userLastName = userLastName;
+	}
+	public String getAuthority() {
+		return authority;
+	}
+	public void setAuthority(String authority) {
+		this.authority = authority;
+	}
+	public String getParentName() {
+		return parentName;
+	}
+	public void setParentName(String parentName) {
+		this.parentName = parentName;
+	}
+	public String getParentEmail() {
+		return parentEmail;
+	}
+	public void setParentEmail(String parentEmail) {
+		this.parentEmail = parentEmail;
+	}
+	public String getParentPwd() {
+		return parentPwd;
+	}
+	public void setParentPwd(String parentPwd) {
+		this.parentPwd = parentPwd;
+	}
+	public int getRewardPoints() {
+		return rewardPoints;
+	}
+	public void setRewardPoints(int rewardPoints) {
+		this.rewardPoints = rewardPoints;
+	}
+	public String getCurriculum() {
+		return curriculum;
+	}
+	public void setCurriculum(String curriculum) {
+		this.curriculum = curriculum;
+	}
 	public String getUserId() {
 		return userId;
 	}
@@ -100,10 +176,10 @@ public class User
 		
 	}
 	
-	
-	public User(String userId, String userName, String userPwd, String grade,
-			int userType, int userState, String email, String telephone,
-			String address, String remark) {
+	public User(String userId, String userName, String userPwd, String grade, int userType, int userState, String email,
+			String telephone, String address, String remark, int userIdGlobal, String userFirstName,
+			String userLastName, String authority, String parentName, String parentEmail, String parentPwd,
+			int rewardPoints, String curriculumId) {
 		super();
 		this.userId = userId;
 		this.userName = userName;
@@ -115,8 +191,16 @@ public class User
 		this.telephone = telephone;
 		this.address = address;
 		this.remark = remark;
+		this.userIdGlobal = userIdGlobal;
+		this.userFirstName = userFirstName;
+		this.userLastName = userLastName;
+		this.authority = authority;
+		this.parentName = parentName;
+		this.parentEmail = parentEmail;
+		this.parentPwd = parentPwd;
+		this.rewardPoints = rewardPoints;
+		this.curriculum = curriculum;
 	}
-	
 	/**
 	 * Encodes a string 2 MD5
 	 * 

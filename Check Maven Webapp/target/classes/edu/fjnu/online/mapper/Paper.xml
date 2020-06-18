@@ -6,139 +6,172 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
 	<!-- 数据库表映射 -->
 	<resultMap id="paperRM" type="edu.fjnu.online.domain.Paper">
-		<id property="paperId" column="paperid"/>
-		<result property="paperName" column="papername"/>
-		<result property="courseId" column="courseid"/>
-		<result property="gradeId" column="gradeid"/>
-		<result property="userId" column="userid"/>
-		<result property="questionId" column="questionid"/>
-		<result property="beginTime" column="begintime"/>
-		<result property="endTime" column="endtime"/>
-		<result property="allowTime" column="allowtime"/>
+		<id property="paperId" column="id"/>
+		<result property="paperName" column="name"/>
+		<result property="courseId" column="curriculum_id"/>
+		<result property="gradeId" column="grade_name"/>
+		<result property="userId" column="student_name"/> <!-- change -->
+		<result property="questionId" column="question_id"/>
+		<result property="beginTime" column="begin_time"/>
+		<result property="endTime" column="submit_time"/>
+		<result property="allowTime" column="expected_duration"/>
 		<result property="score" column="score"/>
-		<result property="paperState" column="paperstate"/>
+		<result property="paperState" column="status"/>
+
+		<!-- New in our db -->
+		<result property="teacherName" column="teacher_name"/> <!-- change -->
+		<result property="createTime" column="create_time"/>
+		<result property="currentQuestion" column="current_question"/>
+
+
 	</resultMap>
 	
 	<!-- 新增 -->
 	<insert id="insert" parameterType="edu.fjnu.online.domain.Paper">
-		insert into t_paper
-		(paperid,papername,courseid,gradeid,userid,questionid,begintime,endtime,allowtime,score,paperstate)
+		insert into quiz
+		(id,name,curriculum_id,grade_name,student_name,question_id,begin_time,submit_time,expected_duration,score,status,teacher_name,create_time,current_question)
 		values
-		(#{paperId},#{paperName},#{courseId},#{gradeId},#{userId},#{questionId},#{beginTime},#{endTime},#{allowTime},#{score},#{paperState})
+		(#{paperId},#{paperName},#{courseId},#{gradeId},#{userId},#{questionId},#{beginTime},#{endTime},#{allowTime},#{score},#{paperState},#{teacherName},#{createTime},#{currentQuestion})
 	</insert>
 	
 	<!-- 修改 -->
 	<update id="update" parameterType="edu.fjnu.online.domain.Paper">
-		update t_paper
+		update quiz
 		<set>
 			<if test="paperName!=null">
-				papername=#{paperName},
+				name=#{paperName},
 			</if>
 			<if test="gradeId!=null">
-				gradeid=#{gradeId},
+				grade_name=#{gradeId},
 			</if>
-			<if test="courseId!=null">
-				courseid=#{courseId},
-			</if>
+<!-- 			<if test="courseId!=null">
+				curriculum_id=#{courseId},
+			</if> -->
 			<if test="userId!=null">
-				userid=#{userId},
+				student_name=#{userId},
 			</if>
 			<if test="questionId!=null">
-				questionid=#{questionId},
+				question_id=#{questionId},
 			</if>
 			<if test="beginTime!=null">
-				begintime=#{beginTime},
+				begin_time=#{beginTime},
 			</if>
 			<if test="endTime!=null">
-				endtime=#{endTime},
+				submit_time=#{endTime},
 			</if>
 			<if test="allowTime!=null">
-				allowtime=#{allowTime},
-			</if>
-			<if test="score!=null">
-				score=#{score},
-			</if>
-			<if test="paperstate!=null">
-				paperstate=#{paperState},
-			</if>
-		</set>
-			where paperid=#{paperId}
-	</update>
-	
-	<!-- 查询所有记录 -->
-	<select id="find" parameterType="string" resultMap="paperRM">
-		select * from t_paper
-		where paperstate='0'
-	</select>
-	
-	<!-- 查询一个录 -->
-	<select id="get" parameterType="edu.fjnu.online.domain.Paper" resultMap="paperRM">
-		select * from t_paper
-		where paperid=#{id} 
-		and paperstate='0'
-	</select>
-	
-	<!-- 删除一条记录 -->
-	<delete id="delete" parameterType="string">
-		delete from t_paper
-		where paperid=#{id}
-	</delete>
-	
-	<!-- 查询学生已经考试过的试卷 -->
-	<select id="getUserPaperById" parameterType="edu.fjnu.online.domain.Paper" resultMap="paperRM">
-		select * from t_paper
-		where userid=#{id} 
-		and paperstate = '2'
-	</select>
-	<select id="getPaperDetail" parameterType="map" resultMap="paperRM">
-		select * from t_paper
-		where userid=#{userId}
-		and paperid=#{paperId}
-	</select>
-	
-	<update id="updateUserPaper" parameterType="map">
-		update t_paper
-		<set>
-			<if test="paperName!=null">
-				papername=#{paperName},
-			</if>
-			<if test="gradeId!=null">
-				gradeid=#{gradeId},
-			</if>
-			<if test="courseId!=null">
-				courseid=#{courseId},
-			</if>
-			<if test="questionId!=null">
-				questionid=#{questionId},
-			</if>
-			<if test="beginTime!=null">
-				begintime=#{beginTime},
-			</if>
-			<if test="endTime!=null">
-				endtime=#{endTime},
-			</if>
-			<if test="allowTime!=null">
-				allowtime=#{allowTime},
+				expected_duration=#{allowTime},
 			</if>
 			<if test="score!=null">
 				score=#{score},
 			</if>
 			<if test="paperState!=null">
-				paperstate=#{paperState},
+				status=#{paperState},
+			</if>
+			<if test="teacherName!=null">
+				teacher_name=#{teacherName},
+			</if>
+<!-- 			<if test="createTime!=null">
+				create_time=#{createTime},
+			</if> -->
+			<if test="currentQuestion!=null">
+				current_question=#{currentQuestion},
 			</if>
 		</set>
-			where paperid=#{paperId}
-			and userid=#{userId}
+			where id=#{paperId}
+	</update>
+	
+	<!-- 查询所有记录 -->
+	<select id="find" parameterType="string" resultMap="paperRM">
+		select * from quiz
+		where status=0
+	</select>
+	
+	<!-- 查询一个录 -->
+	<select id="get" parameterType="edu.fjnu.online.domain.Paper" resultMap="paperRM">
+		select * from quiz
+		where id=#{paperId} 
+		and status=0
+	</select>
+	
+	<!-- 删除一条记录 -->
+	<delete id="delete" parameterType="string">
+		delete from quiz
+		where id=#{paperId}
+	</delete>
+	
+	<!-- 查询学生已经考试过的试卷 -->
+	<select id="getUserPaperById" parameterType="edu.fjnu.online.domain.Paper" resultMap="paperRM">
+		select * from quiz
+		where student_name=#{userId}
+		and status = 2
+	</select>
+	<select id="getPaperDetail" parameterType="map" resultMap="paperRM">
+		select * from quiz
+		where student_name=#{userId}
+		and id=#{paperId}
+	</select>
+	
+	<update id="updateUserPaper" parameterType="map">
+		update quiz
+		<set>
+			<if test="paperName!=null">
+				name=#{paperName},
+			</if>
+			<if test="gradeId!=null">
+				grade_name=#{gradeId},
+			</if>
+<!-- 			<if test="courseId!=null">
+				curriculum_id=#{courseId},
+			</if> -->
+			<if test="userId!=null">
+				student_name=#{userId},
+			</if>
+			<if test="questionId!=null">
+				question_id=#{questionId},
+			</if>
+			<if test="beginTime!=null">
+				begin_time=#{beginTime},
+			</if>
+			<if test="endTime!=null">
+				submit_time=#{endTime},
+			</if>
+			<if test="allowTime!=null">
+				expected_duration=#{allowTime},
+			</if>
+			<if test="score!=null">
+				score=#{score},
+			</if>
+			<if test="paperState!=null">
+				status=#{paperState},
+			</if>
+			<if test="teacherName!=null">
+				teacher_name=#{teacherName},
+			</if>
+<!-- 			<if test="createTime!=null">
+				create_time=#{createTime},
+			</if> -->
+			<if test="currentQuestion!=null">
+				current_question=#{currentQuestion},
+			</if>
+		</set>
+			where id=#{paperId}
+			and student_name=#{userId}
 	</update>
 	
 	<!-- 查询未考试的试卷 -->
 	<select id="getUndoPaper" parameterType="map" resultMap="paperRM">
-		select * from t_paper where paperstate='0' 
-			and paperid not in(select paperid from t_paper where userid=#{userId})
+		select * from quiz where status=0
+			and id not in(select id from quiz where student_name=#{userId})
 	</select>
 	
 	<!-- 查询未考试的试卷 -->
 	<select id="qryUndoPaper" parameterType="map" resultMap="paperRM">
-		select * from t_paper where paperstate = '1' and userid=#{userId}
+		select * from quiz where status = 0 and student_name=#{userId}
+	</select>
+
+	<!-- 查询正在考试的试卷 -->
+	<select id="qryInProgressPaper" parameterType="map" resultMap="paperRM">
+		select * from quiz where status = 1 and student_name=#{userId}
 	</select>
 </mapper>

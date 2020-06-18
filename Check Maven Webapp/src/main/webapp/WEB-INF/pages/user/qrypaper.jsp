@@ -1,5 +1,6 @@
 <%@ page language="java" import="java.util.*" pageEncoding="utf-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <c:set var="ctx" value="${pageContext.request.contextPath}"/>
 <%
 String path = request.getContextPath();
@@ -12,6 +13,14 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	 String str_date2 = currentTime.toString(); //将Date型日期时间转换成字符串形式  
 	 request.setAttribute("starttime ", str_date1);
  %> 
+  <%
+   response.addHeader("Cache-Control", "no-cache,no-store,private,must-revalidate"); 
+   response.addHeader("Pragma", "no-cache"); 
+   response.addDateHeader ("Expires", 0);
+   if (session.getAttribute("user")==null) {
+       response.sendRedirect("user/exitSys.action");
+   }
+ %>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
@@ -185,53 +194,100 @@ MathJax = {
 <!-- <div class="typrography"> -->
 	 <div class="container">
 	 		<!-- 试卷名称 -->
+	 		<br />
 			<h2 class="bars" align="center"><font color="blue">${paper.paperName }</font></h2>
-	 		<div class="input-group">
-				  <h4 class="bars" align="left"><font color="blue">${selectQ }</font></h4>
-			</div>
-			<input type="hidden" name="paperId" id="paperId" value="${paper.paperId }"/>
-			<c:forEach items="${selList}" var="selType">
-				<p><h4 class="bars" align="left">${selType.quesName }</h4></p>
-				<div class="input-group">
-					<input name="${selType.questionId }" type="radio" value="A" checked="checked"/><font size="4">${selType.optionA }</font></br>
-					<input name="${selType.questionId }" type="radio" value="B"/><font size="4">${selType.optionB }</font></br>
-					<input name="${selType.questionId }" type="radio" value="C"/><font size="4">${selType.optionC }</font></br>
-					<input name="${selType.questionId }" type="radio" value="D"/><font size="4">${selType.optionD }</font></br>
-<%--  					<p><h4 class="bars"><font color="blue">我的答案：${errorBook.userAnswer } </font></h4></p>
-					<p><h4 class="bars">标准答案：${errorBook.question.answer }（ ${errorBook.question.answerDetail }）</h4></p>
-					<p><h4 class="bars"><font color="red">解析：${errorBook.question.remark }</font></h4></p> --%>
+			<h4 class="bars" align="center">Expected time: <font color="green">${paper.allowTime }min</font></h4>
+			<h4 class="bars" align="center">Actual time: <font color="green">${paper.allowTime }min</font></h4>
+				<%-- <input type="hidden" name="currentQ" id="currentQ" value="${currentQuestion}"/> --%>
+				<input type="hidden" name="paperId" id="paperId" value="${paper.paperId }"/>
+				<div class="question-group">
+				<hr>
+				<c:forEach items="${questionList}" var="quesType" varStatus="loop">
+				<p><h4 class="bars" align="left">${loop.index+1}.</h4></p>
+					<c:if test="${quesType.typeId == 1}">
+						<p><h4 class="bars" align="left">${fn:replace(quesType.quesName, newLine, "<br />")}</h4></p>
+						<c:if test="${quesType.attachmentId != 0}">
+							<img src="data:image/png;base64,${quesType.attachmentFile}">
+						</c:if>
+						<div class="input-group">
+							<input name="${quesType.questionId }" type="radio" value="A"/>&nbsp;<font size="4">${quesType.optionA }</font></br>
+							<input name="${quesType.questionId }" type="radio" value="B"/>&nbsp;<font size="4">${quesType.optionB }</font></br>
+							<input name="${quesType.questionId }" type="radio" value="C"/>&nbsp;<font size="4">${quesType.optionC }</font></br>
+							<input name="${quesType.questionId }" type="radio" value="D"/>&nbsp;<font size="4">${quesType.optionD }</font></br>
+		  					<%-- <p><h4 class="bars"><font color="blue">My Answer: ${errorBook.userAnswer } </font></h4></p>
+							<p><h4 class="bars">Correct Answer: ${errorBook.question.answer }（ ${errorBook.question.answerDetail }）</h4></p>
+							<p><h4 class="bars"><font color="red">Explanation: ${errorBook.question.remark }</font></h4></p> --%>
+						</div>
+					</c:if>
+					
+					<c:if test="${quesType.typeId == 2}">
+						<p><h4 class="bars" align="left">${fn:replace(quesType.quesName, newLine, "<br />")}</h4></p>
+						<c:if test="${quesType.attachmentId != 0}">
+							<img src="data:image/png;base64,${quesType.attachmentFile}">
+						</c:if>
+						<div class="input-group">
+						  <span class="input-group-addon" id="sizing-addon2">Answer:</span>
+						  <input type="text" name="${quesType.questionId }" id="${quesType.questionId }" 
+						  		class="form-control" placeholder="Type in your answer here">
+						  <br />
+						</div>
+					</c:if>
+					
+	<%-- 				<c:if test="${quesType.typeId == 5}">
+						<p><h4 class="bars" align="left">${fn:replace(quesType.quesName, newLine, "<br />")}</h4></p>
+						<div class="input-group">
+						  <span class="input-group-addon" id="sizing-addon2">Answer:</span>
+						  <input type="text" name="${quesType.questionId }" id="${quesType.questionId }" 
+						  		class="form-control" placeholder="Type in your answer here">
+						  <br />
+						</div>
+					</c:if> --%>
+					<hr>
+				</c:forEach>
+			
+			 		<%-- <div class="input-group">
+						  <h4 class="bars" align="left"><font color="blue">${selectQ }</font></h4>
+					</div>
+					<input type="hidden" name="paperId" id="paperId" value="${paper.paperId }"/>
+					<c:forEach items="${selList}" var="selType">
+						<p><h4 class="bars" align="left">${selType.quesName }</h4></p>
+						<div class="input-group">
+							<input name="${selType.questionId }" type="radio" value="A" checked="checked"/><font size="4">${selType.optionA }</font></br>
+							<input name="${selType.questionId }" type="radio" value="B"/><font size="4">${selType.optionB }</font></br>
+							<input name="${selType.questionId }" type="radio" value="C"/><font size="4">${selType.optionC }</font></br>
+							<input name="${selType.questionId }" type="radio" value="D"/><font size="4">${selType.optionD }</font></br>
+		 					<p><h4 class="bars"><font color="blue">我的答案：${errorBook.userAnswer } </font></h4></p>
+							<p><h4 class="bars">标准答案：${errorBook.question.answer }（ ${errorBook.question.answerDetail }）</h4></p>
+							<p><h4 class="bars"><font color="red">解析：${errorBook.question.remark }</font></h4></p>
+						</div>
+					</c:forEach>
+					<div class="input-group">
+						  <h4 class="bars" align="left"><font color="blue">${inpQ }</font></h4>
+					</div>
+					<c:forEach items="${inpList }" var="inpType">
+						<p><h4 class="bars" align="left">${inpType.quesName }</h4></p><br/>
+						<div class="input-group">
+						  <span class="input-group-addon" id="sizing-addon2">答案：</span>
+						  <input type="text" name="${inpType.questionId }" id="${inpType.questionId }" 
+						  		class="form-control" placeholder="请在此输入答案...">
+						</div>
+					</c:forEach>
+					<div class="input-group">
+						  <h4 class="bars" align="left"><font color="blue">${desQ }</font></h4>
+					</div>
+					<c:forEach items="${desList }" var="desType">
+						<p><h4 class="bars" align="left">${desType.quesName }</h4></p>
+						<div class="input-group">
+						  <span class="input-group-addon" id="sizing-addon2">答案：</span>
+						  <input type="text" name="${desType.questionId }" id="${desType.questionId }" 
+						  		class="form-control" placeholder="请在此输入答案...">
+						</div>
+					</c:forEach> --%>
 				</div>
-			</c:forEach>
-			<div class="input-group">
-				  <h4 class="bars" align="left"><font color="blue">${inpQ }</font></h4>
-			</div>
-			<c:forEach items="${inpList }" var="inpType">
-				<p><h4 class="bars" align="left">${inpType.quesName }</h4></p><br/>
-				<div class="input-group">
-				  <span class="input-group-addon" id="sizing-addon2">答案：</span>
-				  <input type="text" name="${inpType.questionId }" id="${inpType.questionId }" 
-				  		class="form-control" placeholder="请在此输入答案...">
-				</div>
-			</c:forEach>
-			<div class="input-group">
-				  <h4 class="bars" align="left"><font color="blue">${desQ }</font></h4>
-			</div>
-			<c:forEach items="${desList }" var="desType">
-				<p><h4 class="bars" align="left">${desType.quesName }</h4></p>
-				<div class="input-group">
-					<input name="userType" type="radio" value="1"/><font size="4">${desType.optionA }</font></br>
-					<input name="userType" type="radio" value="1"/><font size="4">${desType.optionB }</font></br>
-					<input name="userType" type="radio" value="1"/><font size="4">${desType.optionC }</font></br>
-					<input name="userType" type="radio" value="1"/><font size="4">${desType.optionD }</font></br>
-<%-- 					<p><h4 class="bars"><font color="blue">我的答案：${errorBook.userAnswer } </font></h4></p>
-					<p><h4 class="bars">标准答案：${errorBook.question.answer }（ ${errorBook.question.answerDetail }）</h4></p>
-					<p><h4 class="bars"><font color="red">解析：${errorBook.question.remark }</font></h4></p> --%>
-				</div>
-			</c:forEach>
 		<div class="grid_3 grid_5" align="center">
 		  <h3 class="t-button">
 			<!-- <a href="javascript:;" onclick="submitPaper()"><span class="label label-success">提交试卷</span></a>&nbsp;&nbsp; -->
-			<a href="${ctx}/toScoreQry.action?userId=${user.userId}"><span class="label label-info">返回上一页</span></a>
+			<a href="${ctx}/toScoreQry.action?userId=${user.userId}"><span class="label label-info">Back to quiz review</span></a>
 		  </h3>
       </div>
 	</div>

@@ -5,7 +5,14 @@
 String path = request.getContextPath();
 String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
 %>
-
+ <%
+   response.addHeader("Cache-Control", "no-cache,no-store,private,must-revalidate"); 
+   response.addHeader("Pragma", "no-cache"); 
+   response.addDateHeader ("Expires", 0);
+   if (session.getAttribute("user")==null) {
+       response.sendRedirect("user/exitSys.action");
+   }
+ %>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
@@ -82,19 +89,10 @@ MathJax = {
 	}
 	
 	function type(typeId){
-		switch(typeId) {
-	     case 1:
-	    	showOneType(".MCQ");
-	        break;
-	     case 4:
-	    	showOneType(".FBQ");
-	        break;
-	     case 5:
-	    	showOneType(".MAQ");
-		    break;
-	     default:
-	    	hideAll();
-		}
+		showOneType("."+typeId);
+	}
+	function grade(gradeId){
+		showOneType("."+gradeId);
 	}
 </script>
 
@@ -138,16 +136,16 @@ MathJax = {
 	 <div class="container">
 			<div class="grid_4 grid_5">
 			  <h5 class="typ1 t-button">
-				<!-- <span>Grade:</span> -->
+				<span>Filter:</span>
 				<a href="#"><span class="label label-success" onclick="showAll()">Show all</span></a>
 			  </h5>
-<%-- 			  <h5 class="typ1 t-button">
+ 			  <h5 class="typ1 t-button">
 				<span>Grade:</span>
 				<c:forEach items="${grade}" var="grade">
-					<a href="#"><span class="label label-success" onclick="grade(${grade.gradeId})">${grade.gradeName}</span></a>
+					<a href="#"><span class="label label-success" onclick="grade('grade${grade.gradeId}')">${grade.gradeName}</span></a>
 				</c:forEach>
 			  </h5>
-			  <h5 class="typ1 t-button">
+<%--			  <h5 class="typ1 t-button">
 				<span>Course:</span>
 				<c:forEach items="${course}" var="course">
 					<a href="#"><span class="label label-success" onclick="course(${course.courseId})">${course.courseName}</span></a>
@@ -156,7 +154,7 @@ MathJax = {
 			  <h5 class="typ1 t-button">
 				<span>Type:</span>
 				<c:forEach items="${type}" var="type">
-					<a href="#"><span class="label label-success" onclick="type(${type.typeId})">${type.typeName}</span></a>
+					<a href="#"><span class="label label-success" onclick="type('type${type.typeId}')">${type.typeName}</span></a>
 				</c:forEach>
 			  </h5>
 			</div>	  
@@ -169,44 +167,75 @@ MathJax = {
 			
 			<c:forEach items="${requestScope.errorBook }" var="errorBook">
 				<c:if test="${errorBook.question.typeId==1}">
-					<div class="questionItem MCQ">
+					<div class="questionItem type${errorBook.question.typeId } grade${errorBook.question.gradeId }">
+					<hr>
 					<!-- 选择题 -->
 						<p><h4 class="bars" align="left">${errorBook.question.quesName }</h4></p>
 						<div class="input-group">
-							<input name="userType" type="radio" value="1"/><font size="4">${errorBook.question.optionA }</font></br>
-							<input name="userType" type="radio" value="1"/><font size="4">${errorBook.question.optionB }</font></br>
-							<input name="userType" type="radio" value="1"/><font size="4">${errorBook.question.optionC }</font></br>
-							<input name="userType" type="radio" value="1"/><font size="4">${errorBook.question.optionD }</font></br>
-							<p><h4 class="bars"><font color="blue">My answer：${errorBook.userAnswer } </font></h4></p>
-							<p><h4 class="bars">Correct answer：${errorBook.question.answer }（ ${errorBook.question.answerDetail }）</h4></p>
-							<p><h4 class="bars"><font color="red">Remarks:：${errorBook.question.remark }</font></h4></p>
+							A.&nbsp;<font size="4">${errorBook.question.optionA }</font></br>
+							B.&nbsp;<font size="4">${errorBook.question.optionB }</font></br>
+							C.&nbsp;<font size="4">${errorBook.question.optionC }</font></br>
+							D.&nbsp;<font size="4">${errorBook.question.optionD }</font></br>
+							<p><h4 class="bars">My answer:
+								<c:choose>
+									<c:when test="${errorBook.correctness}">
+										<font color='green'>${errorBook.userAnswer }&nbsp;&check;</font>
+									</c:when>
+									<c:otherwise>
+										<font color='red'>${errorBook.userAnswer }&nbsp;&cross;</font>
+									</c:otherwise>
+								</c:choose>
+							</h4></p>
+							<c:if test="${!errorBook.correctness}">
+								<p><h4 class="bars">Correct answer: <font color="green">${errorBook.question.answer }</font></h4></p>
+							</c:if>
+							<c:if test="${errorBook.question.answerDetail}">
+								<p><h4 class="bars">Explanation: ${errorBook.question.answerDetail }</h4></p>
+							</c:if>
+							<p><h4 class="bars">From quiz: ${errorBook.quizId } / grade: ${errorBook.question.gradeId }</h4></p>
 						</div>
 					</div>
 				</c:if>
 				
-				<c:if test="${errorBook.question.typeId==4}">
-					<div class="questionItem FBQ">
+				<c:if test="${errorBook.question.typeId==2}">
+					<div class="questionItem type${errorBook.question.typeId } grade${errorBook.question.gradeId }">
+					<hr>
 					<!-- 填空题 -->
 					<p><h4 class="bars" align="left">${errorBook.question.quesName }</h4></p>
 						<div class="input-group">
-							<p><h4 class="bars"><font color="blue">My answer：${errorBook.userAnswer } </font></h4></p>
-							<p><h4 class="bars">Correct answer：${errorBook.question.answer }（ ${errorBook.question.answerDetail }）</h4></p>
-							<p><h4 class="bars"><font color="red">Remarks:：${errorBook.question.remark }</font></h4></p>
+							<p><h4 class="bars">My answer:
+								<c:choose>
+									<c:when test="${errorBook.correctness}">
+										<font color='green'>${errorBook.userAnswer }&nbsp;&check;</font>
+									</c:when>
+									<c:otherwise>
+										<font color='red'>${errorBook.userAnswer }&nbsp;&cross;</font>
+									</c:otherwise>
+								</c:choose>
+							</h4></p>
+							<c:if test="${!errorBook.correctness}">
+								<p><h4 class="bars">Correct answer: <font color="green">${errorBook.question.answer }</font></h4></p>
+							</c:if>
+							<c:if test="${errorBook.question.answerDetail}">
+								<p><h4 class="bars"><font color="red">Explanation:${errorBook.question.answerDetail }</font></h4></p>
+							</c:if>
+							<p><h4 class="bars">From quiz: ${errorBook.quizId } / grade: ${errorBook.question.gradeId }</h4></p>
 						</div>
 					</div>
 				</c:if>
 				
-				<c:if test="${errorBook.question.typeId==5}">
-					<div class="questionItem MAQ">
+				<%-- <c:if test="${errorBook.question.typeId==5}">
+					<div class="questionItem type${errorBook.question.typeId } grade${errorBook.question.gradeId }">
+					<hr>
 					<!-- 多选题 -->
 					<p><h4 class="bars" align="left">${errorBook.question.quesName }</h4></p>
 						<div class="input-group">
 							<p><h4 class="bars"><font color="blue">My answer：${errorBook.userAnswer } </font></h4></p>
-							<p><h4 class="bars">Correct answer：${errorBook.question.answer }（ ${errorBook.question.answerDetail }）</h4></p>
-							<p><h4 class="bars"><font color="red">Remarks:：${errorBook.question.remark }</font></h4></p>
+							<p><h4 class="bars">Correct answer：${errorBook.question.answer }</h4></p>
+							<p><h4 class="bars"><font color="red">Explanation:${errorBook.question.answerDetail }</font></h4></p>
 						</div>
 					</div>
-				</c:if>
+				</c:if> --%>
 				
 			</c:forEach>
 	</div>

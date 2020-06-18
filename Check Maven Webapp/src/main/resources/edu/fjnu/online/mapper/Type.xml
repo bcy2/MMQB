@@ -6,52 +6,52 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
 	<!-- 数据库表映射 -->
 	<resultMap id="typeRM" type="edu.fjnu.online.domain.Type">
-		<id property="typeId" column="typeid"/>
-		<result property="typeName" column="typename"/>
+		<id property="typeId" column="id"/>
+		<result property="typeName" column="name"/>
 		<result property="score" column="score"/>
-		<result property="remark" column="remark"/>
+		<result property="remark" column="description"/>
 	</resultMap>
 	
 	<!-- 新增 -->
 	<insert id="insert" parameterType="edu.fjnu.online.domain.Type">
-		insert into t_type
-		(typename,score,remark)
+		insert into question_type
+		(name,score,description)
 		values
 		(#{typeName},#{score},#{remark})
 	</insert>
 	
 	<!-- 修改 -->
 	<update id="update" parameterType="edu.fjnu.online.domain.Type">
-		update t_type
+		update question_type
 		<set>
 			<if test="typeName!=null">
-				typename=#{typeName},
+				name=#{typeName},
 			</if>
 			<if test="score!=null">
 				score=#{score},
 			</if>
 			<if test="remark!=null">
-				remark=#{remark},
+				description=#{remark},
 			</if>
 		</set>
-			where typeid=#{typeId}
+			where id=#{typeId}
 	</update>
 	
 	<!-- 查询所有记录 -->
 	<select id="find" parameterType="int" resultMap="typeRM">
-		select * from t_type
+		select * from question_type
 		where 1=1
 	</select>
 	
 	<!-- 查询一个录 -->
 	<select id="get" parameterType="edu.fjnu.online.domain.Type" resultMap="typeRM">
-		select * from t_type
-		where typeid=#{id} 
+		select * from question_type
+		where id=#{typeId} 
 	</select>
 	
 	<!-- 删除一条记录 -->
 	<delete id="delete" parameterType="int">
-		delete from t_type
-		where typeid=#{id}
+		delete from question_type
+		where id=#{typeId}
 	</delete>
 </mapper>

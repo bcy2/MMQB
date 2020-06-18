@@ -1068,10 +1068,20 @@ line-height:1.8em;
 h3.bars {
   margin-bottom: 0.8em;
 }
+h4.bars {
+  margin-top: 0.8em;
+  margin-bottom: 0.8em;
+}
 li.list-group-item1 {
   line-height: 2.5em;
 }
 .question-group{
+	min-width: 240px;
+	width: 80%;
+	margin: 0 auto;
+	border: 2px black solid;
+	border-radius: 50px;
+	padding: 0 24px 24px 24px;
 	-webkit-animation: fadein 0.5s; /* Safari, Chrome and Opera > 12.1 */
 	-moz-animation: fadein 0.5s; /* Firefox < 16 */
 	-ms-animation: fadein 0.5s; /* Internet Explorer */
@@ -1102,6 +1112,9 @@ li.list-group-item1 {
 }
 .input-group {
   margin-bottom: 20px;
+  width: 80%;
+  max-width: 600px;
+  min-width: 250px;
   }
 .in-gp-tl{
 padding:0;

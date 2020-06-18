@@ -10,9 +10,11 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import edu.fjnu.online.domain.Course;
 import edu.fjnu.online.domain.Grade;
 import edu.fjnu.online.domain.MsgItem;
 import edu.fjnu.online.domain.User;
+import edu.fjnu.online.service.CourseService;
 import edu.fjnu.online.service.GradeService;
 import edu.fjnu.online.service.UserService;
 import edu.fjnu.online.util.MD5Util;
@@ -26,6 +28,8 @@ public class StuController {
 	UserService userService;
 	@Autowired
 	GradeService gradeService;
+	@Autowired
+	CourseService courseService;
 	
 	public void showAllAttributes(HttpSession session){
 		Enumeration<String> attributes = session.getAttributeNames();
@@ -36,6 +40,14 @@ public class StuController {
 		}
 		System.out.println("End.");
 	}
+	
+	@RequestMapping("/test.action")
+	public String toNewDBTest(User user, Model model, HttpSession session){
+		List<User> dataList = userService.find(user);
+		model.addAttribute("dataList", dataList);
+		return "/user/newDBTest.jsp";			
+	}
+	
 	//跳转到前台登录页面
 	@RequestMapping("/toLogin.action")
 	public String toUserLogin(User user, Model model, HttpSession session){
@@ -97,8 +109,10 @@ public class StuController {
 	
 	@RequestMapping("/toRegistPage.action")
 	public String toRegistPage(Model model, HttpSession session){
-		List<Grade> list = gradeService.find(new Grade());
-		model.addAttribute("grade", list);
+		List<Grade> gradeList = gradeService.findActive(new Grade());
+		model.addAttribute("grade", gradeList);
+		List<Course> curricuLumList = courseService.find(new Course());
+		model.addAttribute("curriculum", curricuLumList);
 		return "/user/regist.jsp";
 	}
 	
@@ -110,18 +124,26 @@ public class StuController {
 	 */
 	@RequestMapping("/addUserInfo.action")
 	public String addUserInfo(User user, Model model, HttpSession session){
-		String userId = user.getUserId();
-		String userName = user.getUserName();
+		String userId = user.getUserId();//username
+		String userFirstName = user.getUserFirstName();
+		String userLastName = user.getUserLastName();
+		user.setUserName(userLastName.toUpperCase() + " " + userFirstName);
 		String userPwd = user.getUserPwd();
 		String userGrade = user.getGrade();
 		String userEmail = user.getEmail();
 		String userTel = user.getTelephone();
-		String userAddr = user.getAddress();
+//		String userAddr = user.getAddress();
+		String userCurriculum = user.getCurriculum();
+		
+		user.setUserState(0);
+		user.setUserType(0);
+		user.setRewardPoints(0);
+		user.setAuthority("{\"can_game\": true}");
 		
 		String emailPatternString = "^\\w+([\\.-]?\\w+)*@\\w+([\\.-]?\\w+)*(\\.\\w{2,3})+$";
 		String numPattern = "^[0-9]{8}$";
 		
-		if (userId.length()<6 || userName.equals("") || userPwd.length()<6 || userGrade.equals("") || !userEmail.matches(emailPatternString) || !userTel.matches(numPattern) || userAddr.equals("")) {
+		if (userId.length()<6 || userFirstName.equals("") || userLastName.equals("") || userPwd.length()<6 || userGrade.equals("") || !userEmail.matches(emailPatternString) || !userTel.matches(numPattern) || userCurriculum.equals("")) {
 			return "/user/badReg.jsp";
 		}
 		userService.insert(user);
@@ -139,9 +161,14 @@ public class StuController {
 		
 		User loginUser = (User) session.getAttribute("user");
 		user = userService.getStu(loginUser);
+		List<Grade> gradeList = gradeService.findActive(new Grade());
+		List<Course> courseList = courseService.find(new Course());
+		model.addAttribute("grade", gradeList);
+		model.addAttribute("course", courseList);
 
-		Grade grade = gradeService.get(Integer.parseInt(user.getGrade()));
-		user.setGrade(grade.getGradeName());
+//		Grade grade = gradeService.get(Integer.parseInt(user.getGrade()));
+//		user.setGrade(grade.getGradeName());
+//		model.addAttribute("userGradeName", grade.getGradeName());
 		model.addAttribute("user", user);
 		return "/user/userinfo.jsp";			
 	}
@@ -169,6 +196,7 @@ public class StuController {
 		if(session.getAttribute("user")== null){
 			session.setAttribute("user", userService.getStu(user));
 		}
+		session.setAttribute("userName", user.getUserName());
 		return "redirect:/toIndex.action";			
 	}
 	
@@ -184,6 +212,7 @@ public class StuController {
 //		         System.out.println(session.getAttribute(haha.nextElement()));
 //		      }
 			session.removeAttribute("userName");
+			session.removeAttribute("user");
 //			return "/user/login.jsp";
 		}
 //		newly added

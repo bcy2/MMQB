@@ -5,7 +5,14 @@
 String path = request.getContextPath();
 String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
 %>
-
+ <%
+   response.addHeader("Cache-Control", "no-cache,no-store,private,must-revalidate"); 
+   response.addHeader("Pragma", "no-cache"); 
+   response.addDateHeader ("Expires", 0);
+   if (session.getAttribute("user")==null) {
+       response.sendRedirect("user/exitSys.action");
+   }
+ %>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
@@ -30,6 +37,18 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	});
 	function exitSystem(){
 		window.location.href = "${ctx}/user/exitSys.action"	;
+	}
+	function resetQuiz(quizId){
+		var redo = confirm("Are you sure you want to reset this quiz?");
+		if (redo){
+			$.post("${ctx}/resetQuiz.action", 
+					{
+						"paperId": quizId
+					},
+				function(data){
+					window.location.href = "${ctx}/toMyPaperPage.action?userId=${user.userId}";
+				},"json");
+		}
 	}
 </script>
 
@@ -75,11 +94,12 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
               <thead>
                 <tr>
                   <th>Quiz name</th>
-                  <th>Quiz topic</th>
+                  <th>Curriculum</th>
 				  <th>Start time</th>
 				  <th>Finish time</th>
                   <th>Score</th>
                   <th>Quiz Status</th>
+                  <th>Operation</th>
                 </tr>
               </thead>
               <tbody>
@@ -90,11 +110,18 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	                 <td>${paper.beginTime}</td>
 				  	 <td>${paper.endTime}</td>
 					 <td>${paper.score}</td>
-					 <td><font color="blue">
-					 	<c:if test="${paper.paperstate==0}">准备考试</c:if>
-						<c:if test="${paper.paperstate==1}">Ready to start</c:if>
-						<c:if test="${paper.paperstate==2}">Finished</c:if>
+					 <td>
+					 	<font color="green">
+						 	<c:if test="${paper.paperState==0}">Available</c:if>
+						 </font>
+						 <font color="orange">
+							<c:if test="${paper.paperState==1}">In progress</c:if>
+						</font>
+						 <font color="blue">
+							<c:if test="${paper.paperState==2}">Done</c:if>
+						</font>
 					 </td>
+					 <td><button onclick="resetQuiz('${paper.paperId}')">Reset quiz</button></td>
 	              </tr>
 				</c:forEach>
               </tbody>

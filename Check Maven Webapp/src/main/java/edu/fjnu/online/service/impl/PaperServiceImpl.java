@@ -67,6 +67,11 @@ public class PaperServiceImpl implements PaperService {
 		// TODO Auto-generated method stub
 		return paperDao.qryUndoPaper(map);
 	}
+	
+	public List<Paper> qryInProgressPaper(Map map){
+		// TODO Auto-generated method stub
+		return paperDao.qryInProgressPaper(map);
+	}
 
 	public PageInfo<Paper> findAllPage(Paper paper, Integer pageNo,
 			Integer pageSize) {

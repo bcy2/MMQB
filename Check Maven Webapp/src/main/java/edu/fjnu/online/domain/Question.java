@@ -27,6 +27,88 @@ public class Question {
 	private String remark;
 	private String answerDetail;
 	private String gradeId;
+	
+//	Newly added
+	private String topic;
+	
+	private String subtopic;
+	
+	private String subtopicId;
+	
+	private String optionOther;
+	
+	private boolean isPastPaper;
+	
+	private int rawQuestionId;
+	
+	private int attachmentId;
+	
+	private String attachmentFile;
+	
+	private String script;
+	
+	private String scriptParameter;
+	
+	public String getTopic() {
+		return topic;
+	}
+	public void setTopic(String topic) {
+		this.topic = topic;
+	}
+	public String getSubtopic() {
+		return subtopic;
+	}
+	public void setSubtopic(String subtopic) {
+		this.subtopic = subtopic;
+	}
+	public String getSubtopicId() {
+		return subtopicId;
+	}
+	public void setSubtopicId(String subtopicId) {
+		this.subtopicId = subtopicId;
+	}
+	public String getOptionOther() {
+		return optionOther;
+	}
+	public void setOptionOther(String optionOther) {
+		this.optionOther = optionOther;
+	}
+	public boolean isPastPaper() {
+		return isPastPaper;
+	}
+	public void setPastPaper(boolean isPastPaper) {
+		this.isPastPaper = isPastPaper;
+	}
+	public int getRawQuestionId() {
+		return rawQuestionId;
+	}
+	public void setRawQuestionId(int rawQuestionId) {
+		this.rawQuestionId = rawQuestionId;
+	}
+	public int getAttachmentId() {
+		return attachmentId;
+	}
+	public void setAttachmentId(int attachmentId) {
+		this.attachmentId = attachmentId;
+	}
+	public String getAttachmentFile() {
+		return attachmentFile;
+	}
+	public void setAttachmentFile(String attachmentFile) {
+		this.attachmentFile = attachmentFile;
+	}
+	public String getScript() {
+		return script;
+	}
+	public void setScript(String script) {
+		this.script = script;
+	}
+	public String getScriptParameter() {
+		return scriptParameter;
+	}
+	public void setScriptParameter(String scriptParameter) {
+		this.scriptParameter = scriptParameter;
+	}
 	public int getQuestionId() {
 		return questionId;
 	}
@@ -114,10 +196,11 @@ public class Question {
 	public Question() {
 		
 	}
-	public Question(int questionId, String quesName, String optionA,
-			String optionB, String optionC, String optionD, String answer,
-			String userAnswer, String courseId, String typeId, int difficulty,
-			String remark, String answerDetail, String gradeId) {
+	public Question(int questionId, String quesName, String optionA, String optionB, String optionC, String optionD,
+			String answer, String userAnswer, String courseId, String typeId, int difficulty, String remark,
+			String answerDetail, String gradeId, String topic, String subtopic, String subtopicId, String optionOther,
+			boolean isPastPaper, int rawQuestionId, int attachmentId, String attachmentFile, String script,
+			String scriptParameter) {
 		super();
 		this.questionId = questionId;
 		this.quesName = quesName;
@@ -133,15 +216,27 @@ public class Question {
 		this.remark = remark;
 		this.answerDetail = answerDetail;
 		this.gradeId = gradeId;
+		this.topic = topic;
+		this.subtopic = subtopic;
+		this.subtopicId = subtopicId;
+		this.optionOther = optionOther;
+		this.isPastPaper = isPastPaper;
+		this.rawQuestionId = rawQuestionId;
+		this.attachmentId = attachmentId;
+		this.attachmentFile = attachmentFile;
+		this.script = script;
+		this.scriptParameter = scriptParameter;
 	}
 	@Override
 	public String toString() {
-		return "Question [questionId=" + questionId + ", quesName=" + quesName
-				+ ", optionA=" + optionA + ", optionB=" + optionB
-				+ ", optionC=" + optionC + ", optionD=" + optionD + ", answer="
-				+ answer + ", userAnswer=" + userAnswer + ", courseId="
-				+ courseId + ", typeId=" + typeId + ", difficulty="
-				+ difficulty + ", remark=" + remark + ", answerDetail="
-				+ answerDetail + ", gradeId=" + gradeId + "]";
+		return "Question [questionId=" + questionId + ", quesName=" + quesName + ", optionA=" + optionA + ", optionB="
+				+ optionB + ", optionC=" + optionC + ", optionD=" + optionD + ", answer=" + answer + ", userAnswer="
+				+ userAnswer + ", courseId=" + courseId + ", typeId=" + typeId + ", difficulty=" + difficulty
+				+ ", remark=" + remark + ", answerDetail=" + answerDetail + ", gradeId=" + gradeId + ", topic=" + topic
+				+ ", subtopic=" + subtopic + ", subtopicId=" + subtopicId + ", optionOther=" + optionOther
+				+ ", isPastPaper=" + isPastPaper + ", rawQuestionId=" + rawQuestionId + ", attachmentId=" + attachmentId
+				+ ", attachmentFile=" + attachmentFile + ", script=" + script + ", scriptParameter=" + scriptParameter
+				+ "]";
 	}
+	
 }

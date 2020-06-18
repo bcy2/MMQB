@@ -14,6 +14,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.text.StringEscapeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -35,6 +36,11 @@ import edu.fjnu.online.service.QuestionService;
 import edu.fjnu.online.service.UserService;
 import edu.fjnu.online.service.EmailService;
 import edu.fjnu.online.util.Computeclass;
+import jnr.ffi.Struct.int16_t;
+
+import edu.fjnu.online.domain.Attachment;
+import edu.fjnu.online.service.AttachmentService;
+import edu.fjnu.online.util.QuestionStuffs;
 //import edu.fjnu.online.util.EmailThread;
 /**
  * 试卷综合管理
@@ -59,6 +65,49 @@ public class PaperMgController {
 	
 	@Autowired
 	EmailService emailService;
+	@Autowired
+	AttachmentService attachmentService;
+	
+	/**
+	 * reset quiz to available
+	 * @param paper
+	 * @param model
+	 * @param session
+	 * @return
+	 * @throws UnsupportedEncodingException
+	 */
+	@SuppressWarnings("unchecked")
+	@RequestMapping("/resetQuiz.action")
+	@ResponseBody
+	public MsgItem resetQuiz(@RequestBody String json, Paper paper, Model model, HttpSession session) throws UnsupportedEncodingException{
+		
+		User user = (User) session.getAttribute("user");
+		String paperId = paper.getPaperId();
+		Map map = new HashMap();
+		map.put("paperId", paperId);
+		map.put("userId", user.getUserId());
+		paper = paperService.getPaperDetail(map);
+//		int currentQ = paper.getCurrentQuestion();
+//		currentQ += 1;
+//		map.put("currentQuestion", currentQ);
+//		paperService.updateUserPaper(map);
+		
+		model.addAttribute("user", user);
+		
+		map.put("paperState", 0);
+		map.put("currentQuestion", 1);
+		paperService.updateUserPaper(map);
+		
+		MsgItem msgItem = new MsgItem();
+		msgItem.setErrorNo("0");
+		
+//		if(currentQ == paperQuesIdx.length) {
+//			msgItem.setErrorNo("1");
+//			session.removeAttribute("currentQuestion");
+//		}
+		
+		return msgItem;	
+	}
 	
 	//跳转到Review Papers页面
 	@RequestMapping("/toScoreQry.action")
@@ -76,14 +125,14 @@ public class PaperMgController {
 //		}
 		
 		user = userService.getStu(user);
-		List<Paper> paper = paperService.getUserPaperById(user.getUserId());
+		List<Paper> paperDone = paperService.getUserPaperById(user.getUserId());
 		Course course = null;
-		for(Paper p : paper){
-			course = courseService.get(Integer.parseInt(p.getCourseId()));
-			p.setCourseId(course.getCourseName());
-		}
+//		for(Paper p : paper){
+//			course = courseService.get(Integer.parseInt(p.getCourseId()));
+//			p.setCourseId(course.getCourseName());
+//		}
 		model.addAttribute("user", user);
-		model.addAttribute("paper", paper);
+		model.addAttribute("paper", paperDone);
 		return "/user/scorequery.jsp";			
 	}
 	
@@ -116,35 +165,48 @@ public class PaperMgController {
 		Paper paper = paperService.getPaperDetail(map);
 		Question question = null;
 		String []ids = paper.getQuestionId().split(",");
+		List<Question> questionList = new ArrayList<Question>();
 		List<Question> selList = new ArrayList<Question>();
 		List<Question> inpList = new ArrayList<Question>();
 		List<Question> desList = new ArrayList<Question>();
 		for(int i = 0;i<ids.length;i++){
 			question = questionService.get(Integer.parseInt(ids[i]));
+			if ("1".equalsIgnoreCase(question.getTypeId())) {
+				question = QuestionStuffs.convertAnsForMCQ(question);
+			}
+			question = QuestionStuffs.replaceLatexAnsWithUnderscore(question);
+			
+			if (question.getAttachmentId() != 0) {
+				question.setAttachmentFile(attachmentService.get(question.getAttachmentId()).getAttachmentFile());
+			}
 			if("1".equals(question.getTypeId())){//MCQ
 				selList.add(question);
 			}
-			if("4".equals(question.getTypeId())){//FBQ
+			if("2".equals(question.getTypeId())){//FBQ
 				inpList.add(question);
 			}
 			if("5".equals(question.getTypeId())){//简答题
 				desList.add(question);
 			}
+			questionList.add(question);
 		}
 		
 		if(selList.size()>0){
-			model.addAttribute("selectQ", "单项选择题（每题5分）");
+			model.addAttribute("selectQ", "Multiple Choice Questions");
 			model.addAttribute("selList", selList);
 		}
 		
 		if(inpList.size()>0){
-			model.addAttribute("inpQ", "填空题（每题5分）");
+			model.addAttribute("inpQ", "Fill-in-Blank Questions");
 			model.addAttribute("inpList", inpList);
 		}
 		
 		if(desList.size()>0){
 			model.addAttribute("desQ", "简答题（每题5分）");
 			model.addAttribute("desList", desList);
+		}
+		if(questionList.size()>0){
+			model.addAttribute("questionList", questionList);
 		}
 		
 		model.addAttribute("paper", paper);
@@ -182,34 +244,45 @@ public class PaperMgController {
 		Paper paper = paperService.getPaperDetail(map);
 		Question question = null;
 		String []ids = paper.getQuestionId().split(",");
+		List<Question> questionList = new ArrayList<Question>();
 		List<Question> quesList = new ArrayList<Question>();
 		List<Question> selList = new ArrayList<Question>();
 		List<Question> inpList = new ArrayList<Question>();
 		List<Question> desList = new ArrayList<Question>();
 		for(int i = 0;i<ids.length;i++){
 			question = questionService.get(Integer.parseInt(ids[i]));
+			if ("1".equalsIgnoreCase(question.getTypeId())) {
+				question = QuestionStuffs.convertAnsForMCQ(question);
+			}
+			question = QuestionStuffs.replaceLatexAnsWithUnderscore(question);
+			
+			if (question.getAttachmentId() != 0) {
+				question.setAttachmentFile(attachmentService.get(question.getAttachmentId()).getAttachmentFile());
+			}
+			//question.setQuesName(StringEscapeUtils.escapeJava(question.getQuesName()));
 			quesList.add(question);
-			if("1".equals(question.getTypeId())){//单选
+			if("1".equals(question.getTypeId())){//MCQ
 				selList.add(question);
 			}
-			if("4".equals(question.getTypeId())){//填空
+			if("2".equals(question.getTypeId())){//FBQ
 				inpList.add(question);
 			}
-			if("5".equals(question.getTypeId())){//简答题
+			if("5".equals(question.getTypeId())){//
 				desList.add(question);
 			}
+			questionList.add(question);
 		}
 		
 		model.addAttribute("questions", "All questions");
 		model.addAttribute("quesList", quesList);
 		
 		if(selList.size()>0){
-			model.addAttribute("selectQ", "单项选择题（每题5分）");
+			model.addAttribute("selectQ", "Multiple Choice Questions");
 			model.addAttribute("selList", selList);
 		}
 		
 		if(inpList.size()>0){
-			model.addAttribute("inpQ", "填空题（每题5分）");
+			model.addAttribute("inpQ", "Fill-in-Blank Questions");
 			model.addAttribute("inpList", inpList);
 		}
 		
@@ -217,15 +290,44 @@ public class PaperMgController {
 			model.addAttribute("desQ", "简答题（每题5分）");
 			model.addAttribute("desList", desList);
 		}
+		if(questionList.size()>0){
+			model.addAttribute("questionList", questionList);
+		}
 		
 		model.addAttribute("paper", paper);
 		model.addAttribute("user", user);
 		session.setAttribute("paperId", paperId);
 		
-		// newly added
-		if(session.getAttribute("currentQuestion") == null){
-			session.setAttribute("currentQuestion", 1);
+		System.out.println("================");
+		int currentQ = paper.getCurrentQuestion();
+		System.out.println("Q:"+ String.valueOf(currentQ));
+		System.out.println("Qs:"+ paper.getQuestionId());
+//		final String [] ids = paper.getQuestionId().split(",");
+		String currentQId = ids[currentQ-1];
+		System.out.println("QId:"+ String.valueOf(currentQId));
+		Question ques = null;
+		ques = questionService.get(Integer.parseInt(currentQId));
+		
+		if ("1".equalsIgnoreCase(ques.getTypeId())) {
+			ques = QuestionStuffs.convertAnsForMCQ(ques);
 		}
+		
+		String testString = ques.getQuesName();
+		System.out.println("Question: "+testString);
+		String optionAString = ques.getOptionA();
+		String optionBString = ques.getOptionB();
+		String optionCString = ques.getOptionC();
+		String optionDString = ques.getOptionD();
+		System.out.println("A: "+optionAString);
+		System.out.println("B: "+optionBString);
+		System.out.println("C: "+optionCString);
+		System.out.println("D: "+optionDString);
+		System.out.println("Ans:"+ques.getAnswer());
+		
+		// newly added
+//		if(session.getAttribute("currentQuestion") == null){
+//			session.setAttribute("currentQuestion", 1);
+//		}
 
 		return "/user/questiondetail.jsp";			
 	}
@@ -261,17 +363,26 @@ public class PaperMgController {
 //		for(Paper p : paper1){
 //			course = courseService.get(Integer.parseInt(p.getCourseId()));
 //			p.setUserId(user.getUserId());
-//			p.setPaperstate("1");
+//			p.setPaperstate(1);
 //			paperService.insert(p);
 //			p.setCourseId(course.getCourseName());
 //		}
-		List<Paper> paper = paperService.qryUndoPaper(map);
-		for(Paper p : paper){
+		List<Paper> paperUndo = paperService.qryUndoPaper(map);
+		List<Paper> paperInProgress = paperService.qryInProgressPaper(map);
+//		List<Paper> papers = new ArrayList<Paper>();
+//		papers.addAll(paperUndo);
+//		papers.addAll(paperInProgress);
+		for(Paper p : paperUndo){
+			course = courseService.get(Integer.parseInt(p.getCourseId()));
+			p.setCourseId(course.getCourseName());
+		}
+		for(Paper p : paperInProgress){
 			course = courseService.get(Integer.parseInt(p.getCourseId()));
 			p.setCourseId(course.getCourseName());
 		}
 		model.addAttribute("user", user);
-		model.addAttribute("paper", paper);
+		model.addAttribute("paper", paperUndo);
+		model.addAttribute("paperInProgress", paperInProgress);
 		return "/user/mypaper.jsp";
 	}
 	
@@ -321,8 +432,8 @@ public class PaperMgController {
 						endScore+=5;
 					}else{//插入错题本
 						book.setQuestion(ques);
-						book.setCourseId(ques.getCourseId());
-						book.setGradeId(ques.getGradeId());
+//						book.setCourseId(ques.getCourseId());
+//						book.setGradeId(ques.getGradeId());
 						book.setUserAnswer(str2);
 						bookService.insert(book);
 					}
@@ -336,8 +447,8 @@ public class PaperMgController {
 			        endScore+=d;
 			        if(d<=2){//如果小于2分，认定错误
 			        	book.setQuestion(ques);
-						book.setCourseId(ques.getCourseId());
-						book.setGradeId(ques.getGradeId());
+//						book.setCourseId(ques.getCourseId());
+//						book.setGradeId(ques.getGradeId());
 						book.setUserAnswer(str2);
 						bookService.insert(book);
 			        }
@@ -374,11 +485,11 @@ public class PaperMgController {
 	@SuppressWarnings("unchecked")
 	@RequestMapping("/prevQuestion.action")
 	@ResponseBody
-	public MsgItem prevQuestion(@RequestBody String json, Paper paper, Model model, HttpSession session) throws UnsupportedEncodingException{
-		int currentQ = (Integer) session.getAttribute("currentQuestion");
+	public MsgItem prevQuestion(@RequestBody String json, int currentQuestion, Paper paper, Model model, HttpSession session) throws UnsupportedEncodingException{
+//		int currentQ = (Integer) session.getAttribute("currentQuestion");
 		
-		currentQ -= 1;
-		session.setAttribute("currentQuestion", currentQ);
+//		currentQ -= 1;
+//		session.setAttribute("currentQuestion", currentQ);
 		
 		User user = (User) session.getAttribute("user");
 		String paperId = paper.getPaperId();
@@ -386,6 +497,14 @@ public class PaperMgController {
 		map.put("paperId", paperId);
 		map.put("userId", user.getUserId());
 		paper = paperService.getPaperDetail(map);
+		int currentQ = paper.getCurrentQuestion();
+		if (currentQ > currentQuestion) {
+			currentQ = currentQuestion - 1;
+		}else {
+			currentQ -= 1;
+		}
+		map.put("currentQuestion", currentQ);
+		paperService.updateUserPaper(map);
 		
 		model.addAttribute("user", user);
 		model.addAttribute("paper", paper);
@@ -408,8 +527,8 @@ public class PaperMgController {
 	@RequestMapping("/dealQuestion.action")
 	@ResponseBody
 	public MsgItem dealQuestion(@RequestBody String json, Paper paper, Model model, HttpSession session) throws UnsupportedEncodingException{
-		int currentQ = (Integer) session.getAttribute("currentQuestion");
-		System.out.println("Q:"+ String.valueOf(currentQ));
+//		int currentQ = (Integer) session.getAttribute("currentQuestion");
+//		System.out.println("Q:"+ String.valueOf(currentQ));
 		
 		final User user = (User) session.getAttribute("user");
 		String paperId = paper.getPaperId();
@@ -417,21 +536,33 @@ public class PaperMgController {
 		map.put("paperId", paperId);
 		map.put("userId", user.getUserId());
 		paper = paperService.getPaperDetail(map);
-		System.out.println("Qs:"+ paper.getQuestionId());
+		int currentQ = paper.getCurrentQuestion();
 		final String [] paperQuesIdx = paper.getQuestionId().split(",");
 		String currentQId = paperQuesIdx[currentQ-1];
-		System.out.println("QId:"+ String.valueOf(currentQId));
 		Question ques = null;
 		ques = questionService.get(Integer.parseInt(currentQId));
+		if ("1".equalsIgnoreCase(ques.getTypeId())) {
+			ques = QuestionStuffs.convertAnsForMCQ(ques);
+		}
 		//数据库对应的答案
 		String answer = ques.getAnswer();
+		String answerNoSpace = "";//for checking FBQs
 		answer = URLDecoder.decode(answer,"UTF-8");
-		System.out.println("Ans:"+answer);
 		//System.out.println(json);//paperId=sj005&answer=%E5%93%A5%E5%93%A5
 		String delimiter = "answer=";
 		String stuAnswer = json.substring(json.indexOf(delimiter)+delimiter.length());
+		String stuAnswerNoSpace = "";//for checking FBQs
 		stuAnswer = URLDecoder.decode(stuAnswer, "UTF-8");
-		System.out.println("Student Ans:"+stuAnswer+"\n================");
+		if ("2".equalsIgnoreCase(ques.getTypeId())) {
+			answerNoSpace = QuestionStuffs.removeSpace(answer);
+			stuAnswerNoSpace = QuestionStuffs.removeSpace(stuAnswer);
+			System.out.println("Ans after removing Space:"+answerNoSpace);
+			System.out.println("Student Ans after removing Space:"+stuAnswerNoSpace);
+		}else {
+			answerNoSpace = answer;
+			stuAnswerNoSpace = stuAnswer;
+			System.out.println("Student Ans:"+stuAnswer);
+		}
 		
 //		String paperId = paper.getPaperId();
 //		//答案临时存放
@@ -450,7 +581,7 @@ public class PaperMgController {
 //		List<Question> question = new ArrayList<Question>();
 //		Question ques = null;
 		int endScore = 0;
-		ErrorBook book = new ErrorBook();
+		ErrorBook questionRecord = new ErrorBook();
 //		book.setUserId(user.getUserId());
 //		System.out.println("answer:"+answer);
 //		for(int i = 1 ;i<answer.length;i++){
@@ -521,23 +652,33 @@ public class PaperMgController {
 		msgItem.setQuesAns(answer);
 		msgItem.setQuesExp(ques.getAnswerDetail());
 		msgItem.setRemark(ques.getRemark());
-		if (answer.equalsIgnoreCase(stuAnswer)) {
-			msgItem.setErrorInfo("T");
-		}else {
-			msgItem.setErrorInfo("F");
-//			book.setQuestion(ques);
-//			book.setCourseId(ques.getCourseId());
-//			book.setGradeId(ques.getGradeId());
-//			book.setUserAnswer(stuAnswer);
-//			bookService.insert(book);
+		boolean correctness = false;
+		if(!"5".equalsIgnoreCase(ques.getTypeId())){//Operational question
+			if (answerNoSpace.equalsIgnoreCase(stuAnswerNoSpace)) {
+				correctness = true;
+				System.out.println("Correct");
+			}else {
+				System.out.println("Wrong");
+			}
+		}else{
+			// TODO
 		}
+		msgItem.setErrorInfo(String.valueOf(correctness));
+		//insert to question record
+		questionRecord.setUserId(user.getUserId());
+		questionRecord.setQuestion(ques);
+		questionRecord.setUserAnswer(stuAnswerNoSpace);
+		questionRecord.setCorrectness(correctness);
+		questionRecord.setQuizId(Integer.parseInt(paperId));
+		bookService.insert(questionRecord);
 		
-		if(currentQ == paperQuesIdx.length) {
+		if(paper.getCurrentQuestion() == paperQuesIdx.length) {
+			map.put("paperState", 2);
 			msgItem.setErrorNo("1");
 //			session.removeAttribute("currentQuestion");
 			Boolean sendEmailBoolean = false;
-			final String parentEmailString = "john.yue@kodingkingdom.com";
-			final String emailTitleString = "Your kid sucks:)";
+			final String parentEmailString = user.getParentEmail();
+			final String emailTitleString = "[Major Maths] Reminder";
 			if (sendEmailBoolean) {
 				System.out.println("Sending email to " + parentEmailString);
 				new Thread(new Runnable() {
@@ -546,10 +687,16 @@ public class PaperMgController {
 						emailService.sendMail(parentEmailString, emailTitleString, String.format("%s finished %s questions.", user.getUserName(), String.valueOf(paperQuesIdx.length)));//change to parent email
 					}
 				}).start();
-//				emailService.sendMail("john.yue@kodingkingdom.com", "Your kid sucks:)", String.format("%s finished %s questions.", user.getUserName(), String.valueOf(paperQuesIdx.length)));//change to parent email
+				emailService.sendMail(parentEmailString, emailTitleString, String.format("%s finished %s questions.", user.getUserName(), String.valueOf(paperQuesIdx.length)));//change to parent email
 			}
 			return msgItem;	
+		}else {
+			currentQ += 1;
+			map.put("currentQuestion", currentQ);
+			map.put("paperState", 1);
 		}
+
+		paperService.updateUserPaper(map);
 		
 		return msgItem;	
 	}
@@ -566,10 +713,10 @@ public class PaperMgController {
 	@RequestMapping("/nextQuestion.action")
 	@ResponseBody
 	public MsgItem nextQuestion(@RequestBody String json, Paper paper, Model model, HttpSession session) throws UnsupportedEncodingException{
-		int currentQ = (Integer) session.getAttribute("currentQuestion");
-		
-		currentQ += 1;
-		session.setAttribute("currentQuestion", currentQ);
+//		int currentQ = (Integer) session.getAttribute("currentQuestion");
+
+//		currentQ += 1;
+//		session.setAttribute("currentQuestion", currentQ);
 		
 		User user = (User) session.getAttribute("user");
 		String paperId = paper.getPaperId();
@@ -577,6 +724,10 @@ public class PaperMgController {
 		map.put("paperId", paperId);
 		map.put("userId", user.getUserId());
 		paper = paperService.getPaperDetail(map);
+//		int currentQ = paper.getCurrentQuestion();
+//		currentQ += 1;
+//		map.put("currentQuestion", currentQ);
+//		paperService.updateUserPaper(map);
 		
 		model.addAttribute("user", user);
 		model.addAttribute("paper", paper);
@@ -600,7 +751,7 @@ public class PaperMgController {
 	 * @return
 	 */
 	@RequestMapping("/finishQuiz.action")
-	public String finishQuiz(User user, Model model, HttpSession session){
+	public String finishQuiz(User user, Paper paper, String userId, String paperId, Model model, HttpSession session){
 //		temp security implementation
 		if(session.getAttribute("user") == null){
 			return "redirect:/toLogin.action";
@@ -613,10 +764,22 @@ public class PaperMgController {
 		user = userService.getStu(user);
 		model.addAttribute("user", user);
 //		model.addAttribute("paper", paper);
+
+		if(paper.getPaperId() == null){
+			paperId = (String) session.getAttribute("paperId");
+		}else {
+			paperId = paper.getPaperId();
+		}
+		Map map = new HashMap();
+		map.put("paperId", paperId);
+		map.put("userId", user.getUserId());
+		paper = paperService.getPaperDetail(map);
+		map.put("paperState", 2);
+		paperService.updateUserPaper(map);
 		
-		session.removeAttribute("currentQuestion");
+//		session.removeAttribute("currentQuestion");
 		session.removeAttribute("paperId");
 		
-		return "forward:/toScoreQry.action";
+		return "redirect:/toScoreQry.action";
 	}
 }

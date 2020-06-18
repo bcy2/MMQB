@@ -5,7 +5,14 @@
 String path = request.getContextPath();
 String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
 %>
-
+ <%
+   response.addHeader("Cache-Control", "no-cache,no-store,private,must-revalidate"); 
+   response.addHeader("Pragma", "no-cache"); 
+   response.addDateHeader ("Expires", 0);
+   if (session.getAttribute("user")==null) {
+       response.sendRedirect("user/exitSys.action");
+   }
+ %>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
@@ -78,15 +85,17 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 </div>
 <div class="about">
 	<div class="container">
+		<button>+ New quiz</button>
             <table class="table table-bordered">
+            <caption><font color="green">Available</font></caption>
               <thead>
                 <tr>
                   <th>Quiz name</th>
-                  <th>Quiz topic</th>
+                  <th>Curriculum</th>
+                  <th>Create time</th>
 				  <th>Start time</th>
-				  <th>Finish time</th>
-                  <th>Score</th>
-                  <th>Quiz Status</th>
+                  <th>Current Question</th>
+<!--                   <th>Quiz Status</th> -->
                 </tr>
               </thead>
               <tbody>
@@ -94,14 +103,84 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
               	  <tr>
 	                 <td><a href="${ctx}/qryPaperDetail.action?paperId=${paper.paperId}&userId=${paper.userId}"><font color="blue">${paper.paperName}</font></a></td>
 	                 <td>${paper.courseId}</td>
+				  	 <td>${paper.createTime}</td>
 	                 <td>${paper.beginTime}</td>
-				  	 <td>${paper.endTime}</td>
-					 <td>${paper.score}</td>
-					 <td><font color="blue">
-					 	<c:if test="${paper.paperstate==0}">准备考试</c:if>
-						<c:if test="${paper.paperstate==1}">Ready to start</c:if>
-						<c:if test="${paper.paperstate==2}">Finished</c:if>
-					 </td>
+					 <%-- <td>${paper.score}</td> --%>
+					 <c:choose>
+					    <c:when test="${paper.paperState==0}">
+					        <td>N/A</td>
+					    </c:when>
+					    <c:when test="${paper.paperState==1}">
+					        <td>${paper.currentQuestion}</td>
+					    </c:when>
+					    <c:when test="${paper.paperState==2}">
+					        <td>${paper.currentQuestion}</td>
+					    </c:when>
+					    <c:otherwise>
+					        <td></td>
+					    </c:otherwise>
+					</c:choose>
+<%-- 					 <td>
+					 	<font color="green">
+						 	<c:if test="${paper.paperState==0}">Ready to start</c:if>
+						 </font>
+						 <font color="orange">
+							<c:if test="${paper.paperState==1}">In progress</c:if>
+						</font>
+						 <font color="blue">
+							<c:if test="${paper.paperState==2}">Submitted</c:if>
+						</font>
+					 </td> --%>
+	              </tr>
+				</c:forEach>
+              </tbody>
+            </table>
+            <hr>
+            <table class="table table-bordered">
+            <caption><font color="orange">In Progress</font></caption>
+              <thead>
+                <tr>
+                  <th>Quiz name</th>
+                  <th>Curriculum</th>
+                  <th>Create time</th>
+				  <th>Start time</th>
+                  <th>Current Question</th>
+<!--                   <th>Quiz Status</th> -->
+                </tr>
+              </thead>
+              <tbody>
+              	<c:forEach items="${paperInProgress}" var="paper">
+              	  <tr>
+	                 <td><a href="${ctx}/qryPaperDetail.action?paperId=${paper.paperId}&userId=${paper.userId}"><font color="blue">${paper.paperName}</font></a></td>
+	                 <td>${paper.courseId}</td>
+				  	 <td>${paper.createTime}</td>
+	                 <td>${paper.beginTime}</td>
+					 <%-- <td>${paper.score}</td> --%>
+					 <c:choose>
+					    <c:when test="${paper.paperState==0}">
+					        <td>N/A</td>
+					    </c:when>
+					    <c:when test="${paper.paperState==1}">
+					        <td>${paper.currentQuestion}</td>
+					    </c:when>
+					    <c:when test="${paper.paperState==2}">
+					        <td>${paper.currentQuestion}</td>
+					    </c:when>
+					    <c:otherwise>
+					        <td></td>
+					    </c:otherwise>
+					</c:choose>
+<%-- 					 <td>
+					 	<font color="green">
+						 	<c:if test="${paper.paperState==0}">Ready to start</c:if>
+						 </font>
+						 <font color="orange">
+							<c:if test="${paper.paperState==1}">In progress</c:if>
+						</font>
+						 <font color="blue">
+							<c:if test="${paper.paperState==2}">Submitted</c:if>
+						</font>
+					 </td> --%>
 	              </tr>
 				</c:forEach>
               </tbody>

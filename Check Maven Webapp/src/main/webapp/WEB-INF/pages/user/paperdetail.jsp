@@ -12,6 +12,14 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	 String str_date2 = currentTime.toString(); //将Date型日期时间转换成字符串形式  
 	 request.setAttribute("starttime ", str_date1);
  %> 
+  <%
+   response.addHeader("Cache-Control", "no-cache,no-store,private,must-revalidate"); 
+   response.addHeader("Pragma", "no-cache"); 
+   response.addDateHeader ("Expires", 0);
+   if (session.getAttribute("user")==null) {
+       response.sendRedirect("user/exitSys.action");
+   }
+ %>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>

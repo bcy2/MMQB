@@ -25,6 +25,7 @@
 		<p>I am a...</p>
 		<button onclick = "window.location.href = 'toLogin.action';">Student</button>
 		<button onclick = "window.location.href = 'admin/login.action';">Admin</button>
+		<button onclick = "window.location.href = 'test.action';">Test</button>
 	</div>
 	
 	<script src="${ctx}/js/jquery-1.8.2.min.js"></script>

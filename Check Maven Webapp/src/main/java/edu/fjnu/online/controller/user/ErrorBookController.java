@@ -46,7 +46,7 @@ public class ErrorBookController {
 //			System.out.println("user:"+session.getAttribute("user"));
 //		}
 		List<ErrorBook> errorBookList = bookService.find(new ErrorBook());
-		List<Grade> gradeList = gradeService.find(new Grade());
+		List<Grade> gradeList = gradeService.findActive(new Grade());
 		List<Course> courseList = courseService.find(new Course());
 		List<Type> typeList = typeService.find(new Type());
 		Map map = new HashMap();

@@ -11,6 +11,15 @@ public class Grade {
 	private String gradeName;
 	/**包含课程*/
 	private String courseId;
+	/**包含课程*/
+	private String gradeStatus;
+	
+	public String getGradeStatus() {
+		return gradeStatus;
+	}
+	public void setGradeStatus(String gradeStatus) {
+		this.gradeStatus = gradeStatus;
+	}
 	public int getGradeId() {
 		return gradeId;
 	}
@@ -33,16 +42,17 @@ public class Grade {
 		super();
 		// TODO Auto-generated constructor stub
 	}
-	public Grade(int gradeId, String gradeName, String courseId) {
+	public Grade(int gradeId, String gradeName, String courseId, String gradeStatus) {
 		super();
 		this.gradeId = gradeId;
 		this.gradeName = gradeName;
 		this.courseId = courseId;
+		this.gradeStatus = gradeStatus;
 	}
 	@Override
 	public String toString() {
-		return "Grade [gradeId=" + gradeId + ", gradeName=" + gradeName
-				+ ", courseId=" + courseId + "]";
+		return "Grade [gradeId=" + gradeId + ", gradeName=" + gradeName + ", courseId=" + courseId + ", gradeStatus="
+				+ gradeStatus + "]";
 	}
 	
 	

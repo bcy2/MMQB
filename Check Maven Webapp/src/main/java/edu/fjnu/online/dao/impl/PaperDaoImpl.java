@@ -37,4 +37,9 @@ public class PaperDaoImpl extends BaseDaoImpl<Paper> implements PaperDao{
 		// TODO Auto-generated method stub
 		return this.getSqlSession().selectList(this.getNs()+"qryUndoPaper", map);
 	}
+	
+	public List<Paper> qryInProgressPaper(Map map){
+		// TODO Auto-generated method stub
+		return this.getSqlSession().selectList(this.getNs()+"qryInProgressPaper", map);
+	}
 }

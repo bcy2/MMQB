@@ -6,48 +6,48 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
 	<!-- 数据库表映射 -->
 	<resultMap id="courseRM" type="edu.fjnu.online.domain.Course">
-		<id property="courseId" column="courseid"/>
-		<result property="courseName" column="coursename"/>
-		<result property="courseState" column="coursestate"/>
+		<id property="courseId" column="id"/>
+		<result property="courseName" column="curriculum_name"/>
+		<result property="courseState" column="curriculum_status"/>
 	</resultMap>
 	
 	<!-- 新增 -->
 	<insert id="insert" parameterType="edu.fjnu.online.domain.Course">
-		insert into t_course
-		(coursename,coursestate)
+		insert into curriculum
+		(curriculum_name,curriculum_status)
 		values
 		(#{courseName},#{courseState})
 	</insert>
 	
 	<!-- 修改 -->
 	<update id="update" parameterType="edu.fjnu.online.domain.Course">
-		update t_course
+		update curriculum
 		<set>
 			<if test="courseName!=null">
-				coursename=#{courseName},
+				curriculum_name=#{courseName},
 			</if>
 			<if test="courseState!=null">
-				coursestate=#{courseState},
+				curriculum_status=#{courseState},
 			</if>
 		</set>
-			where courseid=#{courseId}
+			where id=#{courseId}
 	</update>
 	
 	<!-- 查询所有记录 -->
 	<select id="find" parameterType="int" resultMap="courseRM">
-		select * from t_course
+		select * from curriculum
 		where 1=1
 	</select>
 	
 	<!-- 查询一个录 -->
 	<select id="get" parameterType="edu.fjnu.online.domain.Course" resultMap="courseRM">
-		select * from t_course
-		where courseid=#{id} 
+		select * from curriculum
+		where id=#{courseId} 
 	</select>
 	
 	<!-- 删除一条记录 -->
 	<delete id="delete" parameterType="int">
-		delete from t_course
-		where courseid=#{id}
+		delete from curriculum
+		where id=#{courseId}
 	</delete>
 </mapper>

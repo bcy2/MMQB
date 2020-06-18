@@ -6,7 +6,7 @@ package edu.fjnu.online.domain;
  */
 public class Paper {
 	/**试卷编号*/
-	private String paperId;
+	private Integer paperId;
 	/**试卷名称*/
 	private String paperName;
 	/**对应课程*/
@@ -14,7 +14,7 @@ public class Paper {
 	/**适合年级*/
 	private String gradeId;
 	/**学生编号*/
-	private String userId;
+	private String userId;//username
 	/**问题编号*/
 	private String questionId;
 	/**开始时间*/
@@ -25,14 +25,41 @@ public class Paper {
 	private String allowTime;
 	/**分数*/
 	private String score;
-	/**试卷状态 0:准备考试1:Ready to start2:已完成*/
-	private String paperState;
+	/**试卷状态 0:Ready to start 1:In progress 2:Submitted*/
+	private Integer paperState;
+	
+//	Newly added
+	private String teacherName;
+	
+	private String createTime;
+	
+	private Integer currentQuestion;
+	
+	public String getTeacherName() {
+		return teacherName;
+	}
+	public void setTeacherName(String teacherName) {
+		this.teacherName = teacherName;
+	}
+	public String getCreateTime() {
+		return createTime;
+	}
+	public void setCreateTime(String createTime) {
+		this.createTime = createTime;
+	}
+	public Integer getCurrentQuestion() {
+		return currentQuestion;
+	}
+	public void setCurrentQuestion(Integer currentQuestion) {
+		this.currentQuestion = currentQuestion;
+	}
 	public Paper() {
 		
 	}
-	public Paper(String paperId, String paperName, String courseId,
-			String gradeId, String userId, String questionId, String beginTime,
-			String endTime, String allowTime, String score, String paperState) {
+
+	public Paper(Integer paperId, String paperName, String courseId, String gradeId, String userId, String questionId,
+			String beginTime, String endTime, String allowTime, String score, Integer paperState, String teacherName,
+			String createTime, Integer currentQuestion) {
 		super();
 		this.paperId = paperId;
 		this.paperName = paperName;
@@ -45,12 +72,18 @@ public class Paper {
 		this.allowTime = allowTime;
 		this.score = score;
 		this.paperState = paperState;
+		this.teacherName = teacherName;
+		this.createTime = createTime;
+		this.currentQuestion = currentQuestion;
 	}
 	public String getPaperId() {
-		return paperId;
+		if (paperId == null) {
+			return null;
+		}
+		return paperId.toString();
 	}
 	public void setPaperId(String paperId) {
-		this.paperId = paperId;
+		this.paperId =  Integer.valueOf(paperId);
 	}
 	public String getPaperName() {
 		return paperName;
@@ -106,20 +139,20 @@ public class Paper {
 	public void setScore(String score) {
 		this.score = score;
 	}
-	public String getPaperstate() {
+	public Integer getPaperState() {
 		return paperState;
 	}
-	public void setPaperstate(String paperstate) {
+	public void setPaperState(Integer paperstate) {
 		this.paperState = paperstate;
 	}
-	@Override
-	public String toString() {
-		return "Paper [paperId=" + paperId + ", paperName=" + paperName
-				+ ", courseId=" + courseId + ", gradeId=" + gradeId
-				+ ", userId=" + userId + ", questionId=" + questionId
-				+ ", beginTime=" + beginTime + ", endTime=" + endTime
-				+ ", allowTime=" + allowTime + ", score=" + score
-				+ ", paperstate=" + paperState + "]";
-	}
+//	@Override
+//	public String toString() {
+//		return "Paper [paperId=" + paperId + ", paperName=" + paperName
+//				+ ", courseId=" + courseId + ", gradeId=" + gradeId
+//				+ ", userId=" + userId + ", questionId=" + questionId
+//				+ ", beginTime=" + beginTime + ", endTime=" + endTime
+//				+ ", allowTime=" + allowTime + ", score=" + score
+//				+ ", paperstate=" + paperState + "]";
+//	}
 	
 }

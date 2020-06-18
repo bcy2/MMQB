@@ -21,6 +21,10 @@ public class GradeServiceImpl implements GradeService{
 	public List<Grade> find(Grade grade) {
 		return gradeDao.find(grade);
 	}
+	
+	public List<Grade> findActive(Grade grade) {
+		return gradeDao.findActive(grade);
+	}
 
 	public Grade get(int id) {
 		return gradeDao.get(id);

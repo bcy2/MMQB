@@ -5,7 +5,14 @@
 String path = request.getContextPath();
 String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
 %>
-
+ <%
+   response.addHeader("Cache-Control", "no-cache,no-store,private,must-revalidate"); 
+   response.addHeader("Pragma", "no-cache"); 
+   response.addDateHeader ("Expires", 0);
+   if (session.getAttribute("user")==null) {
+       response.sendRedirect("user/exitSys.action");
+   }
+ %>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
@@ -94,7 +101,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		  	<input type="hidden" id="userState" name="userState" value="${user.userState }"/>
 		  	<input type="hidden" id="userType" name="userType" value="${user.userType }"/>
 			<div class="input-group">
-			  <span class="input-group-addon" id="basic-addon1">User account:</span>
+			  <span class="input-group-addon" id="basic-addon1">Username:</span>
 			  <input type="text" class="form-control" 
 			  		id="userId" name="userId" value="${user.userId }" readonly="readonly">
 			</div>
@@ -106,9 +113,24 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			</div>
 		
 			<div class="input-group">
+			  <c:forEach items="${course}" var="course">
+			  	<c:if test="${course.courseId == user.curriculum}">
+			  		<span class="input-group-addon" id="basic-addon1">Curriculum:</span>
+			  		<input type="text" class="form-control" 
+			  		id="Curriculum" name="Curriculum" value="${course.courseName }" readonly="readonly">
+			  	</c:if>
+			  </c:forEach>
+			</div>
+			
+			<div class="input-group">
 			  <span class="input-group-addon" id="basic-addon1">Grade:</span>
-			  <input type="text" class="form-control" 
-			  		id="grade" name="grade" value="${user.grade }" readonly="readonly">
+			  <select id="grade" name="grade" class="form-control">
+			  	<c:forEach items="${grade}" var="grade">
+					<option value="${grade.gradeId }" <c:if test="${grade.gradeId == user.grade}">selected</c:if>>${grade.gradeName }</option>
+				</c:forEach>
+			  </select>
+			  <%-- <input type="text" class="form-control" 
+			  		id="grade" name="grade" value="${grade[user.grade].gradeName }"> --%>
 			</div>
 			<div class="input-group">
 			  <span class="input-group-addon" id="basic-addon1">Contact email:</span>
@@ -122,9 +144,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			</div>
 		
 			<div class="input-group">
-			  <span class="input-group-addon" id="sizing-addon3">Address:</span>
+			  <span class="input-group-addon" id="sizing-addon3">Reward points:</span>
 			  <input type="text" class="form-control"
-			  		id="address" name="address" value="${user.address }">
+			  		id="rewardPoints" name="rewardPoints" value="${user.rewardPoints }" readonly="readonly">
 			</div>
 		  </div>
 		  <div role="tabpanel" class="tab-pane fade" id="profile" aria-labelledby="profile-tab">

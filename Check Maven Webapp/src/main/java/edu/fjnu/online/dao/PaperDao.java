@@ -22,4 +22,6 @@ public interface PaperDao extends BaseDao<Paper> {
 	public List<Paper> getUndoPaper(Map map);
 	/**查询学生未考试的试卷*/
 	public List<Paper> qryUndoPaper(Map map);
+	/**查询学生正在考试的试卷*/
+	public List<Paper> qryInProgressPaper(Map map);
 }

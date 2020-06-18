@@ -6,82 +6,117 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
 	<!-- 数据库表映射 -->
 	<resultMap id="errorRM" type="edu.fjnu.online.domain.ErrorBook">
-		<id property="bookId" column="bookid"/>
-		<result property="userId" column="userid"/>
-		<result property="courseId" column="courseid"/>
+		<id property="bookId" column="id"/>
+		<result property="userId" column="username"/>
+<!-- 		<result property="courseId" column="courseid"/>
 		<result property="gradeId" column="gradeid"/>
-		<result property="typeId" column="typeid"/>
-		<result property="userAnswer" column="uanswer"/>
+		<result property="typeId" column="typeid"/> -->
+		<result property="userAnswer" column="student_answer"/>
+		
+		<!-- New in our db -->
+		<result property="startTime" column="start_time"/>
+		<result property="endTime" column="end_time"/>
+		<result property="correctness" column="correctness"/>
+		<result property="quizId" column="quiz_id"/>
+		
 		<association property="question" javaType="edu.fjnu.online.domain.Question">
-			<id property="questionId" column="questionid"/>
-			<result property="quesName" column="quesname"/>
-			<result property="optionA" column="optiona"/>
-			<result property="optionB" column="optionb"/>
-			<result property="optionC" column="optionc"/>
-			<result property="optionD" column="optiond"/>
+			<id property="questionId" column="id"/>
+			<result property="quesName" column="question"/>
+			<result property="optionA" column="option_1"/>
+			<result property="optionB" column="option_2"/>
+			<result property="optionC" column="option_3"/>
+			<result property="optionD" column="option_4"/>
 			<result property="answer" column="answer"/>
-			<result property="userAnswer" column="useranswer"/>
-			<result property="courseId" column="courseid"/>
-			<result property="typeId" column="typeid"/>
-			<result property="gradeId" column="gradeid"/>
+			<result property="courseId" column="curriculum_id"/>
+			<result property="typeId" column="type_id"/>
+			<result property="gradeId" column="grade_id"/>
 			<result property="difficulty" column="difficulty"/>
+			<result property="answerDetail" column="explain"/>
+
+			<!-- New in our db -->
+			<result property="topic" column="topic"/>
+			<result property="subtopic" column="subtopic"/>
+			<result property="subtopicId" column="subtopic_id"/>
+			<result property="optionOther" column="option_other"/>
+			<result property="isPastPaper" column="is_past_paper"/>
+			<result property="rawQuestionId" column="raw_question_id"/>
+			<result property="attachmentId" column="attachment_id"/>
+			<result property="script" column="script"/>
+			<result property="scriptParameter" column="script_parameter"/>
+
+			<!-- No followings in our db so will be null -->
+			<result property="userAnswer" column="useranswer"/>
 			<result property="remark" column="remark"/>
-			<result property="answerDetail" column="answerdetail"/>
 		</association>
 	</resultMap>
 	
 	<!-- 新增 -->
 	<insert id="insert" parameterType="edu.fjnu.online.domain.ErrorBook">
-		insert into t_errorbook
-		(userid,courseid,gradeid,uanswer,questionid,typeid)
+		insert into question_record
+		(username,student_answer,question_id,start_time,end_time,correctness,quiz_id)
 		values
-		(#{userId},#{courseId},#{gradeId},#{userAnswer},#{question.questionId},#{question.typeId})
+		(#{userId},#{userAnswer},#{question.questionId},#{startTime},#{endTime},#{correctness},#{quizId})
 	</insert>
 	
 	<!-- 修改 -->
 	<update id="update" parameterType="edu.fjnu.online.domain.ErrorBook">
-		update t_errorbook
+		update question_record
 		<set>
-			<if test="courseId!=null">
+<!-- 			<if test="courseId!=null">
 				courseid=#{courseId},
 			</if>
 			<if test="gradeId!=null">
 				gradeid=#{gradeId},
-			</if>
+			</if> -->
 			<if test="userAnswer!=null">
-				uanswer=#{userAnswer},
+				student_answer=#{userAnswer},
 			</if>
 			<if test="questionId!=null">
-				questionid=#{questionId},
+				questionid=#{question.questionId},
+			</if>
+			<if test="startTime!=null">
+				start_time=#{startTime},
+			</if>
+			<if test="endTime!=null">
+				end_time=#{endTime},
+			</if>
+			<if test="correctness!=null">
+				correctness=#{correctness},
+			</if>
+			<if test="startTime!=null">
+				start_time=#{startTime},
+			</if>
+			<if test="quizId!=null">
+				quiz_id=#{quizId},
 			</if>
 		</set>
-			where bookid=#{bookId}
+			where id=#{bookId}
 	</update>
 	
 	<!-- 查询所有记录 -->
 	<select id="find" parameterType="int" resultMap="errorRM">
-		select * from t_errorbook
+		select * from question_record
 		where 1=1
 	</select>
 	
 	<!-- 查询一个录 -->
 	<select id="get" parameterType="edu.fjnu.online.domain.ErrorBook" resultMap="errorRM">
-		select * from t_errorbook
-		where bookid=#{id} 
+		select * from question_record
+		where id=#{bookId} 
 	</select>
 	
 	<!-- 删除一条记录 -->
 	<delete id="delete" parameterType="int">
-		delete from t_errorbook
-		where bookid=#{id}
+		delete from question_record
+		where id=#{bookId}
 	</delete>
 	
 	<!-- 
 		quesName,optiona,optionb,optionc,optiond,answer,useranswer,courseid,typeid,difficulty,remark,answerdetail,gradeid
 	 -->
 	<select id="getBookInfo"  resultMap="errorRM" parameterType="map">
-		select * from t_question a,t_errorbook b
-		where a.questionid = b.questionid
-		and b.userid=#{userId}
+		select * from question q,question_record qr
+		where q.id = qr.question_id
+		and qr.username=#{userId}
 	</select>
 </mapper>

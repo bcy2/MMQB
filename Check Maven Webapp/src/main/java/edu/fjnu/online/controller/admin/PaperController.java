@@ -177,7 +177,7 @@ public class PaperController {
 			quesId = removeLast(quesId);
 		}
 		paper.setQuestionId(quesId);
-		paper.setPaperstate("0");
+		paper.setPaperState(0);
 		paperService.insert(paper);
 		return "redirect:/toPaperPage.action";
 	}

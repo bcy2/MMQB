@@ -26,5 +26,7 @@ public interface PaperService {
 	public List<Paper> getUndoPaper(Map map);
 	/**查询学生未考试的试卷*/
 	public List<Paper> qryUndoPaper(Map map);
+	/**查询学生正在考试的试卷*/
+	public List<Paper> qryInProgressPaper(Map map);
 	public PageInfo<Paper> findAllPage(Paper paper, Integer pageNo,Integer pageSize);
 }

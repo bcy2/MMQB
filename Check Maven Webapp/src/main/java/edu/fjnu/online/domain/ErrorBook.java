@@ -9,17 +9,24 @@ public class ErrorBook {
 	/**错题编号*/
 	private int bookId;
 	/**用户编号*/
-	private String userId;
+	private String userId;//username
 	/**科目编号*/
-	private String courseId;
+//	private String courseId;
 	/**年级编号*/
-	private String gradeId;
+//	private String gradeId;
 	/**学生答案*/
 	private String userAnswer;
 	/**问题编号*/
 	private Question question;
 	/**题型编号*/
-	private String typeId;
+//	private String typeId;
+	
+//	Newly added
+	private String startTime;
+	private String endTime;
+	private boolean correctness;
+	private int quizId;
+	
 	public int getBookId() {
 		return bookId;
 	}
@@ -32,29 +39,11 @@ public class ErrorBook {
 	public void setUserId(String userId) {
 		this.userId = userId;
 	}
-	public String getCourseId() {
-		return courseId;
-	}
-	public void setCourseId(String courseId) {
-		this.courseId = courseId;
-	}
-	public String getGradeId() {
-		return gradeId;
-	}
-	public void setGradeId(String gradeId) {
-		this.gradeId = gradeId;
-	}
 	public String getUserAnswer() {
 		return userAnswer;
 	}
 	public void setUserAnswer(String userAnswer) {
 		this.userAnswer = userAnswer;
-	}
-	public String getTypeId() {
-		return typeId;
-	}
-	public void setTypeId(String typeId) {
-		this.typeId = typeId;
 	}
 	public Question getQuestion() {
 		return question;
@@ -62,28 +51,53 @@ public class ErrorBook {
 	public void setQuestion(Question question) {
 		this.question = question;
 	}
+	public String getStartTime() {
+		return startTime;
+	}
+	public void setStartTime(String startTime) {
+		this.startTime = startTime;
+	}
+	public String getEndTime() {
+		return endTime;
+	}
+	public void setEndTime(String endTime) {
+		this.endTime = endTime;
+	}
+	public boolean isCorrectness() {
+		return correctness;
+	}
+	public void setCorrectness(boolean correctness) {
+		this.correctness = correctness;
+	}
+	public int getQuizId() {
+		return quizId;
+	}
+	public void setQuizId(int quizId) {
+		this.quizId = quizId;
+	}
 	public ErrorBook() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
-	public ErrorBook(int bookId, String userId, String courseId,
-			String gradeId, String userAnswer, Question question, String typeId) {
+	public ErrorBook(int bookId, String userId, String userAnswer, Question question, String startTime, String endTime,
+			boolean correctness, int quizId) {
 		super();
 		this.bookId = bookId;
 		this.userId = userId;
-		this.courseId = courseId;
-		this.gradeId = gradeId;
 		this.userAnswer = userAnswer;
 		this.question = question;
-		this.typeId = typeId;
+		this.startTime = startTime;
+		this.endTime = endTime;
+		this.correctness = correctness;
+		this.quizId = quizId;
 	}
 	@Override
 	public String toString() {
-		return "ErrorBook [bookId=" + bookId + ", userId=" + userId
-				+ ", courseId=" + courseId + ", gradeId=" + gradeId
-				+ ", userAnswer=" + userAnswer + ", question=" + question
-				+ ", typeId=" + typeId + "]";
+		return "ErrorBook [bookId=" + bookId + ", userId=" + userId + ", userAnswer=" + userAnswer + ", question="
+				+ question + ", startTime=" + startTime + ", endTime=" + endTime + ", correctness=" + correctness
+				+ ", quizId=" + quizId + "]";
 	}
+
 
 	
 }
