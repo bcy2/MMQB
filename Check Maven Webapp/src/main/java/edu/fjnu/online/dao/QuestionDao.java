@@ -8,4 +8,5 @@ import edu.fjnu.online.domain.Question;
 public interface QuestionDao extends BaseDao<Question>{
 
 	public List<Question> createPaper(Map map);
+	public List<Question> findSubtopic(String curriculum);
 }

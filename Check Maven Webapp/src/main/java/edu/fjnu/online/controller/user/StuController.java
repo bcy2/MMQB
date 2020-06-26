@@ -1,9 +1,13 @@
 package edu.fjnu.online.controller.user;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,13 +17,19 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import edu.fjnu.online.domain.Course;
 import edu.fjnu.online.domain.Grade;
 import edu.fjnu.online.domain.MsgItem;
+import edu.fjnu.online.domain.Question;
 import edu.fjnu.online.domain.User;
 import edu.fjnu.online.service.CourseService;
 import edu.fjnu.online.service.GradeService;
+import edu.fjnu.online.service.QuestionService;
 import edu.fjnu.online.service.UserService;
 import edu.fjnu.online.util.MD5Util;
+import jnr.ffi.Struct.int16_t;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.regex.*;
 
 @Controller
@@ -30,6 +40,8 @@ public class StuController {
 	GradeService gradeService;
 	@Autowired
 	CourseService courseService;
+	@Autowired
+	QuestionService questionService;
 	
 	public void showAllAttributes(HttpSession session){
 		Enumeration<String> attributes = session.getAttributeNames();
@@ -41,11 +53,60 @@ public class StuController {
 		System.out.println("End.");
 	}
 	
-	@RequestMapping("/test.action")
+	@RequestMapping("/testUser.action")
 	public String toNewDBTest(User user, Model model, HttpSession session){
 		List<User> dataList = userService.find(user);
 		model.addAttribute("dataList", dataList);
-		return "/user/newDBTest.jsp";			
+		return "/user/testUser.jsp";			
+	}
+	
+//	public void getUniqueEntry(Question q, Map curriculumMap) {
+//		if (!curriculumMap.containsKey(q.getCourseId())) {
+//			Map gradeMap = new HashMap();
+//			curriculumMap.put(q.getCourseId(),gradeMap);
+//		}
+//		Map gradeMap = (Map) curriculumMap.get(q.getCourseId());
+//
+//		if (!gradeMap.containsKey(q.getGradeId())) {
+//			Map topicMap = new HashMap();
+//			gradeMap.put(q.getGradeId(), topicMap);
+//		}
+//		Map topicMap = (Map) gradeMap.get(q.getGradeId());
+//
+//		if (!topicMap.containsKey(q.getTopic())) {
+//			Map subtopicMap = new HashMap();
+//			topicMap.put(q.getTopic(), subtopicMap);
+//		}
+//		Map subtopicMap = (Map) topicMap.get(q.getTopic());
+//
+//		if (!subtopicMap.containsKey(q.getSubtopic())) {
+//			Map typeMap = new HashMap();
+//			subtopicMap.put(q.getSubtopic(), typeMap);
+//		}
+//		Map typeMap = (Map) subtopicMap.get(q.getSubtopic());
+//
+//		if (!typeMap.containsKey(q.getTypeId())) {
+//			//
+//			typeMap.put(q.getTypeId(), q.getQuestionId());
+//
+//		}
+//		return;
+//	}
+	
+	@RequestMapping("/testQuesType.action")
+	public String toQuesTypeTest(User user, Model model, HttpSession session){
+//		List<Question> dataList = questionService.find(new Question());
+//		Map curriculumMap = new HashMap();
+//		for (Question q:dataList) {
+//			getUniqueEntry(q, curriculumMap);
+//		}
+//		iterate(curriculumMap,0);
+//		
+//		model.addAttribute("dataList", dataList);
+		
+		List<Question> subtopic = questionService.findSubtopic("1");
+		model.addAttribute("subtopic", subtopic);
+		return "/user/testQuesType.jsp";			
 	}
 	
 	//跳转到前台登录页面

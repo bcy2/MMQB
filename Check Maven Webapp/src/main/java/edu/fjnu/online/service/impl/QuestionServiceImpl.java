@@ -42,6 +42,10 @@ public class QuestionServiceImpl implements QuestionService {
 		// TODO Auto-generated method stub
 		return questionDao.createPaper(map);
 	}
+	
+	public List<Question> findSubtopic(String curriculum){
+		return questionDao.findSubtopic(curriculum);
+	}
 
 	public PageInfo<Question> findByPage(Question question, Integer pageNo,
 			Integer pageSize) {

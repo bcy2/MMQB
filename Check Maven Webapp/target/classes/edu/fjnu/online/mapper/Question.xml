@@ -122,6 +122,21 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		select * from question
 		where 1=1
 	</select>
+
+	<!-- 查询所有subtopic -->
+	<select id="findSubtopic" parameterType="string" resultMap="questionRM">
+		SELECT q.id, q.curriculum_id, g.grade_name as gradeId, q.topic, q.subtopic, q.subtopic_id, q.type_id
+		FROM question as q
+		left join grade as g on q.grade_id = g.id
+		WHERE q.id IN
+		(
+		    SELECT MIN(id)
+		    FROM question
+		    GROUP BY curriculum_id, subtopic_id
+		)
+		and q.curriculum_id = #{courseId}
+		order by q.subtopic_id
+	</select>
 	
 	<!-- 查询一个录 -->
 	<select id="get" parameterType="edu.fjnu.online.domain.Question" resultMap="questionRM">
@@ -138,9 +153,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<!-- 随机生成相应数量的题目 -->
 	<select id="createPaper" parameterType="map" resultMap="questionRM">
 		select * from question 
-			where grade_id=#{gradeId}
-			and type_id=#{typeId}
-			and curriculum_id=#{courseId}
+			where subtopic_id = #{subtopicId}
+			and curriculum_id = #{courseId}
 			ORDER BY RAND() LIMIT #{num} 
+
 	</select>
 </mapper>

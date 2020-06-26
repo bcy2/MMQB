@@ -20,21 +20,26 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import edu.fjnu.online.domain.Course;
 import edu.fjnu.online.domain.ErrorBook;
+import edu.fjnu.online.domain.Grade;
 import edu.fjnu.online.domain.MsgItem;
 import edu.fjnu.online.domain.Paper;
 import edu.fjnu.online.domain.Question;
+import edu.fjnu.online.domain.Type;
 import edu.fjnu.online.domain.User;
 import edu.fjnu.online.service.CourseService;
 import edu.fjnu.online.service.ErrorBookService;
 import edu.fjnu.online.service.GradeService;
 import edu.fjnu.online.service.PaperService;
 import edu.fjnu.online.service.QuestionService;
+import edu.fjnu.online.service.TypeService;
 import edu.fjnu.online.service.UserService;
 import edu.fjnu.online.service.EmailService;
+import edu.fjnu.online.service.TypeService;
 import edu.fjnu.online.util.Computeclass;
 import jnr.ffi.Struct.int16_t;
 
@@ -62,6 +67,8 @@ public class PaperMgController {
 	QuestionService questionService;
 	@Autowired
 	ErrorBookService bookService;
+	@Autowired
+	TypeService typeService;
 	
 	@Autowired
 	EmailService emailService;
@@ -109,7 +116,7 @@ public class PaperMgController {
 		return msgItem;	
 	}
 	
-	//跳转到Review Papers页面
+	//Review Papers
 	@RequestMapping("/toScoreQry.action")
 	public String toScoreQry(User user, Model model, HttpSession session){
 //		temp security implementation
@@ -333,7 +340,7 @@ public class PaperMgController {
 	}
 	
 	/**
-	 * 获取未考试试卷，并将为考试的试卷添加用户信息
+	 * Start working!
 	 * @param user
 	 * @param model
 	 * @param session
@@ -781,5 +788,119 @@ public class PaperMgController {
 		session.removeAttribute("paperId");
 		
 		return "redirect:/toScoreQry.action";
+	}
+	
+	/**
+	 * To user generate quiz page
+	 * @param paper
+	 * @param model
+	 * @param session
+	 * @return
+	 */
+	@RequestMapping("/toQuizGeneratePage.action")
+	public String toQuizGeneratePage(User user, Paper paper,Model model, HttpSession session){
+//		temp security implementation
+		if(session.getAttribute("user") == null){
+			return "redirect:/toLogin.action";
+		}
+		
+		if("".equals(user.getUserId()) || user.getUserId()==null){
+			user = (User) session.getAttribute("user");
+		}
+		
+		user = userService.getStu(user);
+		List<Question> subtopic = questionService.findSubtopic(user.getCurriculum());
+		List<Grade> gradeList = gradeService.findActive(new Grade());
+		Map curriculumSubtopicMap = new HashMap();
+		for (Question q: subtopic) {
+			if (!curriculumSubtopicMap.containsKey(q.getGradeId())) {
+				Map topicMap = new HashMap();
+				curriculumSubtopicMap.put(q.getGradeId(), topicMap);
+			}
+			Map topicMap = (Map) curriculumSubtopicMap.get(q.getGradeId());
+	
+			if (!topicMap.containsKey(q.getTopic())) {
+				Map subtopicMap = new HashMap();
+				topicMap.put(q.getTopic(), subtopicMap);
+			}
+			Map subtopicMap = (Map) topicMap.get(q.getTopic());
+	
+			if (!subtopicMap.containsKey(q.getSubtopic())) {
+//				Map typeMap = new HashMap();
+				subtopicMap.put(q.getSubtopic(), q.getSubtopicId());
+			}
+//			Map typeMap = (Map) subtopicMap.get(q.getSubtopic());
+	
+//			if (!typeMap.containsKey(q.getTypeId())) {
+//				typeMap.put(q.getTypeId(), q.getSubtopicId());
+//	
+//			}
+		}
+		QuestionStuffs.iterate(curriculumSubtopicMap, 0);
+		
+		model.addAttribute("course", courseService.find(new Course()));
+		model.addAttribute("grade", gradeList);
+		model.addAttribute("curriculumSubtopicMap", curriculumSubtopicMap);
+		
+		model.addAttribute("type", typeService.find(new Type()));
+		return "/user/myquizgenerate.jsp";
+	}
+	
+	/**
+	 * User generate quiz
+	 * @param paper
+	 * @param model
+	 * @param session
+	 * @return
+	 * @throws UnsupportedEncodingException 
+	 */
+	@SuppressWarnings("unchecked")
+	@RequestMapping("/quizGenerate.action")
+	@ResponseBody
+	public MsgItem quizGenerate(@RequestBody Map map, Paper paper,Model model, HttpSession session) throws UnsupportedEncodingException{
+//		@RequestParam String quizName,@RequestParam int quesNo, @RequestParam int difficulty, @RequestParam float allowTime, 
+		MsgItem msgItem = new MsgItem();
+		msgItem.setErrorNo("0");
+//		json = URLDecoder.decode(json, "UTF-8");
+//		System.out.println(json);
+		QuestionStuffs.iterate(map, 0);
+//		System.out.println(json.toMap());
+		
+//		Map map = new HashMap();
+//		List<Question> selectList = null;
+//		List<Question> inputList = null;
+//		List<Question> descList = null;
+//		List<Question> paperList = new ArrayList<Question>();
+//		map.put("gradeId", paper.getGradeId());
+//		map.put("courseId", paper.getCourseId());
+//		if(QuesNo>0){//选择题
+//			map.put("num", QuesNo);
+//			map.put("typeId", 1);
+//			selectList = questionService.createPaper(map);
+//			paperList.addAll(selectList);
+//		}
+//		if(inputNum>0){//判断题
+//			map.put("num", inputNum);
+//			map.put("typeId", 4);
+//			inputList = questionService.createPaper(map);
+//			paperList.addAll(inputList);
+//		}
+//		if(descNum > 0 ){//描述题
+//			map.put("num", descNum);
+//			map.put("typeId", 5);
+//			descList = questionService.createPaper(map);
+//			paperList.addAll(descList);
+//		}
+//		String quesId = "";
+//		for(Question ques : paperList){
+//			quesId+=ques.getQuestionId()+",";
+//		}
+//		if(!quesId.isEmpty()){
+//			quesId = removeLast(quesId);
+//		}
+//		paper.setQuestionId(quesId);
+//		paper.setPaperState(0);
+//		paperService.insert(paper);
+		return msgItem;
 	}
 }

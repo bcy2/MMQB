@@ -17,4 +17,8 @@ public class QuestionDaoImpl extends BaseDaoImpl< Question> implements QuestionD
 	public List<Question> createPaper(Map map) {
 		return this.getSqlSession().selectList(this.getNs()+"createPaper", map);
 	}
+	
+	public List<Question> findSubtopic(String curriculum){
+		return this.getSqlSession().selectList(this.getNs()+"findSubtopic", curriculum);
+	}
 }

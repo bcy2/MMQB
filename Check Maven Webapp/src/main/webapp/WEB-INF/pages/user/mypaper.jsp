@@ -66,11 +66,11 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					<div class="collapse navbar-collapse nav-wil" id="bs-example-navbar-collapse-1">
 						<ul class="nav navbar-nav">
 							<li><a class="hvr-overline-from-center button2" href="${ctx}/toIndex.action?userId=${user.userId}">Home</a></li>
-							<li><a class="hvr-overline-from-center button2" href="${ctx}/toUserInfo.action?userId=${user.userId}">My Info</a></li>
+							<li><a class="hvr-overline-from-center button2" href="${ctx}/toUserInfo.action?userId=${user.userId}">My info</a></li>
 							<!-- <li><a class="hvr-overline-from-center button2" href="onlinecheck.html">在线考试</a></li> -->
-							<li><a class="hvr-overline-from-center button2" href="${ctx}/toScoreQry.action?userId=${user.userId}">Review Quizzes</a></li>
-							<li><a class="hvr-overline-from-center button2" href="${ctx}/toMyBooksPage.action?userId=${user.userId}">Review Mistakes</a></li>
-							<li><a class="hvr-overline-from-center button2  active" href="${ctx}/toMyPaperPage.action?userId=${user.userId}">Start Working!</a></li>
+							<li><a class="hvr-overline-from-center button2" href="${ctx}/toScoreQry.action?userId=${user.userId}">Review quizzes</a></li>
+							<li><a class="hvr-overline-from-center button2" href="${ctx}/toMyBooksPage.action?userId=${user.userId}">Question record</a></li>
+							<li><a class="hvr-overline-from-center button2  active" href="${ctx}/toMyPaperPage.action?userId=${user.userId}">Start working!</a></li>
 							<li><a class="hvr-overline-from-center button2" href="${ctx}/toAbout.action">About MMQB</a></li>
 						</ul>
 						<div class="search-box">
@@ -85,16 +85,16 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 </div>
 <div class="about">
 	<div class="container">
-		<button>+ New quiz</button>
+		<h3 class="t-button" style="margin-top:0;padding-top:0;"><a href="${ctx}/toQuizGeneratePage.action?userId=${user.userId}"><span class="label label-info">+ New quiz</span></a></h3>
             <table class="table table-bordered">
             <caption><font color="green">Available</font></caption>
               <thead>
                 <tr>
-                  <th>Quiz name</th>
-                  <th>Curriculum</th>
-                  <th>Create time</th>
-				  <th>Start time</th>
-                  <th>Current Question</th>
+                  <th width="25%">Quiz name</th>
+                  <th width="15%">Curriculum</th>
+                  <th width="20%">Create time</th>
+				  <th width="20%">Start time</th>
+                  <th width="20%">Current Question</th>
 <!--                   <th>Quiz Status</th> -->
                 </tr>
               </thead>
@@ -140,11 +140,11 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
             <caption><font color="orange">In Progress</font></caption>
               <thead>
                 <tr>
-                  <th>Quiz name</th>
-                  <th>Curriculum</th>
-                  <th>Create time</th>
-				  <th>Start time</th>
-                  <th>Current Question</th>
+                  <th width="25%">Quiz name</th>
+                  <th width="15%">Curriculum</th>
+                  <th width="20%">Create time</th>
+				  <th width="20%">Start time</th>
+                  <th width="20%">Current Question</th>
 <!--                   <th>Quiz Status</th> -->
                 </tr>
               </thead>

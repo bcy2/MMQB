@@ -71,11 +71,11 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					<div class="collapse navbar-collapse nav-wil" id="bs-example-navbar-collapse-1">
 						<ul class="nav navbar-nav">
 							<li><a class="hvr-overline-from-center button2" href="${ctx}/toIndex.action?userId=${user.userId}">Home</a></li>
-							<li><a class="hvr-overline-from-center button2" href="${ctx}/toUserInfo.action?userId=${user.userId}">My Info</a></li>
+							<li><a class="hvr-overline-from-center button2" href="${ctx}/toUserInfo.action?userId=${user.userId}">My info</a></li>
 							<!-- <li><a class="hvr-overline-from-center button2" href="onlinecheck.html">在线考试</a></li> -->
-							<li><a class="hvr-overline-from-center button2  active" href="${ctx}/toScoreQry.action?userId=${user.userId}">Review Quizzes</a></li>
-							<li><a class="hvr-overline-from-center button2" href="${ctx}/toMyBooksPage.action?userId=${user.userId}">Review Mistakes</a></li>
-							<li><a class="hvr-overline-from-center button2" href="${ctx}/toMyPaperPage.action?userId=${user.userId}">Start Working!</a></li>
+							<li><a class="hvr-overline-from-center button2  active" href="${ctx}/toScoreQry.action?userId=${user.userId}">Review quizzes</a></li>
+							<li><a class="hvr-overline-from-center button2" href="${ctx}/toMyBooksPage.action?userId=${user.userId}">Question record</a></li>
+							<li><a class="hvr-overline-from-center button2" href="${ctx}/toMyPaperPage.action?userId=${user.userId}">Start working!</a></li>
 							<li><a class="hvr-overline-from-center button2" href="${ctx}/toAbout.action">About MMQB</a></li>
 						</ul>
 						<div class="search-box">
@@ -93,13 +93,13 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
             <table class="table table-bordered">
               <thead>
                 <tr>
-                  <th>Quiz name</th>
-                  <th>Curriculum</th>
-				  <th>Start time</th>
-				  <th>Finish time</th>
-                  <th>Score</th>
-                  <th>Quiz Status</th>
-                  <th>Operation</th>
+                  <th width="20%">Quiz name</th>
+                  <th width="15%">Curriculum</th>
+				  <th width="20%">Start time</th>
+				  <th width="20%">Finish time</th>
+                  <th width="15%">Score</th>
+<!--                   <th width="15%">Quiz Status</th> -->
+                  <th width="10%">Operation</th>
                 </tr>
               </thead>
               <tbody>
@@ -110,7 +110,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	                 <td>${paper.beginTime}</td>
 				  	 <td>${paper.endTime}</td>
 					 <td>${paper.score}</td>
-					 <td>
+<%-- 					 <td>
 					 	<font color="green">
 						 	<c:if test="${paper.paperState==0}">Available</c:if>
 						 </font>
@@ -120,7 +120,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 						 <font color="blue">
 							<c:if test="${paper.paperState==2}">Done</c:if>
 						</font>
-					 </td>
+					 </td> --%>
 					 <td><button onclick="resetQuiz('${paper.paperId}')">Reset quiz</button></td>
 	              </tr>
 				</c:forEach>

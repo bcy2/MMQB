@@ -14,5 +14,6 @@ public interface QuestionService {
 	public void update(Question question);
 	public void delete(int id);
 	public List<Question> createPaper(Map map);
+	public List<Question> findSubtopic(String curriculum);
 	public PageInfo<Question> findByPage(Question question, Integer pageNo,Integer pageSize);
 }
