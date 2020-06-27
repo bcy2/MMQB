@@ -52,6 +52,7 @@ public class ErrorBookController {
 		Map map = new HashMap();
 		map.put("userId", user.getUserId());
 		List<ErrorBook> bookList = bookService.getBookInfo(map);
+		System.out.println(bookList.size());
 		model.addAttribute("grade", gradeList);
 		model.addAttribute("course", courseList);
 		model.addAttribute("type", typeList);

@@ -9,7 +9,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		<id property="paperId" column="id"/>
 		<result property="paperName" column="name"/>
 		<result property="courseId" column="curriculum_id"/>
-		<result property="gradeId" column="grade_name"/>
+		<result property="gradeId" column="grade_id"/>
 		<result property="userId" column="student_name"/> <!-- change -->
 		<result property="questionId" column="question_id"/>
 		<result property="beginTime" column="begin_time"/>
@@ -29,7 +29,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<!-- 新增 -->
 	<insert id="insert" parameterType="edu.fjnu.online.domain.Paper">
 		insert into quiz
-		(id,name,curriculum_id,grade_name,student_name,question_id,begin_time,submit_time,expected_duration,score,status,teacher_name,create_time,current_question)
+		(id,name,curriculum_id,grade_id,student_name,question_id,begin_time,submit_time,expected_duration,score,status,teacher_name,create_time,current_question)
 		values
 		(#{paperId},#{paperName},#{courseId},#{gradeId},#{userId},#{questionId},#{beginTime},#{endTime},#{allowTime},#{score},#{paperState},#{teacherName},#{createTime},#{currentQuestion})
 	</insert>
@@ -42,7 +42,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 				name=#{paperName},
 			</if>
 			<if test="gradeId!=null">
-				grade_name=#{gradeId},
+				grade_id=#{gradeId},
 			</if>
 <!-- 			<if test="courseId!=null">
 				curriculum_id=#{courseId},
@@ -119,7 +119,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 				name=#{paperName},
 			</if>
 			<if test="gradeId!=null">
-				grade_name=#{gradeId},
+				grade_id=#{gradeId},
 			</if>
 <!-- 			<if test="courseId!=null">
 				curriculum_id=#{courseId},

@@ -145,14 +145,13 @@ public class Paper {
 	public void setPaperState(Integer paperstate) {
 		this.paperState = paperstate;
 	}
-//	@Override
-//	public String toString() {
-//		return "Paper [paperId=" + paperId + ", paperName=" + paperName
-//				+ ", courseId=" + courseId + ", gradeId=" + gradeId
-//				+ ", userId=" + userId + ", questionId=" + questionId
-//				+ ", beginTime=" + beginTime + ", endTime=" + endTime
-//				+ ", allowTime=" + allowTime + ", score=" + score
-//				+ ", paperstate=" + paperState + "]";
-//	}
+	@Override
+	public String toString() {
+		return "Paper [paperId=" + paperId + ", paperName=" + paperName + ", courseId=" + courseId + ", gradeId="
+				+ gradeId + ", userId=" + userId + ", questionId=" + questionId + ", beginTime=" + beginTime
+				+ ", endTime=" + endTime + ", allowTime=" + allowTime + ", score=" + score + ", paperState="
+				+ paperState + ", teacherName=" + teacherName + ", createTime=" + createTime + ", currentQuestion="
+				+ currentQuestion + "]";
+	}
 	
 }

@@ -114,9 +114,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<!-- 
 		quesName,optiona,optionb,optionc,optiond,answer,useranswer,courseid,typeid,difficulty,remark,answerdetail,gradeid
 	 -->
-	<select id="getBookInfo"  resultMap="errorRM" parameterType="map">
-		select * from question q,question_record qr
-		where q.id = qr.question_id
+	<select id="getBookInfo" resultMap="errorRM" parameterType="map">
+		select * from question_record qr, question q
+		where qr.question_id = q.id
 		and qr.username=#{userId}
 	</select>
 </mapper>

@@ -102,7 +102,10 @@ public class PaperMgController {
 		model.addAttribute("user", user);
 		
 		map.put("paperState", 0);
+		map.put("score", "-1");		
 		map.put("currentQuestion", 1);
+		map.put("endTime", "");
+		map.put("beginTime", "");
 		paperService.updateUserPaper(map);
 		
 		MsgItem msgItem = new MsgItem();
@@ -133,11 +136,10 @@ public class PaperMgController {
 		
 		user = userService.getStu(user);
 		List<Paper> paperDone = paperService.getUserPaperById(user.getUserId());
-		Course course = null;
-//		for(Paper p : paper){
-//			course = courseService.get(Integer.parseInt(p.getCourseId()));
-//			p.setCourseId(course.getCourseName());
-//		}
+		for(Paper p : paperDone){
+			Course course = courseService.get(Integer.parseInt(p.getCourseId()));
+			p.setCourseId(course.getCourseName());
+		}
 		model.addAttribute("user", user);
 		model.addAttribute("paper", paperDone);
 		return "/user/scorequery.jsp";			
@@ -251,6 +253,9 @@ public class PaperMgController {
 		Paper paper = paperService.getPaperDetail(map);
 		Question question = null;
 		String []ids = paper.getQuestionId().split(",");
+		if(paper.getPaperState() == 2) {
+			return "redirect:/toMyPaperPage.action";
+		}
 		List<Question> questionList = new ArrayList<Question>();
 		List<Question> quesList = new ArrayList<Question>();
 		List<Question> selList = new ArrayList<Question>();
@@ -336,7 +341,7 @@ public class PaperMgController {
 //			session.setAttribute("currentQuestion", 1);
 //		}
 
-		return "/user/questiondetail.jsp";			
+		return "/user/questiondetail.jsp";
 	}
 	
 	/**
@@ -681,6 +686,9 @@ public class PaperMgController {
 		
 		if(paper.getCurrentQuestion() == paperQuesIdx.length) {
 			map.put("paperState", 2);
+			SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");  
+			String endTime = formatter.format(new Date());
+			map.put("endTime", endTime);
 			msgItem.setErrorNo("1");
 //			session.removeAttribute("currentQuestion");
 			Boolean sendEmailBoolean = false;
@@ -696,8 +704,12 @@ public class PaperMgController {
 				}).start();
 				emailService.sendMail(parentEmailString, emailTitleString, String.format("%s finished %s questions.", user.getUserName(), String.valueOf(paperQuesIdx.length)));//change to parent email
 			}
-			return msgItem;	
 		}else {
+			if(paper.getPaperState() == 0 || paper.getBeginTime() == null || paper.getBeginTime().isEmpty()) {
+				SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");  
+				String beginTime = formatter.format(new Date());
+				map.put("beginTime", beginTime);
+			}
 			currentQ += 1;
 			map.put("currentQuestion", currentQ);
 			map.put("paperState", 1);
@@ -781,6 +793,9 @@ public class PaperMgController {
 		map.put("paperId", paperId);
 		map.put("userId", user.getUserId());
 		paper = paperService.getPaperDetail(map);
+		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");  
+		String endTime = formatter.format(new Date());
+		map.put("endTime", endTime);
 		map.put("paperState", 2);
 		paperService.updateUserPaper(map);
 		
@@ -859,26 +874,55 @@ public class PaperMgController {
 	@ResponseBody
 	public MsgItem quizGenerate(@RequestBody Map map, Paper paper,Model model, HttpSession session) throws UnsupportedEncodingException{
 //		@RequestParam String quizName,@RequestParam int quesNo, @RequestParam int difficulty, @RequestParam float allowTime, 
+		User user = (User) session.getAttribute("user");
 		MsgItem msgItem = new MsgItem();
-		msgItem.setErrorNo("0");
+		msgItem.setErrorNo("1");
 //		json = URLDecoder.decode(json, "UTF-8");
 //		System.out.println(json);
 		QuestionStuffs.iterate(map, 0);
-//		System.out.println(json.toMap());
+		if (QuestionStuffs.isAnyEndEmpty(map)) {
+			msgItem.setErrorInfo("Error: Empty areas.");
+			return msgItem;
+		}
 		
-//		Map map = new HashMap();
+		int totalQuesNo = Integer.valueOf(map.get("quesNo").toString());
+		if(totalQuesNo <= 0){
+			msgItem.setErrorInfo("Error: Invalid No. of questions.");
+			return msgItem;
+		}
+		
+		Map questionSelectMap = new HashMap();
 //		List<Question> selectList = null;
 //		List<Question> inputList = null;
 //		List<Question> descList = null;
-//		List<Question> paperList = new ArrayList<Question>();
 //		map.put("gradeId", paper.getGradeId());
-//		map.put("courseId", paper.getCourseId());
-//		if(QuesNo>0){//选择题
-//			map.put("num", QuesNo);
-//			map.put("typeId", 1);
-//			selectList = questionService.createPaper(map);
-//			paperList.addAll(selectList);
-//		}
+		questionSelectMap.put("courseId", user.getCurriculum());
+		
+		List<Question> questionList = new ArrayList<Question>();
+		List<String> subtopicIdList = (List<String>) map.get("subtopicIds");
+		List<Integer> addedQuestionIdList = new ArrayList<Integer>();
+		
+		for(int i = 0; i < totalQuesNo; i+=1) {
+			int j = i % subtopicIdList.size();
+			String subtopicId = subtopicIdList.get(j);
+			
+			System.out.println("Dealing with: " + subtopicId);
+			questionSelectMap.put("num", 1);
+			questionSelectMap.put("subtopicId", subtopicId);
+			List<Question> subtopicQuestionList = new ArrayList<Question>();
+			Question question = new Question();
+			subtopicQuestionList = questionService.createPaper(questionSelectMap);
+			question = subtopicQuestionList.get(0);
+			while(addedQuestionIdList.contains(question.getQuestionId())) {
+				subtopicQuestionList = questionService.createPaper(questionSelectMap);
+				question = subtopicQuestionList.get(0);
+			}
+			addedQuestionIdList.add(question.getQuestionId());
+			System.out.println(question.getQuestionId());
+			System.out.println("================");
+//			questionList.addAll(subtopicQuestionList);
+			questionList.add(question);
+		}
 //		if(inputNum>0){//判断题
 //			map.put("num", inputNum);
 //			map.put("typeId", 4);
@@ -891,16 +935,28 @@ public class PaperMgController {
 //			descList = questionService.createPaper(map);
 //			paperList.addAll(descList);
 //		}
-//		String quesId = "";
-//		for(Question ques : paperList){
-//			quesId+=ques.getQuestionId()+",";
-//		}
-//		if(!quesId.isEmpty()){
-//			quesId = removeLast(quesId);
-//		}
-//		paper.setQuestionId(quesId);
-//		paper.setPaperState(0);
-//		paperService.insert(paper);
+		String quesId = "";
+		for(Question ques : questionList){
+			quesId+=ques.getQuestionId()+",";
+		}
+		if(!quesId.isEmpty()){
+			quesId = QuestionStuffs.removeLast(quesId);
+		}
+		paper.setPaperName(map.get("quizName").toString());
+		paper.setUserId(user.getUserId());
+		paper.setCourseId(user.getCurriculum());
+		paper.setGradeId(user.getGrade());
+		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");  
+		String createTime = formatter.format(new Date());
+		paper.setCreateTime(createTime);
+		paper.setAllowTime(map.get("expectTime").toString());
+		paper.setPaperState(0);
+		paper.setScore("-1");
+		paper.setCurrentQuestion(1);
+		paper.setQuestionId(quesId);
+		System.out.println(paper.toString());
+		paperService.insert(paper);
+		msgItem.setErrorNo("0");
 		return msgItem;
 	}
 }
