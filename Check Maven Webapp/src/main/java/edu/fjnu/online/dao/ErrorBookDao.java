@@ -8,4 +8,6 @@ import edu.fjnu.online.domain.Question;
 
 public interface ErrorBookDao extends BaseDao<ErrorBook>{
 	public List<ErrorBook> getBookInfo(Map map);
+	public List<ErrorBook> getBookInfoForQuiz(Map map);
+	
 }

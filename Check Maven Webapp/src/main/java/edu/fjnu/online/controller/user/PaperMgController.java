@@ -9,6 +9,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -41,7 +42,6 @@ import edu.fjnu.online.service.UserService;
 import edu.fjnu.online.service.EmailService;
 import edu.fjnu.online.service.TypeService;
 import edu.fjnu.online.util.Computeclass;
-import jnr.ffi.Struct.int16_t;
 
 import edu.fjnu.online.domain.Attachment;
 import edu.fjnu.online.service.AttachmentService;
@@ -199,6 +199,12 @@ public class PaperMgController {
 			}
 			questionList.add(question);
 		}
+		
+		Map quizMap = new HashMap();
+		quizMap.put("userId", user.getUserId());
+		quizMap.put("quizId", paperId);
+		List<ErrorBook> bookList = bookService.getBookInfoForQuiz(quizMap);
+		System.out.println(bookList.size());
 		
 		if(selList.size()>0){
 			model.addAttribute("selectQ", "Multiple Choice Questions");
@@ -942,7 +948,11 @@ public class PaperMgController {
 		if(!quesId.isEmpty()){
 			quesId = QuestionStuffs.removeLast(quesId);
 		}
-		paper.setPaperName(map.get("quizName").toString());
+		if(map.get("quizName").toString().isEmpty()) {
+			paper.setPaperName("Untitled");
+		}else {
+			paper.setPaperName(map.get("quizName").toString());
+		}
 		paper.setUserId(user.getUserId());
 		paper.setCourseId(user.getCurriculum());
 		paper.setGradeId(user.getGrade());

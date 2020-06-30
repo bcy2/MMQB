@@ -199,7 +199,7 @@ public class User
 		this.parentEmail = parentEmail;
 		this.parentPwd = parentPwd;
 		this.rewardPoints = rewardPoints;
-		this.curriculum = curriculum;
+		this.curriculum = curriculumId;
 	}
 	/**
 	 * Encodes a string 2 MD5

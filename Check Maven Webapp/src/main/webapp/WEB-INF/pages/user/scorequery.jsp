@@ -97,9 +97,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                   <th width="15%">Curriculum</th>
 				  <th width="20%">Start time</th>
 				  <th width="20%">Finish time</th>
-                  <th width="15%">Score</th>
+                  <th width="10%">Score</th>
 <!--                   <th width="15%">Quiz Status</th> -->
-                  <th width="10%">Operation</th>
+                  <th width="15%">Operation</th>
                 </tr>
               </thead>
               <tbody>

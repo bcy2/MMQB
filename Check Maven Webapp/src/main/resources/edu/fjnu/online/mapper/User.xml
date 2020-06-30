@@ -35,7 +35,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	
 	<!-- 新增 -->
 	<insert id="insert" parameterType="edu.fjnu.online.domain.User">
-		insert into user (username, password, user_type, user_status, email, tel, first_name, last_name, nickname, parent, parent_email, parent_password, auth, game_time, curriculum_id, grade)
+		insert into user (username, password, user_type, user_status, email, tel, first_name, last_name, nickname, parent, parent_email, parent_password, auth, game_time, curriculum_id, grade_id)
 		values
 		(#{userId},#{userPwd},#{userType},#{userState},#{email},#{telephone},#{userFirstName},#{userLastName},#{userName},#{parentName},#{parentEmail},#{parentPwd},#{authority},#{rewardPoints},#{curriculum},#{grade})
 	</insert>

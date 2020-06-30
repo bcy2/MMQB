@@ -17,4 +17,8 @@ public class ErrorBookDaoImpl extends BaseDaoImpl<ErrorBook> implements ErrorBoo
 	public List<ErrorBook> getBookInfo(Map map) {
 		return this.getSqlSession().selectList(this.getNs()+"getBookInfo", map);
 	}
+	
+	public List<ErrorBook> getBookInfoForQuiz(Map map) {
+		return this.getSqlSession().selectList(this.getNs()+"getBookInfoForQuiz", map);
+	}
 }

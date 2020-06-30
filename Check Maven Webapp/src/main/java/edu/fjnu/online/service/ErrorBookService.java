@@ -12,4 +12,5 @@ public interface ErrorBookService {
 	public void update(ErrorBook errorBook);
 	public void delete(int id);
 	public List<ErrorBook> getBookInfo(Map map);
+	public List<ErrorBook> getBookInfoForQuiz(Map map);
 }

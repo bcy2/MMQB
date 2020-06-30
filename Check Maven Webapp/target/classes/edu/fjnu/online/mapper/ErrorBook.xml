@@ -119,4 +119,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		where qr.question_id = q.id
 		and qr.username=#{userId}
 	</select>
+	
+	<select id="getBookInfoForQuiz" resultMap="errorRM" parameterType="map">
+		select * from question_record qr, question q
+		where qr.question_id = q.id
+		and qr.username=#{userId}
+		and qr.quiz_id=#{quizId} 
+	</select>
 </mapper>

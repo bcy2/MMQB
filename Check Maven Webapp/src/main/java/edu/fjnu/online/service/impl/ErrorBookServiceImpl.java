@@ -37,5 +37,10 @@ public class ErrorBookServiceImpl implements ErrorBookService {
 	public List<ErrorBook> getBookInfo(Map map) {
 		return bookDao.getBookInfo(map);
 	}
+	
+	public List<ErrorBook> getBookInfoForQuiz(Map map) {
+		return bookDao.getBookInfoForQuiz(map);
+	}
+	
 
 }

@@ -8,6 +8,9 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.util.StringUtil;
+import org.codehaus.jackson.JsonParseException;
+import org.codehaus.jackson.map.JsonMappingException;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -26,6 +29,7 @@ import edu.fjnu.online.service.UserService;
 import edu.fjnu.online.util.MD5Util;
 import jnr.ffi.Struct.int16_t;
 
+import java.io.IOException;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
@@ -199,7 +203,7 @@ public class StuController {
 		user.setUserState(0);
 		user.setUserType(0);
 		user.setRewardPoints(0);
-		user.setAuthority("{\"can_game\": true}");
+		user.setAuthority("{\"sendEmail\": true}");
 		
 		String emailPatternString = "^\\w+([\\.-]?\\w+)*@\\w+([\\.-]?\\w+)*(\\.\\w{2,3})+$";
 		String numPattern = "^[0-9]{8}$";

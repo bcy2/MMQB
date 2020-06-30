@@ -70,11 +70,11 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			return;
 		}
 		
-		if ($("#curriculum option:selected").val() != ""){
+		if ($("#curriculum option:selected").val() == ""){
 			alert("Please choose a curriculum.");
 			return;
 		}
-		if ($("#grade option:selected").val() != ""){
+		if ($("#grade option:selected").val() == ""){
 			alert("Please choose a grade.");
 			return;
 		}

@@ -33,6 +33,11 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 <link href="${ctx}/css/bootstrap.css" rel="stylesheet" type="text/css" media="all" />
 <link href="${ctx}/css/style.css" rel="stylesheet" type="text/css" media="all" />
 <link rel="stylesheet" href="${ctx}/css/swipebox.css">
+<style type="text/css">
+.rslides li{
+	opacity: 0;
+}
+</style>
 <script src="${ctx}/js/jquery-1.11.1.min.js"></script>
 <script src="${ctx}/js/modernizr.custom.js"></script>
 <script type="text/javascript" src="${ctx}/js/move-top.js"></script>
