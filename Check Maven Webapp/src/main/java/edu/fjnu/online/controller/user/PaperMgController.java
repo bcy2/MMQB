@@ -5,8 +5,11 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -16,6 +19,7 @@ import java.util.Map;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.text.StringEscapeUtils;
+import org.jfree.chart.labels.IntervalCategoryItemLabelGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -175,9 +179,9 @@ public class PaperMgController {
 		Question question = null;
 		String []ids = paper.getQuestionId().split(",");
 		List<Question> questionList = new ArrayList<Question>();
-		List<Question> selList = new ArrayList<Question>();
-		List<Question> inpList = new ArrayList<Question>();
-		List<Question> desList = new ArrayList<Question>();
+//		List<Question> selList = new ArrayList<Question>();
+//		List<Question> inpList = new ArrayList<Question>();
+//		List<Question> desList = new ArrayList<Question>();
 		for(int i = 0;i<ids.length;i++){
 			question = questionService.get(Integer.parseInt(ids[i]));
 			if ("1".equalsIgnoreCase(question.getTypeId())) {
@@ -188,40 +192,79 @@ public class PaperMgController {
 			if (question.getAttachmentId() != 0) {
 				question.setAttachmentFile(attachmentService.get(question.getAttachmentId()).getAttachmentFile());
 			}
-			if("1".equals(question.getTypeId())){//MCQ
-				selList.add(question);
-			}
-			if("2".equals(question.getTypeId())){//FBQ
-				inpList.add(question);
-			}
-			if("5".equals(question.getTypeId())){//简答题
-				desList.add(question);
-			}
+//			if("1".equals(question.getTypeId())){//MCQ
+//				selList.add(question);
+//			}
+//			if("2".equals(question.getTypeId())){//FBQ
+//				inpList.add(question);
+//			}
+//			if("5".equals(question.getTypeId())){//简答题
+//				desList.add(question);
+//			}
 			questionList.add(question);
 		}
 		
 		Map quizMap = new HashMap();
 		quizMap.put("userId", user.getUserId());
 		quizMap.put("quizId", paperId);
+		
+		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); 
+		Date quizStartTime = null;
+		try {
+			quizStartTime = formatter.parse(paper.getBeginTime());
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		Date quizEndTime = null;
+		try {
+			quizEndTime = formatter.parse(paper.getEndTime());
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		List<ErrorBook> bookList = bookService.getBookInfoForQuiz(quizMap);
-		System.out.println(bookList.size());
 		
-		if(selList.size()>0){
-			model.addAttribute("selectQ", "Multiple Choice Questions");
-			model.addAttribute("selList", selList);
+		for (Iterator iterator = bookList.iterator(); iterator.hasNext();) {
+			ErrorBook errorBook = (ErrorBook) iterator.next();
+			Date questionEndTime = null;
+			try {
+				questionEndTime = formatter.parse(errorBook.getEndTime());
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+//			System.out.println(questionEndTime);
+			if (questionEndTime.before(quizStartTime) || questionEndTime.after(quizEndTime)) {
+				iterator.remove();
+			}
+			
 		}
 		
-		if(inpList.size()>0){
-			model.addAttribute("inpQ", "Fill-in-Blank Questions");
-			model.addAttribute("inpList", inpList);
-		}
+//		System.out.println(bookList.size());
 		
-		if(desList.size()>0){
-			model.addAttribute("desQ", "简答题（每题5分）");
-			model.addAttribute("desList", desList);
-		}
+//		if(selList.size()>0){
+//			model.addAttribute("selectQ", "Multiple Choice Questions");
+//			model.addAttribute("selList", selList);
+//		}
+//		
+//		if(inpList.size()>0){
+//			model.addAttribute("inpQ", "Fill-in-Blank Questions");
+//			model.addAttribute("inpList", inpList);
+//		}
+//		
+//		if(desList.size()>0){
+//			model.addAttribute("desQ", "简答题（每题5分）");
+//			model.addAttribute("desList", desList);
+//		}
 		if(questionList.size()>0){
 			model.addAttribute("questionList", questionList);
+		}
+		
+//		bookList.sort(Comparator.comparing(item->Arrays.asList(ids).indexOf())));
+		
+		if(bookList.size()>0) {
+			model.addAttribute("questionRecordList", bookList);
 		}
 		
 		model.addAttribute("paper", paper);
@@ -261,7 +304,16 @@ public class PaperMgController {
 		String []ids = paper.getQuestionId().split(",");
 		if(paper.getPaperState() == 2) {
 			return "redirect:/toMyPaperPage.action";
+		}else {
+			if(paper.getPaperState() == 0 || paper.getBeginTime() == null || paper.getBeginTime().isEmpty()) {
+				SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");  
+				String beginTime = formatter.format(new Date());
+				map.put("beginTime", beginTime);
+			}
+			map.put("paperState", 1);
 		}
+		paperService.updateUserPaper(map);
+		
 		List<Question> questionList = new ArrayList<Question>();
 		List<Question> quesList = new ArrayList<Question>();
 		List<Question> selList = new ArrayList<Question>();
@@ -688,11 +740,15 @@ public class PaperMgController {
 		questionRecord.setUserAnswer(stuAnswerNoSpace);
 		questionRecord.setCorrectness(correctness);
 		questionRecord.setQuizId(Integer.parseInt(paperId));
+		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");  
+		String questionEndTime = formatter.format(new Date());
+		questionRecord.setStartTime(questionEndTime);// TO-DO
+		questionRecord.setEndTime(questionEndTime);
 		bookService.insert(questionRecord);
 		
 		if(paper.getCurrentQuestion() == paperQuesIdx.length) {
 			map.put("paperState", 2);
-			SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");  
+//			SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");  
 			String endTime = formatter.format(new Date());
 			map.put("endTime", endTime);
 			msgItem.setErrorNo("1");
@@ -711,11 +767,11 @@ public class PaperMgController {
 				emailService.sendMail(parentEmailString, emailTitleString, String.format("%s finished %s questions.", user.getUserName(), String.valueOf(paperQuesIdx.length)));//change to parent email
 			}
 		}else {
-			if(paper.getPaperState() == 0 || paper.getBeginTime() == null || paper.getBeginTime().isEmpty()) {
-				SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");  
-				String beginTime = formatter.format(new Date());
-				map.put("beginTime", beginTime);
-			}
+//			if(paper.getPaperState() == 0 || paper.getBeginTime() == null || paper.getBeginTime().isEmpty()) {
+////				SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");  
+//				String beginTime = formatter.format(new Date());
+//				map.put("beginTime", beginTime);
+//			}
 			currentQ += 1;
 			map.put("currentQuestion", currentQ);
 			map.put("paperState", 1);
