@@ -94,19 +94,21 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
               <thead>
                 <tr>
                   <th width="20%">Quiz name</th>
-                  <th width="15%">Curriculum</th>
-				  <th width="20%">Start time</th>
-				  <th width="20%">Finish time</th>
-                  <th width="10%">Score</th>
+                  <th width="15%">Grade(s)</th>
+                  <th width="10%">No. of Qs</th>
+				  <th width="17.5%">Start time</th>
+				  <th width="17.5%">Finish time</th>
+                  <th width="8%">Score</th>
 <!--                   <th width="15%">Quiz Status</th> -->
-                  <th width="15%">Operation</th>
+                  <th width="12%">Operation</th>
                 </tr>
               </thead>
               <tbody>
               	<c:forEach items="${paper}" var="paper">
               	  <tr>
 	                 <td><a href="${ctx}/qrypaper.action?paperId=${paper.paperId}&userId=${paper.userId}"><font color="blue">${paper.paperName}</font></a></td>
-	                 <td>${paper.courseId}</td>
+	                 <td>${paper.gradeId}</td>
+	                 <td>${paper.questionId}</td>
 	                 <td>${paper.beginTime}</td>
 				  	 <td>${paper.endTime}</td>
 					 <td>${paper.score}</td>

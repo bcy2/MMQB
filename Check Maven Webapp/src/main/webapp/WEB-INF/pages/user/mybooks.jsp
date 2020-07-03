@@ -1,6 +1,8 @@
 <%@ page language="java" import="java.util.*" pageEncoding="utf-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <c:set var="ctx" value="${pageContext.request.contextPath}"/>
+<c:set var="newLine" value="\\n"/>
 <%
 String path = request.getContextPath();
 String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
@@ -157,82 +159,91 @@ MathJax = {
 					<a href="#"><span class="label label-success" onclick="type('type${type.typeId}')">${type.typeName}</span></a>
 				</c:forEach>
 			  </h5>
-			</div>	  
+			</div>
+			
+			<h2>Accuracy: <span>${accuracy*100 }%</span></h2>
+			<br>
 			<div class="progress">
-				 <div class="progress-bar progress-bar-success" style="width: 35%"><span class="sr-only">35% Complete (success)</span></div>
-				 <div class="progress-bar progress-bar-warning" style="width: 20%"><span class="sr-only">20% Complete (warning)</span></div>
-				 <div class="progress-bar progress-bar-danger" style="width: 10%"><span class="sr-only">10% Complete (danger)</span></div>
+				 <div class="progress-bar progress-bar-success" style="width: ${accuracy*100 }%"><span class="sr-only">correct</span></div>
+				 <div class="progress-bar progress-bar-warning" style="width: ${(1-accuracy)*100 }%"><span class="sr-only">wrong</span></div>
+				 <%-- <div class="progress-bar progress-bar-danger" style="width: ${(1-accuracy)*100 }%"><span class="sr-only">10% Complete (danger)</span></div> --%>
 			</div>
 			
 			
-			<c:forEach items="${requestScope.errorBook }" var="errorBook">
-				<c:if test="${errorBook.question.typeId==1}">
-					<div class="questionItem type${errorBook.question.typeId } grade${errorBook.question.gradeId }">
+			<c:forEach items="${requestScope.questionRecordList }" var="questionRecordList">
+				<c:if test="${questionRecordList.question.typeId==1}">
+					<div class="questionItem type${questionRecordList.question.typeId } grade${questionRecordList.question.gradeId }">
 					<hr>
 					<!-- 选择题 -->
-						<p><h4 class="bars" align="left">${errorBook.question.quesName }</h4></p>
+						<p><h4 class="bars" align="left">${fn:replace(questionRecordList.question.quesName, newLine, "<br />")}</h4></p>
+						<c:if test="${questionRecordList.question.attachmentId != 0}">
+							<img src="data:image/png;base64,${questionRecordList.question.attachmentFile}">
+						</c:if>
 						<div class="input-group">
-							A.&nbsp;<font size="4">${errorBook.question.optionA }</font></br>
-							B.&nbsp;<font size="4">${errorBook.question.optionB }</font></br>
-							C.&nbsp;<font size="4">${errorBook.question.optionC }</font></br>
-							D.&nbsp;<font size="4">${errorBook.question.optionD }</font></br>
+							A.&nbsp;<font size="4">${questionRecordList.question.optionA }</font></br>
+							B.&nbsp;<font size="4">${questionRecordList.question.optionB }</font></br>
+							C.&nbsp;<font size="4">${questionRecordList.question.optionC }</font></br>
+							D.&nbsp;<font size="4">${questionRecordList.question.optionD }</font></br>
 							<p><h4 class="bars">My answer:
 								<c:choose>
-									<c:when test="${errorBook.correctness}">
-										<font color='green'>${errorBook.userAnswer }&nbsp;&check;</font>
+									<c:when test="${questionRecordList.correctness}">
+										<font color='green'>${questionRecordList.userAnswer }&nbsp;&check;</font>
 									</c:when>
 									<c:otherwise>
-										<font color='red'>${errorBook.userAnswer }&nbsp;&cross;</font>
+										<font color='red'>${questionRecordList.userAnswer }&nbsp;&cross;</font>
 									</c:otherwise>
 								</c:choose>
 							</h4></p>
-							<c:if test="${!errorBook.correctness}">
-								<p><h4 class="bars">Correct answer: <font color="green">${errorBook.question.answer }</font></h4></p>
+							<c:if test="${!questionRecordList.correctness}">
+								<p><h4 class="bars">Correct answer: <font color="green">${questionRecordList.question.answer }</font></h4></p>
 							</c:if>
-							<c:if test="${errorBook.question.answerDetail}">
-								<p><h4 class="bars">Explanation: ${errorBook.question.answerDetail }</h4></p>
+							<c:if test="${questionRecordList.question.answerDetail}">
+								<p><h4 class="bars">Explanation: ${questionRecordList.question.answerDetail }</h4></p>
 							</c:if>
-							<p><h4 class="bars">From quiz: ${errorBook.quizId } / grade: ${errorBook.question.gradeId }</h4></p>
+							<p><h4 class="bars">From quiz: <strong>${questionRecordList.quizName }</strong> / Question grade: <strong>${questionRecordList.gradeName }</strong></h4></p>
 						</div>
 					</div>
 				</c:if>
 				
-				<c:if test="${errorBook.question.typeId==2}">
-					<div class="questionItem type${errorBook.question.typeId } grade${errorBook.question.gradeId }">
+				<c:if test="${questionRecordList.question.typeId==2}">
+					<div class="questionItem type${questionRecordList.question.typeId } grade${questionRecordList.question.gradeId }">
 					<hr>
 					<!-- 填空题 -->
-					<p><h4 class="bars" align="left">${errorBook.question.quesName }</h4></p>
+					<p><h4 class="bars" align="left">${fn:replace(questionRecordList.question.quesName, newLine, "<br />")}</h4></p>
+						<c:if test="${questionRecordList.question.attachmentId != 0}">
+							<img src="data:image/png;base64,${questionRecordList.question.attachmentFile}">
+						</c:if>
 						<div class="input-group">
 							<p><h4 class="bars">My answer:
 								<c:choose>
-									<c:when test="${errorBook.correctness}">
-										<font color='green'>${errorBook.userAnswer }&nbsp;&check;</font>
+									<c:when test="${questionRecordList.correctness}">
+										<font color='green'>${questionRecordList.userAnswer }&nbsp;&check;</font>
 									</c:when>
 									<c:otherwise>
-										<font color='red'>${errorBook.userAnswer }&nbsp;&cross;</font>
+										<font color='red'>${questionRecordList.userAnswer }&nbsp;&cross;</font>
 									</c:otherwise>
 								</c:choose>
 							</h4></p>
-							<c:if test="${!errorBook.correctness}">
-								<p><h4 class="bars">Correct answer: <font color="green">${errorBook.question.answer }</font></h4></p>
+							<c:if test="${!questionRecordList.correctness}">
+								<p><h4 class="bars">Correct answer: <font color="green">${questionRecordList.question.answer }</font></h4></p>
 							</c:if>
-							<c:if test="${errorBook.question.answerDetail}">
-								<p><h4 class="bars"><font color="red">Explanation:${errorBook.question.answerDetail }</font></h4></p>
+							<c:if test="${questionRecordList.question.answerDetail}">
+								<p><h4 class="bars"><font color="red">Explanation:${questionRecordList.question.answerDetail }</font></h4></p>
 							</c:if>
-							<p><h4 class="bars">From quiz: ${errorBook.quizId } / grade: ${errorBook.question.gradeId }</h4></p>
+							<p><h4 class="bars">From quiz: <strong>${questionRecordList.quizName }</strong> / Question grade: <strong>${questionRecordList.gradeName }</strong></h4></p>
 						</div>
 					</div>
 				</c:if>
 				
-				<%-- <c:if test="${errorBook.question.typeId==5}">
-					<div class="questionItem type${errorBook.question.typeId } grade${errorBook.question.gradeId }">
+				<%-- <c:if test="${questionRecordList.question.typeId==5}">
+					<div class="questionItem type${questionRecordList.question.typeId } grade${questionRecordList.question.gradeId }">
 					<hr>
 					<!-- 多选题 -->
-					<p><h4 class="bars" align="left">${errorBook.question.quesName }</h4></p>
+					<p><h4 class="bars" align="left">${questionRecordList.question.quesName }</h4></p>
 						<div class="input-group">
-							<p><h4 class="bars"><font color="blue">My answer：${errorBook.userAnswer } </font></h4></p>
-							<p><h4 class="bars">Correct answer：${errorBook.question.answer }</h4></p>
-							<p><h4 class="bars"><font color="red">Explanation:${errorBook.question.answerDetail }</font></h4></p>
+							<p><h4 class="bars"><font color="blue">My answer：${questionRecordList.userAnswer } </font></h4></p>
+							<p><h4 class="bars">Correct answer：${questionRecordList.question.answer }</h4></p>
+							<p><h4 class="bars"><font color="red">Explanation:${questionRecordList.question.answerDetail }</font></h4></p>
 						</div>
 					</div>
 				</c:if> --%>

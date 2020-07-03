@@ -90,11 +90,12 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
             <caption><font color="green">Available</font></caption>
               <thead>
                 <tr>
-                  <th width="25%">Quiz name</th>
-                  <th width="15%">Curriculum</th>
+                  <th width="20%">Quiz name</th>
+                  <th width="20%">Grade(s)</th>
+                  <th width="10%">No. of Qs</th>
+                  <th width="10%">Current Q</th>
                   <th width="20%">Create time</th>
 				  <th width="20%">Start time</th>
-                  <th width="20%">Current Question</th>
 <!--                   <th>Quiz Status</th> -->
                 </tr>
               </thead>
@@ -102,11 +103,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
               	<c:forEach items="${paper}" var="paper">
               	  <tr>
 	                 <td><a href="${ctx}/qryPaperDetail.action?paperId=${paper.paperId}&userId=${paper.userId}"><font color="blue">${paper.paperName}</font></a></td>
-	                 <td>${paper.courseId}</td>
-				  	 <td>${paper.createTime}</td>
-	                 <td>${paper.beginTime}</td>
-					 <%-- <td>${paper.score}</td> --%>
-					 <c:choose>
+	                 <td>${paper.gradeId}</td>
+	                 <td>${paper.questionId}</td>
+	                 <c:choose>
 					    <c:when test="${paper.paperState==0}">
 					        <td>N/A</td>
 					    </c:when>
@@ -120,6 +119,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					        <td></td>
 					    </c:otherwise>
 					</c:choose>
+				  	 <td>${paper.createTime}</td>
+	                 <td>${paper.beginTime}</td>
+					 <%-- <td>${paper.score}</td> --%>
 <%-- 					 <td>
 					 	<font color="green">
 						 	<c:if test="${paper.paperState==0}">Ready to start</c:if>
@@ -140,11 +142,12 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
             <caption><font color="orange">In Progress</font></caption>
               <thead>
                 <tr>
-                  <th width="25%">Quiz name</th>
-                  <th width="15%">Curriculum</th>
+                  <th width="20%">Quiz name</th>
+                  <th width="20%">Grade(s)</th>
+                  <th width="10%">No. of Qs</th>
+                  <th width="10%">Current Q</th>
                   <th width="20%">Create time</th>
 				  <th width="20%">Start time</th>
-                  <th width="20%">Current Question</th>
 <!--                   <th>Quiz Status</th> -->
                 </tr>
               </thead>
@@ -152,10 +155,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
               	<c:forEach items="${paperInProgress}" var="paper">
               	  <tr>
 	                 <td><a href="${ctx}/qryPaperDetail.action?paperId=${paper.paperId}&userId=${paper.userId}"><font color="blue">${paper.paperName}</font></a></td>
-	                 <td>${paper.courseId}</td>
-				  	 <td>${paper.createTime}</td>
-	                 <td>${paper.beginTime}</td>
-					 <%-- <td>${paper.score}</td> --%>
+	                 <td>${paper.gradeId}</td>
+	                 <td>${paper.questionId}</td>
 					 <c:choose>
 					    <c:when test="${paper.paperState==0}">
 					        <td>N/A</td>
@@ -170,6 +171,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					        <td></td>
 					    </c:otherwise>
 					</c:choose>
+				  	 <td>${paper.createTime}</td>
+	                 <td>${paper.beginTime}</td>
+					 <%-- <td>${paper.score}</td> --%>
 <%-- 					 <td>
 					 	<font color="green">
 						 	<c:if test="${paper.paperState==0}">Ready to start</c:if>

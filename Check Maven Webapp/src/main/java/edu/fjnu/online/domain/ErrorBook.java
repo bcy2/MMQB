@@ -26,6 +26,8 @@ public class ErrorBook {
 	private String endTime;
 	private boolean correctness;
 	private int quizId;
+	private String quizName;
+	private String gradeName;
 	
 	public int getBookId() {
 		return bookId;
@@ -75,12 +77,24 @@ public class ErrorBook {
 	public void setQuizId(int quizId) {
 		this.quizId = quizId;
 	}
+	public String getQuizName() {
+		return quizName;
+	}
+	public void setQuizName(String quizName) {
+		this.quizName = quizName;
+	}
+	public String getGradeName() {
+		return gradeName;
+	}
+	public void setGradeName(String gradeName) {
+		this.gradeName = gradeName;
+	}
 	public ErrorBook() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
 	public ErrorBook(int bookId, String userId, String userAnswer, Question question, String startTime, String endTime,
-			boolean correctness, int quizId) {
+			boolean correctness, int quizId, String quizName, String gradeName) {
 		super();
 		this.bookId = bookId;
 		this.userId = userId;
@@ -90,14 +104,14 @@ public class ErrorBook {
 		this.endTime = endTime;
 		this.correctness = correctness;
 		this.quizId = quizId;
+		this.quizName = quizName;
+		this.gradeName = gradeName;
 	}
 	@Override
 	public String toString() {
 		return "ErrorBook [bookId=" + bookId + ", userId=" + userId + ", userAnswer=" + userAnswer + ", question="
 				+ question + ", startTime=" + startTime + ", endTime=" + endTime + ", correctness=" + correctness
-				+ ", quizId=" + quizId + "]";
+				+ ", quizId=" + quizId + ", quizName=" + quizName + ", gradeName=" + gradeName + "]";
 	}
-
-
 	
 }

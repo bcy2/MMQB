@@ -2,6 +2,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <c:set var="ctx" value="${pageContext.request.contextPath}"/>
+<c:set var="newLine" value="\\n"/>
 <%
 String path = request.getContextPath();
 String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
@@ -201,8 +202,73 @@ MathJax = {
 				<%-- <input type="hidden" name="currentQ" id="currentQ" value="${currentQuestion}"/> --%>
 				<input type="hidden" name="paperId" id="paperId" value="${paper.paperId }"/>
 				<div class="question-group">
-				<hr>
-				<c:forEach items="${questionList}" var="quesType" varStatus="loop">
+				<c:forEach items="${requestScope.questionRecordList }" var="questionRecordList">
+				<c:if test="${questionRecordList.question.typeId==1}">
+					<div class="questionItem type${questionRecordList.question.typeId } grade${questionRecordList.question.gradeId }">
+					<hr>
+					<!-- 选择题 -->
+						<p><h4 class="bars" align="left">${fn:replace(questionRecordList.question.quesName, newLine, "<br />")}</h4></p>
+						<c:if test="${questionRecordList.question.attachmentId != 0}">
+							<img src="data:image/png;base64,${questionRecordList.question.attachmentFile}">
+						</c:if>
+						<div class="input-group">
+							A.&nbsp;<font size="4">${questionRecordList.question.optionA }</font></br>
+							B.&nbsp;<font size="4">${questionRecordList.question.optionB }</font></br>
+							C.&nbsp;<font size="4">${questionRecordList.question.optionC }</font></br>
+							D.&nbsp;<font size="4">${questionRecordList.question.optionD }</font></br>
+							<p><h4 class="bars">My answer:
+								<c:choose>
+									<c:when test="${questionRecordList.correctness}">
+										<font color='green'>${questionRecordList.userAnswer }&nbsp;&check;</font>
+									</c:when>
+									<c:otherwise>
+										<font color='red'>${questionRecordList.userAnswer }&nbsp;&cross;</font>
+									</c:otherwise>
+								</c:choose>
+							</h4></p>
+							<c:if test="${!questionRecordList.correctness}">
+								<p><h4 class="bars">Correct answer: <font color="green">${questionRecordList.question.answer }</font></h4></p>
+							</c:if>
+							<c:if test="${questionRecordList.question.answerDetail}">
+								<p><h4 class="bars">Explanation: ${questionRecordList.question.answerDetail }</h4></p>
+							</c:if>
+							<%-- <p><h4 class="bars">From quiz: <strong>${questionRecordList.quizName }</strong> / Question grade: <strong>${questionRecordList.gradeName }</strong></h4></p> --%>
+						</div>
+					</div>
+				</c:if>
+				
+				<c:if test="${questionRecordList.question.typeId==2}">
+					<div class="questionItem type${questionRecordList.question.typeId } grade${questionRecordList.question.gradeId }">
+					<hr>
+					<!-- 填空题 -->
+					<p><h4 class="bars" align="left">${fn:replace(questionRecordList.question.quesName, newLine, "<br />")}</h4></p>
+						<c:if test="${questionRecordList.question.attachmentId != 0}">
+							<img src="data:image/png;base64,${questionRecordList.question.attachmentFile}">
+						</c:if>
+						<div class="input-group">
+							<p><h4 class="bars">My answer:
+								<c:choose>
+									<c:when test="${questionRecordList.correctness}">
+										<font color='green'>${questionRecordList.userAnswer }&nbsp;&check;</font>
+									</c:when>
+									<c:otherwise>
+										<font color='red'>${questionRecordList.userAnswer }&nbsp;&cross;</font>
+									</c:otherwise>
+								</c:choose>
+							</h4></p>
+							<c:if test="${!questionRecordList.correctness}">
+								<p><h4 class="bars">Correct answer: <font color="green">${questionRecordList.question.answer }</font></h4></p>
+							</c:if>
+							<c:if test="${questionRecordList.question.answerDetail}">
+								<p><h4 class="bars"><font color="red">Explanation:${questionRecordList.question.answerDetail }</font></h4></p>
+							</c:if>
+							<%-- <p><h4 class="bars">From quiz: <strong>${questionRecordList.quizName }</strong> / Question grade: <strong>${questionRecordList.gradeName }</strong></h4></p> --%>
+						</div>
+					</div>
+				</c:if>
+				
+			</c:forEach>
+				<%-- <c:forEach items="${questionList}" var="quesType" varStatus="loop">
 				<p><h4 class="bars" align="left">${loop.index+1}.</h4></p>
 					<c:if test="${quesType.typeId == 1}">
 						<p><h4 class="bars" align="left">${fn:replace(quesType.quesName, newLine, "<br />")}</h4></p>
@@ -214,9 +280,6 @@ MathJax = {
 							<input name="${quesType.questionId }" type="radio" value="B"/>&nbsp;<font size="4">${quesType.optionB }</font></br>
 							<input name="${quesType.questionId }" type="radio" value="C"/>&nbsp;<font size="4">${quesType.optionC }</font></br>
 							<input name="${quesType.questionId }" type="radio" value="D"/>&nbsp;<font size="4">${quesType.optionD }</font></br>
-		  					<%-- <p><h4 class="bars"><font color="blue">My Answer: ${errorBook.userAnswer } </font></h4></p>
-							<p><h4 class="bars">Correct Answer: ${errorBook.question.answer }（ ${errorBook.question.answerDetail }）</h4></p>
-							<p><h4 class="bars"><font color="red">Explanation: ${errorBook.question.remark }</font></h4></p> --%>
 						</div>
 					</c:if>
 					
@@ -233,7 +296,7 @@ MathJax = {
 						</div>
 					</c:if>
 					
-	<%-- 				<c:if test="${quesType.typeId == 5}">
+					<c:if test="${quesType.typeId == 5}">
 						<p><h4 class="bars" align="left">${fn:replace(quesType.quesName, newLine, "<br />")}</h4></p>
 						<div class="input-group">
 						  <span class="input-group-addon" id="sizing-addon2">Answer:</span>
@@ -241,48 +304,10 @@ MathJax = {
 						  		class="form-control" placeholder="Type in your answer here">
 						  <br />
 						</div>
-					</c:if> --%>
+					</c:if>
 					<hr>
-				</c:forEach>
+				</c:forEach> --%>
 			
-			 		<%-- <div class="input-group">
-						  <h4 class="bars" align="left"><font color="blue">${selectQ }</font></h4>
-					</div>
-					<input type="hidden" name="paperId" id="paperId" value="${paper.paperId }"/>
-					<c:forEach items="${selList}" var="selType">
-						<p><h4 class="bars" align="left">${selType.quesName }</h4></p>
-						<div class="input-group">
-							<input name="${selType.questionId }" type="radio" value="A" checked="checked"/><font size="4">${selType.optionA }</font></br>
-							<input name="${selType.questionId }" type="radio" value="B"/><font size="4">${selType.optionB }</font></br>
-							<input name="${selType.questionId }" type="radio" value="C"/><font size="4">${selType.optionC }</font></br>
-							<input name="${selType.questionId }" type="radio" value="D"/><font size="4">${selType.optionD }</font></br>
-		 					<p><h4 class="bars"><font color="blue">我的答案：${errorBook.userAnswer } </font></h4></p>
-							<p><h4 class="bars">标准答案：${errorBook.question.answer }（ ${errorBook.question.answerDetail }）</h4></p>
-							<p><h4 class="bars"><font color="red">解析：${errorBook.question.remark }</font></h4></p>
-						</div>
-					</c:forEach>
-					<div class="input-group">
-						  <h4 class="bars" align="left"><font color="blue">${inpQ }</font></h4>
-					</div>
-					<c:forEach items="${inpList }" var="inpType">
-						<p><h4 class="bars" align="left">${inpType.quesName }</h4></p><br/>
-						<div class="input-group">
-						  <span class="input-group-addon" id="sizing-addon2">答案：</span>
-						  <input type="text" name="${inpType.questionId }" id="${inpType.questionId }" 
-						  		class="form-control" placeholder="请在此输入答案...">
-						</div>
-					</c:forEach>
-					<div class="input-group">
-						  <h4 class="bars" align="left"><font color="blue">${desQ }</font></h4>
-					</div>
-					<c:forEach items="${desList }" var="desType">
-						<p><h4 class="bars" align="left">${desType.quesName }</h4></p>
-						<div class="input-group">
-						  <span class="input-group-addon" id="sizing-addon2">答案：</span>
-						  <input type="text" name="${desType.questionId }" id="${desType.questionId }" 
-						  		class="form-control" placeholder="请在此输入答案...">
-						</div>
-					</c:forEach> --%>
 				</div>
 		<div class="grid_3 grid_5" align="center">
 		  <h3 class="t-button">

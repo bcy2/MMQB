@@ -18,6 +18,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		<result property="endTime" column="end_time"/>
 		<result property="correctness" column="correctness"/>
 		<result property="quizId" column="quiz_id"/>
+		<result property="quizName" column="quiz_name"/>
 		
 		<association property="question" javaType="edu.fjnu.online.domain.Question">
 			<id property="questionId" column="id"/>
@@ -53,9 +54,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<!-- 新增 -->
 	<insert id="insert" parameterType="edu.fjnu.online.domain.ErrorBook">
 		insert into question_record
-		(username,student_answer,question_id,start_time,end_time,correctness,quiz_id)
+		(username,student_answer,question_id,start_time,end_time,correctness,quiz_id,quiz_name)
 		values
-		(#{userId},#{userAnswer},#{question.questionId},#{startTime},#{endTime},#{correctness},#{quizId})
+		(#{userId},#{userAnswer},#{question.questionId},#{startTime},#{endTime},#{correctness},#{quizId},#{quizName})
 	</insert>
 	
 	<!-- 修改 -->
@@ -88,6 +89,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			</if>
 			<if test="quizId!=null">
 				quiz_id=#{quizId},
+			</if>
+			<if test="quizName!=null">
+				quiz_name=#{quizName},
 			</if>
 		</set>
 			where id=#{bookId}

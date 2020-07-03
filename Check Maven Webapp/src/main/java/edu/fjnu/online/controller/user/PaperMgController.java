@@ -9,12 +9,15 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.http.HttpSession;
 
@@ -141,8 +144,17 @@ public class PaperMgController {
 		user = userService.getStu(user);
 		List<Paper> paperDone = paperService.getUserPaperById(user.getUserId());
 		for(Paper p : paperDone){
-			Course course = courseService.get(Integer.parseInt(p.getCourseId()));
-			p.setCourseId(course.getCourseName());
+			String[] gradeId = p.getGradeId().split(",");
+			String gradeNameString = "";
+			for (String id : gradeId) {
+				Grade grade = gradeService.get(Integer.valueOf(id));
+				gradeNameString += grade.getGradeName()+",";
+			}
+			if(!gradeNameString.isEmpty()){
+				gradeNameString = QuestionStuffs.removeLast(gradeNameString);
+			}
+			p.setGradeId(gradeNameString);
+			p.setQuestionId(String.valueOf(p.getQuestionId().split(",").length));
 		}
 		model.addAttribute("user", user);
 		model.addAttribute("paper", paperDone);
@@ -261,7 +273,7 @@ public class PaperMgController {
 			model.addAttribute("questionList", questionList);
 		}
 		
-//		bookList.sort(Comparator.comparing(item->Arrays.asList(ids).indexOf())));
+//		bookList.sort(Comparator.comparing(b->Arrays.asList(ids).indexOf(b)));
 		
 		if(bookList.size()>0) {
 			model.addAttribute("questionRecordList", bookList);
@@ -428,7 +440,6 @@ public class PaperMgController {
 		map.put("userId", user.getUserId());
 		//List<Paper> paper = paperService.getUserPaperById(user.getUserId());
 		
-		Course course = null;
 //		List<Paper> paper1 = paperService.getUndoPaper(map);
 //		for(Paper p : paper1){
 //			course = courseService.get(Integer.parseInt(p.getCourseId()));
@@ -443,12 +454,30 @@ public class PaperMgController {
 //		papers.addAll(paperUndo);
 //		papers.addAll(paperInProgress);
 		for(Paper p : paperUndo){
-			course = courseService.get(Integer.parseInt(p.getCourseId()));
-			p.setCourseId(course.getCourseName());
+			String[] gradeId = p.getGradeId().split(",");
+			String gradeNameString = "";
+			for (String id : gradeId) {
+				Grade grade = gradeService.get(Integer.valueOf(id));
+				gradeNameString += grade.getGradeName()+",";
+			}
+			if(!gradeNameString.isEmpty()){
+				gradeNameString = QuestionStuffs.removeLast(gradeNameString);
+			}
+			p.setGradeId(gradeNameString);
+			p.setQuestionId(String.valueOf(p.getQuestionId().split(",").length));
 		}
 		for(Paper p : paperInProgress){
-			course = courseService.get(Integer.parseInt(p.getCourseId()));
-			p.setCourseId(course.getCourseName());
+			String[] gradeId = p.getGradeId().split(",");
+			String gradeNameString = "";
+			for (String id : gradeId) {
+				Grade grade = gradeService.get(Integer.valueOf(id));
+				gradeNameString += grade.getGradeName()+",";
+			}
+			if(!gradeNameString.isEmpty()){
+				gradeNameString = QuestionStuffs.removeLast(gradeNameString);
+			}
+			p.setGradeId(gradeNameString);
+			p.setQuestionId(String.valueOf(p.getQuestionId().split(",").length));
 		}
 		model.addAttribute("user", user);
 		model.addAttribute("paper", paperUndo);
@@ -740,6 +769,7 @@ public class PaperMgController {
 		questionRecord.setUserAnswer(stuAnswerNoSpace);
 		questionRecord.setCorrectness(correctness);
 		questionRecord.setQuizId(Integer.parseInt(paperId));
+		questionRecord.setQuizName(paper.getPaperName());
 		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");  
 		String questionEndTime = formatter.format(new Date());
 		questionRecord.setStartTime(questionEndTime);// TO-DO
@@ -997,21 +1027,34 @@ public class PaperMgController {
 //			descList = questionService.createPaper(map);
 //			paperList.addAll(descList);
 //		}
+		List<String> gradeIdList = new ArrayList<String>();
+		String gradeId = "";
 		String quesId = "";
 		for(Question ques : questionList){
 			quesId+=ques.getQuestionId()+",";
+			gradeIdList.add(ques.getGradeId());
 		}
 		if(!quesId.isEmpty()){
 			quesId = QuestionStuffs.removeLast(quesId);
 		}
+		
+		Set<String> gradeIdSet = new HashSet<String>(gradeIdList);
+		for (String string : gradeIdSet) {
+			gradeId+=string+",";
+		}
+		if(!gradeId.isEmpty()){
+			gradeId = QuestionStuffs.removeLast(gradeId);
+		}
+		
 		if(map.get("quizName").toString().isEmpty()) {
 			paper.setPaperName("Untitled");
 		}else {
 			paper.setPaperName(map.get("quizName").toString());
 		}
+		
 		paper.setUserId(user.getUserId());
 		paper.setCourseId(user.getCurriculum());
-		paper.setGradeId(user.getGrade());
+		paper.setGradeId(gradeId);
 		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");  
 		String createTime = formatter.format(new Date());
 		paper.setCreateTime(createTime);
