@@ -49,7 +49,7 @@ body a:hover{
 }
 .navbar-nav {
   float: right;
-  width: 65%;
+  width: 70%;
 }
 .navbar-default {
   background:none;
@@ -1404,7 +1404,7 @@ h3.tittle.tit3 {
 	}
 	.navbar-nav {
 	  float: right;
-	  width: 50%;
+	  width: 60%;
 	}
 	.sb-search-input {
 	  width: 69%;

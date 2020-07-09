@@ -53,6 +53,8 @@ public class ErrorBookController {
 //		}
 		List<ErrorBook> errorBookList = bookService.find(new ErrorBook());
 		List<Grade> gradeList = gradeService.findActive(new Grade());
+		Map<String,String> gradeMap = new HashMap();
+		for (Grade grade : gradeList) gradeMap.put(String.valueOf(grade.getGradeId()),grade.getGradeName());
 		List<Course> courseList = courseService.find(new Course());
 		List<Type> typeList = typeService.find(new Type());
 		Map map = new HashMap();
@@ -81,14 +83,17 @@ public class ErrorBookController {
 			}
 			
 			// set grade name
-			Grade grade = gradeService.get(Integer.valueOf(errorBook.getQuestion().getGradeId()));
-			errorBook.setGradeName(grade.getGradeName());
+			//Grade grade = gradeService.get(Integer.valueOf(errorBook.getQuestion().getGradeId()));
+			
+//			stream way
+//			errorBook.setGradeName(gradeList.stream().filter(grade -> errorBook.getQuestion().getGradeId().equals(String.valueOf(grade.getGradeId()))).findFirst().orElse(null).getGradeName());
+			errorBook.setGradeName(gradeMap.get(errorBook.getQuestion().getGradeId()));
+			
 		}
 		
-		double accuracy = (double) correctCount/bookList.size();
-		accuracy = (Math.round(accuracy*100)/100.0);
+		double accuracy = QuestionStuffs.calcAccuracyForQuesSet(bookList);
 		
-		model.addAttribute("accuracy", accuracy);
+		model.addAttribute("accuracy", String.format("%.2f", accuracy));
 		model.addAttribute("grade", gradeList);
 		model.addAttribute("course", courseList);
 		model.addAttribute("type", typeList);

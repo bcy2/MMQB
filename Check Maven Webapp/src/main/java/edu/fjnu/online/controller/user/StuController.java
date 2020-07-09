@@ -18,23 +18,35 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import edu.fjnu.online.domain.Course;
+import edu.fjnu.online.domain.ErrorBook;
 import edu.fjnu.online.domain.Grade;
 import edu.fjnu.online.domain.MsgItem;
+import edu.fjnu.online.domain.Paper;
 import edu.fjnu.online.domain.Question;
 import edu.fjnu.online.domain.User;
 import edu.fjnu.online.service.CourseService;
 import edu.fjnu.online.service.GradeService;
+import edu.fjnu.online.service.PaperService;
 import edu.fjnu.online.service.QuestionService;
 import edu.fjnu.online.service.UserService;
+import edu.fjnu.online.service.ErrorBookService;
 import edu.fjnu.online.util.MD5Util;
+import edu.fjnu.online.util.QuestionStuffs;
 import jnr.ffi.Struct.int16_t;
 
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.regex.*;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 @Controller
 public class StuController {
@@ -46,6 +58,10 @@ public class StuController {
 	CourseService courseService;
 	@Autowired
 	QuestionService questionService;
+	@Autowired
+	PaperService paperService;
+	@Autowired
+	ErrorBookService bookService;
 	
 	public void showAllAttributes(HttpSession session){
 		Enumeration<String> attributes = session.getAttributeNames();
@@ -263,6 +279,152 @@ public class StuController {
 		}
 		session.setAttribute("userName", user.getUserName());
 		return "redirect:/toIndex.action";			
+	}
+	
+	@RequestMapping("/toUserStatistics.action")
+	public String toUserStatistics(User user, Model model, HttpSession session){
+//		temp security implementation
+		if(session.getAttribute("user") == null){
+			return "redirect:/toLogin.action";
+		}
+//		System.out.println("user"+session.getAttribute("user"));//null when logged out
+		
+		User loginUser = (User) session.getAttribute("user");
+		List<Grade> gradeList = gradeService.findActive(new Grade());
+		Map<String,String> gradeMap = new HashMap();
+		for (Grade grade : gradeList) gradeMap.put(String.valueOf(grade.getGradeId()),grade.getGradeName());
+		List<Course> courseList = courseService.find(new Course());
+		model.addAttribute("grade", gradeList);
+		model.addAttribute("course", courseList);
+		
+		//==================================
+		
+		user = userService.getStu(loginUser);
+		
+		Map curriculumSubtopicMap = new HashMap();
+		List<Question> uniqueSubtopics = questionService.findSubtopic(user.getCurriculum());
+		for (Question q: uniqueSubtopics) {
+			if (!curriculumSubtopicMap.containsKey(q.getGradeId())) {
+				Map topicMap = new HashMap();
+				curriculumSubtopicMap.put(q.getGradeId(), topicMap);
+			}
+			Map topicMap = (Map) curriculumSubtopicMap.get(q.getGradeId());
+	
+			if (!topicMap.containsKey(q.getTopic())) {
+				Map subtopicMap = new HashMap();
+				topicMap.put(q.getTopic(), subtopicMap);
+			}
+			Map subtopicMap = (Map) topicMap.get(q.getTopic());
+	
+			if (!subtopicMap.containsKey(q.getSubtopic())) {
+//				Map typeMap = new HashMap();
+				subtopicMap.put(q.getSubtopic(), q.getSubtopicId());
+			}
+//			Map typeMap = (Map) subtopicMap.get(q.getSubtopic());
+		}
+		
+		List<Paper> paperDone = paperService.getUserPaperById(user.getUserId());
+		Map map =new HashMap();
+		map.put("userId", user.getUserId());
+		List<Paper> paperUndo = paperService.qryUndoPaper(map);
+		List<Paper> paperInProgress = paperService.qryInProgressPaper(map);
+		
+		List<ErrorBook> allBooksList = bookService.getBookInfo(map);
+		
+		Map quizDoneMap = new HashMap();
+		for(Paper paper : paperDone){
+			Map quizMap = new HashMap();
+			quizMap.put("userId", user.getUserId());
+			quizMap.put("quizId", paper.getPaperId());
+			
+			SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); 
+			Date quizStartTime = null;
+			try {
+				quizStartTime = formatter.parse(paper.getBeginTime());
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			Date quizEndTime = null;
+			try {
+				quizEndTime = formatter.parse(paper.getEndTime());
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			List<ErrorBook> bookList = bookService.getBookInfoForQuiz(quizMap);
+			
+			for (Iterator iterator = bookList.iterator(); iterator.hasNext();) {
+				ErrorBook errorBook = (ErrorBook) iterator.next();
+				
+				String questionEndTimeString = errorBook.getEndTime();
+				if (questionEndTimeString == null) {
+					iterator.remove();
+					continue;
+				}
+				
+				Date questionEndTime = null;
+				try {
+					questionEndTime = formatter.parse(questionEndTimeString);
+				} catch (ParseException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				if (questionEndTime.before(quizStartTime) || questionEndTime.after(quizEndTime)) {
+					iterator.remove();
+				}
+				
+				errorBook.setUserId(null);
+				errorBook.setUserAnswer(null);
+				Question origQuestion = errorBook.getQuestion();
+				Question abridgedQuestion = new Question();
+//				abridgedQuestion.setQuestionId(origQuestion.getQuestionId());
+//				abridgedQuestion.setCourseId(origQuestion.getCourseId());
+				abridgedQuestion.setGradeId(origQuestion.getGradeId());
+				abridgedQuestion.setDifficulty(origQuestion.getDifficulty());
+				abridgedQuestion.setTopic(origQuestion.getTopic());
+				abridgedQuestion.setSubtopic(origQuestion.getSubtopic());
+				abridgedQuestion.setSubtopicId(origQuestion.getSubtopicId());
+				errorBook.setQuestion(abridgedQuestion);
+				
+				// set grade name
+//				Grade grade = gradeService.get(Integer.valueOf(errorBook.getQuestion().getGradeId()));
+//				errorBook.setGradeName(grade.getGradeName());
+//				errorBook.setGradeName(errorBook.getQuestion().getGradeId());
+				
+			}
+			
+			List<Object> quizDoneNAccuracy = new ArrayList <Object>();
+			quizDoneNAccuracy.add(bookList);
+			
+			double quizDoneAccuracy = QuestionStuffs.calcAccuracyForQuesSet(bookList);
+			quizDoneNAccuracy.add(quizDoneAccuracy);
+//			System.out.println(String.format("Accuracy for %s: %f",paper.getPaperName(),quizDoneAccuracy));
+			
+			quizDoneMap.put(paper.getPaperName(), quizDoneNAccuracy);
+		}
+		model.addAttribute("quizDoneMap", quizDoneMap);
+		
+		double allGradesAccuracy = QuestionStuffs.calcAccuracyForQuesSet(allBooksList);
+		model.addAttribute("allGradesAccuracy", allGradesAccuracy);
+		
+		Map gradeAccuracies = QuestionStuffs.calcAccuracyForAllGrades(curriculumSubtopicMap, allBooksList, gradeMap);
+		System.out.println(gradeAccuracies);
+		model.addAttribute("gradeAccuracies", gradeAccuracies);
+		
+		Map topicAccuracies = QuestionStuffs.calcAccuracyForAllTopics(curriculumSubtopicMap, allBooksList);
+		System.out.println(topicAccuracies);
+		model.addAttribute("topicAccuracies", topicAccuracies);
+		
+		Map subtopicAccuracies = QuestionStuffs.calcAccuracyForAllSubtopics(curriculumSubtopicMap, allBooksList);
+		System.out.println(subtopicAccuracies);
+		model.addAttribute("subtopicAccuracies", subtopicAccuracies);
+
+//		Grade grade = gradeService.get(Integer.parseInt(user.getGrade()));
+//		user.setGrade(grade.getGradeName());
+//		model.addAttribute("userGradeName", grade.getGradeName());
+		model.addAttribute("user", user);
+		return "/user/userStatistics.jsp";			
 	}
 	
 	// 跳转到登录页面

@@ -188,33 +188,33 @@ public class PaperMgController {
 		map.put("paperId", paperId);
 		map.put("userId", userId);
 		Paper paper = paperService.getPaperDetail(map);
-		Question question = null;
-		String []ids = paper.getQuestionId().split(",");
-		List<Question> questionList = new ArrayList<Question>();
+//		Question question = null;
+//		String []ids = paper.getQuestionId().split(",");
+//		List<Question> questionList = new ArrayList<Question>();
 //		List<Question> selList = new ArrayList<Question>();
 //		List<Question> inpList = new ArrayList<Question>();
 //		List<Question> desList = new ArrayList<Question>();
-		for(int i = 0;i<ids.length;i++){
-			question = questionService.get(Integer.parseInt(ids[i]));
-			if ("1".equalsIgnoreCase(question.getTypeId())) {
-				question = QuestionStuffs.convertAnsForMCQ(question);
-			}
-			question = QuestionStuffs.replaceLatexAnsWithUnderscore(question);
-			
-			if (question.getAttachmentId() != 0) {
-				question.setAttachmentFile(attachmentService.get(question.getAttachmentId()).getAttachmentFile());
-			}
-//			if("1".equals(question.getTypeId())){//MCQ
-//				selList.add(question);
+//		for(int i = 0;i<ids.length;i++){
+//			question = questionService.get(Integer.parseInt(ids[i]));
+//			if ("1".equalsIgnoreCase(question.getTypeId())) {
+//				question = QuestionStuffs.convertAnsForMCQ(question);
 //			}
-//			if("2".equals(question.getTypeId())){//FBQ
-//				inpList.add(question);
+//			question = QuestionStuffs.replaceLatexAnsWithUnderscore(question);
+//			
+//			if (question.getAttachmentId() != 0) {
+//				question.setAttachmentFile(attachmentService.get(question.getAttachmentId()).getAttachmentFile());
 //			}
-//			if("5".equals(question.getTypeId())){//简答题
-//				desList.add(question);
-//			}
-			questionList.add(question);
-		}
+////			if("1".equals(question.getTypeId())){//MCQ
+////				selList.add(question);
+////			}
+////			if("2".equals(question.getTypeId())){//FBQ
+////				inpList.add(question);
+////			}
+////			if("5".equals(question.getTypeId())){//简答题
+////				desList.add(question);
+////			}
+//			questionList.add(question);
+//		}
 		
 		Map quizMap = new HashMap();
 		quizMap.put("userId", user.getUserId());
@@ -239,9 +239,15 @@ public class PaperMgController {
 		
 		for (Iterator iterator = bookList.iterator(); iterator.hasNext();) {
 			ErrorBook errorBook = (ErrorBook) iterator.next();
+			String questionEndTimeString = errorBook.getEndTime();
+			if (questionEndTimeString == null) {
+				iterator.remove();
+				continue;
+			}
+			
 			Date questionEndTime = null;
 			try {
-				questionEndTime = formatter.parse(errorBook.getEndTime());
+				questionEndTime = formatter.parse(questionEndTimeString);
 			} catch (ParseException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -250,6 +256,27 @@ public class PaperMgController {
 			if (questionEndTime.before(quizStartTime) || questionEndTime.after(quizEndTime)) {
 				iterator.remove();
 			}
+			
+			//set question info
+			Question question = errorBook.getQuestion();
+			
+			if ("1".equalsIgnoreCase(question.getTypeId())) {
+				question = QuestionStuffs.convertAnsForMCQ(question);
+			}
+			question = QuestionStuffs.replaceLatexAnsWithUnderscore(question);
+			
+			if (question.getAttachmentId() != 0) {
+				question.setAttachmentFile(attachmentService.get(question.getAttachmentId()).getAttachmentFile());
+			}
+			errorBook.setQuestion(question);
+			
+//			if (errorBook.isCorrectness()) {
+//				correctCount+=1;
+//			}
+			
+			// set grade name
+			Grade grade = gradeService.get(Integer.valueOf(errorBook.getQuestion().getGradeId()));
+			errorBook.setGradeName(grade.getGradeName());
 			
 		}
 		
@@ -269,9 +296,9 @@ public class PaperMgController {
 //			model.addAttribute("desQ", "简答题（每题5分）");
 //			model.addAttribute("desList", desList);
 //		}
-		if(questionList.size()>0){
-			model.addAttribute("questionList", questionList);
-		}
+//		if(questionList.size()>0){
+//			model.addAttribute("questionList", questionList);
+//		}
 		
 //		bookList.sort(Comparator.comparing(b->Arrays.asList(ids).indexOf(b)));
 		
@@ -916,10 +943,10 @@ public class PaperMgController {
 		}
 		
 		user = userService.getStu(user);
-		List<Question> subtopic = questionService.findSubtopic(user.getCurriculum());
+		List<Question> uniqueSubtopics = questionService.findSubtopic(user.getCurriculum());
 		List<Grade> gradeList = gradeService.findActive(new Grade());
 		Map curriculumSubtopicMap = new HashMap();
-		for (Question q: subtopic) {
+		for (Question q: uniqueSubtopics) {
 			if (!curriculumSubtopicMap.containsKey(q.getGradeId())) {
 				Map topicMap = new HashMap();
 				curriculumSubtopicMap.put(q.getGradeId(), topicMap);
