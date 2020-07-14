@@ -60,7 +60,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 							<span class="icon-bar"></span>
 							<span class="icon-bar"></span>
 						</button>
-					   	<h3 style="line-height: normal;"><span style="color: white;">Welcome, <a class="hvr-overline-from-center button2" href="${ctx}/toUserInfo.action?userId=${user.userId}"><font color="#2FD828">${userName }</font></a>.</span></h3>
+					   	<h3 style="line-height: normal;"><span style="color: white;">Welcome, <a class="hvr-overline-from-center button2" href="${ctx}/toUserInfo.action?userId=${user.userId}" style="display: inline;vertical-align: bottom"><font color="#2FD828">${userName }</font></a>.</span></h3>
 					</div>
 					
 					<div class="collapse navbar-collapse nav-wil" id="bs-example-navbar-collapse-1">

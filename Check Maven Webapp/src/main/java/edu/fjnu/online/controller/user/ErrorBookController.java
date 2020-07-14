@@ -93,7 +93,7 @@ public class ErrorBookController {
 		
 		double accuracy = QuestionStuffs.calcAccuracyForQuesSet(bookList);
 		
-		model.addAttribute("accuracy", String.format("%.2f", accuracy));
+		model.addAttribute("accuracy", accuracy);
 		model.addAttribute("grade", gradeList);
 		model.addAttribute("course", courseList);
 		model.addAttribute("type", typeList);

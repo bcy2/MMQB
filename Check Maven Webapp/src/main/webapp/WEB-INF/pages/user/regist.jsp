@@ -39,6 +39,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		var userId = $("#userId").val();
 		var userFirstName = $("#userFirstName").val();
 		var userLastName = $("#userLastName").val();
+		var parentName = $("#parentName").val();
 		var email = $("#email").val();
 		var tel = $("#telephone").val();
 		/* var address = $("#address").val(); */
@@ -55,6 +56,11 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		if(userLastName == ""){
 			alert("Please type in your last name.");
 			$("#userLastName").focus();
+			return;
+		}
+		if(parentName == ""){
+			alert("Please type in parent name.");
+			$("#parentName").focus();
 			return;
 		}
 		if(Pwd.length<6){
@@ -152,6 +158,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
             <input type="text" name="userId" id="userId" class="username" placeholder="Username" onblur="checkUserId()"><br><span style="color: red" id="tipInfo">${message }</span><br>
             <input type="text" name="userFirstName" id="userFirstName" placeholder="Your first Name">
             <input type="text" name="userLastName" id="userLastName" placeholder="Your last name">
+            <input type="text" name="parentName" id="parentName" placeholder="Parent/Guardian name">
             <input type="password" name="Pwd" id="Pwd" class="password" placeholder="Login password" onblur="checkPwd()">
             <input type="password" name="userPwd" id="userPwd" class="password" placeholder="Confirm password"><br/>
             

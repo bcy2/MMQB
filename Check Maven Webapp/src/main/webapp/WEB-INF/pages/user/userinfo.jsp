@@ -66,7 +66,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 							<span class="icon-bar"></span>
 							<span class="icon-bar"></span>
 						</button>
-					   	<h3 style="line-height: normal;"><span style="color: white;">Welcome, <a class="hvr-overline-from-center button2" href="${ctx}/toUserInfo.action?userId=${user.userId}"><font color="#2FD828">${userName }</font></a>.</span></h3>
+					   	<h3 style="line-height: normal;"><span style="color: white;">Welcome, <a class="hvr-overline-from-center button2" href="${ctx}/toUserInfo.action?userId=${user.userId}" style="display: inline;vertical-align: bottom"><font color="#2FD828">${userName }</font></a>.</span></h3>
 					</div>
 					
 					<div class="collapse navbar-collapse nav-wil" id="bs-example-navbar-collapse-1">
@@ -138,6 +138,16 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			  		id="email" name="email" value="${user.email }">
 			</div>
 			<div class="input-group">
+			  <span class="input-group-addon" id="basic-addon1">Parent/Guardian name:</span>
+			  <input type="text" class="form-control"
+			  		id="parentName" name="parentName" value="${user.parentName }">
+			</div>
+			<div class="input-group">
+			  <span class="input-group-addon" id="basic-addon1">Parent/Guardian email:</span>
+			  <input type="text" class="form-control"
+			  		id="parentEmail" name="parentEmail" value="${user.parentEmail }" placeholder="Student updates will be sent to this email">
+			</div>
+			<div class="input-group">
 			  <span class="input-group-addon" id="basic-addon1">Contact phone:</span>
 			  <input type="text" class="form-control" 
 			  		id="telephone" name="telephone" value="${user.telephone }">
@@ -184,6 +194,30 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	function update(){
 		var pwd = $("#pwd").val();
 		var newPwd = $("#newPwd").val();
+		var email = $("#email").val();
+		var parentEmail = $("#parentEmail").val();
+		var tel = $("#telephone").val();
+		
+		var mailFormat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+		if(!email.match(mailFormat)){
+			alert("Email format is wrong!");
+			$("#email").focus();
+			return;
+		}
+		if(parentEmail != ""){
+			if(!parentEmail.match(mailFormat)){
+				alert("Email format is wrong!");
+				$("#parentEmail").focus();
+				return;
+			}
+		}
+		
+		var numbersFormat = /^[0-9]{8}$/;
+		if(tel.length != 8 || !tel.match(numbersFormat)){
+			alert("Phone Number format is wrong!");
+			$("#tel").focus();
+			return;
+		}
 		if(pwd!= newPwd){
 			alert("Passwords don't match, please check.");
 			return;

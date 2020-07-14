@@ -205,28 +205,41 @@ public class StuController {
 	 */
 	@RequestMapping("/addUserInfo.action")
 	public String addUserInfo(User user, Model model, HttpSession session){
-		String userId = user.getUserId();//username
-		String userFirstName = user.getUserFirstName();
-		String userLastName = user.getUserLastName();
-		user.setUserName(userLastName.toUpperCase() + " " + userFirstName);
-		String userPwd = user.getUserPwd();
-		String userGrade = user.getGrade();
-		String userEmail = user.getEmail();
-		String userTel = user.getTelephone();
+		String userId = user.getUserId().trim();//username
+		String userFirstName = user.getUserFirstName().trim();
+		String userLastName = user.getUserLastName().trim();
+		String userParentName = user.getParentName().trim();
+		String userPwd = user.getUserPwd().trim();
+		String userGrade = user.getGrade().trim();
+		String userEmail = user.getEmail().trim();
+		String userTel = user.getTelephone().trim();
 //		String userAddr = user.getAddress();
-		String userCurriculum = user.getCurriculum();
+		String userCurriculum = user.getCurriculum().trim();
+		
+		String emailPatternString = "^\\w+([\\.-]?\\w+)*@\\w+([\\.-]?\\w+)*(\\.\\w{2,3})+$";
+		String numPattern = "^[0-9]{8}$";
+		
+		if (userId.length()<6 || userFirstName.equals("") || userLastName.equals("") || userParentName.equals("") || userPwd.length()<6 || userGrade.equals("") || !userEmail.matches(emailPatternString) || !userTel.matches(numPattern) || userCurriculum.equals("")) {
+			return "/user/badReg.jsp";
+		}
+		
+		user.setUserId(userId);//username
+		user.setUserFirstName(userFirstName);
+		user.setUserLastName(userLastName);
+		user.setParentName(userParentName);
+		user.setUserName(userLastName.toUpperCase() + " " + userFirstName);
+		user.setUserPwd(userPwd);
+		user.setGrade(userGrade);
+		user.setEmail(userEmail);
+		user.setTelephone(userTel);
+		user.setCurriculum(userCurriculum);
 		
 		user.setUserState(0);
 		user.setUserType(0);
 		user.setRewardPoints(0);
 		user.setAuthority("{\"sendEmail\": true}");
+		user.setParentPwd("123456");//default parent pwd
 		
-		String emailPatternString = "^\\w+([\\.-]?\\w+)*@\\w+([\\.-]?\\w+)*(\\.\\w{2,3})+$";
-		String numPattern = "^[0-9]{8}$";
-		
-		if (userId.length()<6 || userFirstName.equals("") || userLastName.equals("") || userPwd.length()<6 || userGrade.equals("") || !userEmail.matches(emailPatternString) || !userTel.matches(numPattern) || userCurriculum.equals("")) {
-			return "/user/badReg.jsp";
-		}
 		userService.insert(user);
 		return "redirect:/toLogin.action";
 	}
@@ -267,11 +280,42 @@ public class StuController {
 		if(session.getAttribute("user") == null){
 			return "redirect:/toLogin.action";
 		}
-		if(newPwd!= null && newPwd.trim().length() >= 6){//password length >= 6
+		
+		String userNickName = user.getUserName().trim();
+		String userParentName = user.getParentName().trim();
+		String parentEmail = user.getParentEmail().trim();
+		String userEmail = user.getEmail().trim();
+		String userTel = user.getTelephone().trim();
+		
+		String emailPatternString = "^\\w+([\\.-]?\\w+)*@\\w+([\\.-]?\\w+)*(\\.\\w{2,3})+$";
+		String numPattern = "^[0-9]{8}$";
+		
+		if (userNickName.equals("") || !userEmail.matches(emailPatternString) || !userTel.matches(numPattern) || userParentName.equals("")) {
+			return "redirect:/toUserInfo.action";
+		}
+		
+		if (!parentEmail.equals("")) {
+			if(!parentEmail.matches(emailPatternString)) {
+				return "redirect:/toUserInfo.action";
+			}
+		}
+		
+		if(!newPwd.equals("")){//password length >= 6
+			if (newPwd.trim().length() < 6) {
+				return "redirect:/toUserInfo.action";
+			}
 			//密码加密
 			newPwd = MD5Util.getData(newPwd);
 			user.setUserPwd(newPwd);
 		}
+		
+		user.setUserName(userNickName);
+		user.setParentName(userParentName);
+		user.setParentEmail(parentEmail);
+		user.setEmail(userEmail);
+		user.setTelephone(userTel);
+		user.setRewardPoints(user.getRewardPoints());
+		
 		userService.update(user);
 		user = userService.get(user.getUserId());
 		if(session.getAttribute("user")== null){
@@ -395,10 +439,9 @@ public class StuController {
 			}
 			
 			List<Object> quizDoneNAccuracy = new ArrayList <Object>();
-			quizDoneNAccuracy.add(bookList);
-			
 			double quizDoneAccuracy = QuestionStuffs.calcAccuracyForQuesSet(bookList);
 			quizDoneNAccuracy.add(quizDoneAccuracy);
+			quizDoneNAccuracy.add(bookList.size());
 //			System.out.println(String.format("Accuracy for %s: %f",paper.getPaperName(),quizDoneAccuracy));
 			
 			quizDoneMap.put(paper.getPaperName(), quizDoneNAccuracy);
@@ -406,7 +449,12 @@ public class StuController {
 		model.addAttribute("quizDoneMap", quizDoneMap);
 		
 		double allGradesAccuracy = QuestionStuffs.calcAccuracyForQuesSet(allBooksList);
-		model.addAttribute("allGradesAccuracy", allGradesAccuracy);
+		int allGradesQuesNum = allBooksList.size();
+		List<Object> item = new ArrayList<Object>();
+//		Object[] item = new Object[2];
+		item.add(allGradesAccuracy);
+		item.add(allGradesQuesNum);
+		model.addAttribute("allGradesAccuracy", item);
 		
 		Map gradeAccuracies = QuestionStuffs.calcAccuracyForAllGrades(curriculumSubtopicMap, allBooksList, gradeMap);
 		System.out.println(gradeAccuracies);

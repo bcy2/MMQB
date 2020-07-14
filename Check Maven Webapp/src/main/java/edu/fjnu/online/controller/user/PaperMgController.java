@@ -31,6 +31,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.google.errorprone.annotations.Var;
+
 import edu.fjnu.online.domain.Course;
 import edu.fjnu.online.domain.ErrorBook;
 import edu.fjnu.online.domain.Grade;
@@ -53,6 +55,7 @@ import edu.fjnu.online.util.Computeclass;
 import edu.fjnu.online.domain.Attachment;
 import edu.fjnu.online.service.AttachmentService;
 import edu.fjnu.online.util.QuestionStuffs;
+import jnr.ffi.Struct.int16_t;
 //import edu.fjnu.online.util.EmailThread;
 /**
  * 试卷综合管理
@@ -916,6 +919,51 @@ public class PaperMgController {
 		String endTime = formatter.format(new Date());
 		map.put("endTime", endTime);
 		map.put("paperState", 2);
+		
+		//calculate score
+		Map quizMap = new HashMap();
+		quizMap.put("userId", user.getUserId());
+		quizMap.put("quizId", paperId);
+		
+		Date quizStartTime = null;
+		try {
+			quizStartTime = formatter.parse(paper.getBeginTime());
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		Date quizEndTime = null;
+		try {
+			quizEndTime = formatter.parse(paper.getEndTime());
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		List<ErrorBook> bookList = bookService.getBookInfoForQuiz(quizMap);
+		for (Iterator iterator = bookList.iterator(); iterator.hasNext();) {
+			ErrorBook errorBook = (ErrorBook) iterator.next();
+			
+			String questionEndTimeString = errorBook.getEndTime();
+			if (questionEndTimeString == null) {
+				iterator.remove();
+				continue;
+			}
+			
+			Date questionEndTime = null;
+			try {
+				questionEndTime = formatter.parse(questionEndTimeString);
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			if (questionEndTime.before(quizStartTime) || questionEndTime.after(quizEndTime)) {
+				iterator.remove();
+			}
+		}
+		
+		double quizDoneAccuracy = QuestionStuffs.calcAccuracyForQuesSet(bookList);
+		
+		map.put("score", String.format("%d", (int) (quizDoneAccuracy*100)));
 		paperService.updateUserPaper(map);
 		
 //		session.removeAttribute("currentQuestion");
@@ -1010,12 +1058,29 @@ public class PaperMgController {
 			return msgItem;
 		}
 		
+		float difficulty = Float.valueOf(map.get("difficulty").toString());
+		float maxDifficulty = 3;
+		if(difficulty > maxDifficulty) {
+			msgItem.setErrorInfo("Error: Invalid difficulty.");
+			return msgItem;
+		}
+		
+		difficulty = difficulty/maxDifficulty;
+		difficulty = Math.round(difficulty*100)/100;
+		
+		if(map.get("quizName").toString().isEmpty()) {
+			paper.setPaperName("Untitled");
+		}else {
+			paper.setPaperName(map.get("quizName").toString());
+		}
+		
 		Map questionSelectMap = new HashMap();
 //		List<Question> selectList = null;
 //		List<Question> inputList = null;
 //		List<Question> descList = null;
 //		map.put("gradeId", paper.getGradeId());
 		questionSelectMap.put("courseId", user.getCurriculum());
+		questionSelectMap.put("num", 1);
 		
 		List<Question> questionList = new ArrayList<Question>();
 		List<String> subtopicIdList = (List<String>) map.get("subtopicIds");
@@ -1026,15 +1091,39 @@ public class PaperMgController {
 			String subtopicId = subtopicIdList.get(j);
 			
 			System.out.println("Dealing with: " + subtopicId);
-			questionSelectMap.put("num", 1);
 			questionSelectMap.put("subtopicId", subtopicId);
+			questionSelectMap.put("difficulty", difficulty);
 			List<Question> subtopicQuestionList = new ArrayList<Question>();
-			Question question = new Question();
 			subtopicQuestionList = questionService.createPaper(questionSelectMap);
+			boolean hasAvailableQues = subtopicQuestionList.size() != 0;
+			if(!hasAvailableQues) {
+				for (int k = 1; k <= (int) maxDifficulty; k++) {
+					float tempAccuracy = (float) k/maxDifficulty;
+					tempAccuracy = Math.round(tempAccuracy*100)/100;
+					questionSelectMap.put("difficulty", tempAccuracy);
+					subtopicQuestionList = questionService.createPaper(questionSelectMap);
+					if (subtopicQuestionList.size() != 0) {
+						hasAvailableQues = true;
+						break;
+					}
+				}
+			}
+			if (!hasAvailableQues) {
+				msgItem.setErrorInfo(String.format("Error: No available questions for subtopic: %s.", subtopicId));
+				return msgItem;
+			}
+			Question question = new Question();
 			question = subtopicQuestionList.get(0);
+			int reselectTimes = 0;
 			while(addedQuestionIdList.contains(question.getQuestionId())) {
 				subtopicQuestionList = questionService.createPaper(questionSelectMap);
+				//svfdsvfewvdsafe
 				question = subtopicQuestionList.get(0);
+				reselectTimes++;
+				if (reselectTimes > 200) {
+					msgItem.setErrorInfo(String.format("Error: No enough questions for subtopic: %s.", subtopicId));
+					return msgItem;
+				}
 			}
 			addedQuestionIdList.add(question.getQuestionId());
 			System.out.println(question.getQuestionId());
@@ -1071,12 +1160,6 @@ public class PaperMgController {
 		}
 		if(!gradeId.isEmpty()){
 			gradeId = QuestionStuffs.removeLast(gradeId);
-		}
-		
-		if(map.get("quizName").toString().isEmpty()) {
-			paper.setPaperName("Untitled");
-		}else {
-			paper.setPaperName(map.get("quizName").toString());
 		}
 		
 		paper.setUserId(user.getUserId());

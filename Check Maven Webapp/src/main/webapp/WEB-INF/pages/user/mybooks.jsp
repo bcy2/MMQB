@@ -111,7 +111,7 @@ MathJax = {
 							<span class="icon-bar"></span>
 							<span class="icon-bar"></span>
 						</button>
-					   	<h3 style="line-height: normal;"><span style="color: white;">Welcome, <a class="hvr-overline-from-center button2" href="${ctx}/toUserInfo.action?userId=${user.userId}"><font color="#2FD828">${userName }</font></a>.</span></h3>
+					   	<h3 style="line-height: normal;"><span style="color: white;">Welcome, <a class="hvr-overline-from-center button2" href="${ctx}/toUserInfo.action?userId=${user.userId}" style="display: inline;vertical-align: bottom"><font color="#2FD828">${userName }</font></a>.</span></h3>
 					</div>
 					
 					<div class="collapse navbar-collapse nav-wil" id="bs-example-navbar-collapse-1">
@@ -161,7 +161,18 @@ MathJax = {
 			  </h5>
 			</div>
 			
-			<h2>Accuracy: <span>${accuracy*100 }%</span></h2>
+			<h2>Accuracy: 
+				<span>
+					<c:choose>
+						<c:when test="${accuracy < 0}">
+							N/A
+						</c:when>
+						<c:otherwise>
+							${accuracy*100 }%
+						</c:otherwise>
+					</c:choose>
+				</span>
+			</h2>
 			<br>
 			<div class="progress">
 				 <div class="progress-bar progress-bar-success" style="width: ${accuracy*100 }%"><span class="sr-only">correct</span></div>
