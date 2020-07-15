@@ -32,7 +32,6 @@ import edu.fjnu.online.service.UserService;
 import edu.fjnu.online.service.ErrorBookService;
 import edu.fjnu.online.util.MD5Util;
 import edu.fjnu.online.util.QuestionStuffs;
-import jnr.ffi.Struct.int16_t;
 
 import java.io.IOException;
 import java.text.ParseException;

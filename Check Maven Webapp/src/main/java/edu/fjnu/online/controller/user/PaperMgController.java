@@ -1053,7 +1053,8 @@ public class PaperMgController {
 		}
 		
 		int totalQuesNo = Integer.valueOf(map.get("quesNo").toString());
-		if(totalQuesNo <= 0){
+		int maxQuesNo = 50;
+		if(totalQuesNo <= 0 || totalQuesNo > 50){
 			msgItem.setErrorInfo("Error: Invalid No. of questions.");
 			return msgItem;
 		}
@@ -1074,63 +1075,48 @@ public class PaperMgController {
 			paper.setPaperName(map.get("quizName").toString());
 		}
 		
-		Map questionSelectMap = new HashMap();
-//		List<Question> selectList = null;
-//		List<Question> inputList = null;
-//		List<Question> descList = null;
-//		map.put("gradeId", paper.getGradeId());
-		questionSelectMap.put("courseId", user.getCurriculum());
-		questionSelectMap.put("num", 1);
-		
 		List<Question> questionList = new ArrayList<Question>();
 		List<String> subtopicIdList = (List<String>) map.get("subtopicIds");
 		List<Integer> addedQuestionIdList = new ArrayList<Integer>();
+		List<Integer> temp = new ArrayList<Integer>(addedQuestionIdList);
+		temp.add(0);
 		
+		Map questionSelectMap = new HashMap();
+		questionSelectMap.put("courseId", user.getCurriculum());
+		questionSelectMap.put("num", 1);
+		questionSelectMap.put("addedQuestionIdList", temp);
+		
+		long start = System.nanoTime();
 		for(int i = 0; i < totalQuesNo; i+=1) {
 			int j = i % subtopicIdList.size();
 			String subtopicId = subtopicIdList.get(j);
 			
 			System.out.println("Dealing with: " + subtopicId);
 			questionSelectMap.put("subtopicId", subtopicId);
-			questionSelectMap.put("difficulty", difficulty);
-			List<Question> subtopicQuestionList = new ArrayList<Question>();
-			subtopicQuestionList = questionService.createPaper(questionSelectMap);
-			boolean hasAvailableQues = subtopicQuestionList.size() != 0;
-			if(!hasAvailableQues) {
-				for (int k = 1; k <= (int) maxDifficulty; k++) {
-					float tempAccuracy = (float) k/maxDifficulty;
-					tempAccuracy = Math.round(tempAccuracy*100)/100;
-					questionSelectMap.put("difficulty", tempAccuracy);
-					subtopicQuestionList = questionService.createPaper(questionSelectMap);
-					if (subtopicQuestionList.size() != 0) {
-						hasAvailableQues = true;
-						break;
-					}
-				}
-			}
-			if (!hasAvailableQues) {
+			List<Question> subtopicQuestionList = selectSubtopicQuesWithDifficulty(questionSelectMap, difficulty, maxDifficulty);
+	        
+			if (subtopicQuestionList.size() == 0) {
 				msgItem.setErrorInfo(String.format("Error: No available questions for subtopic: %s.", subtopicId));
 				return msgItem;
 			}
 			Question question = new Question();
 			question = subtopicQuestionList.get(0);
-			int reselectTimes = 0;
-			while(addedQuestionIdList.contains(question.getQuestionId())) {
-				subtopicQuestionList = questionService.createPaper(questionSelectMap);
-				//svfdsvfewvdsafe
-				question = subtopicQuestionList.get(0);
-				reselectTimes++;
-				if (reselectTimes > 200) {
-					msgItem.setErrorInfo(String.format("Error: No enough questions for subtopic: %s.", subtopicId));
-					return msgItem;
-				}
-			}
+//			while(addedQuestionIdList.contains(question.getQuestionId())) {
+//				subtopicQuestionList = selectSubtopicQuesWithDifficulty(questionSelectMap, difficulty, maxDifficulty);
+//				question = subtopicQuestionList.get(0);
+//			}
 			addedQuestionIdList.add(question.getQuestionId());
+			questionSelectMap.put("addedQuestionIdList", addedQuestionIdList);
 			System.out.println(question.getQuestionId());
 			System.out.println("================");
 //			questionList.addAll(subtopicQuestionList);
 			questionList.add(question);
 		}
+		long end = System.nanoTime();
+        long elapsedTime = end - start;
+        double elapsedTimeInSecond = (double) elapsedTime / 1000000000;
+        System.out.println(elapsedTimeInSecond + " seconds");
+		System.out.println(String.format("%d questions selected.", addedQuestionIdList.size()));
 //		if(inputNum>0){//判断题
 //			map.put("num", inputNum);
 //			map.put("typeId", 4);
@@ -1174,8 +1160,29 @@ public class PaperMgController {
 		paper.setCurrentQuestion(1);
 		paper.setQuestionId(quesId);
 		System.out.println(paper.toString());
-		paperService.insert(paper);
+//		paperService.insert(paper);
 		msgItem.setErrorNo("0");
 		return msgItem;
+	}
+	
+	public List<Question> selectSubtopicQuesWithDifficulty(Map questionSelectMap, float difficulty, float maxDifficulty) {
+		questionSelectMap.put("difficulty", difficulty);
+		List<Question> subtopicQuestionList = questionService.createPaper(questionSelectMap);
+		if(subtopicQuestionList.size() == 0) {
+			for (int k = 1; k <= (int) maxDifficulty; k++) {
+				float tempDifficulty = (float) k/maxDifficulty;
+				tempDifficulty = Math.round(tempDifficulty*100)/100;
+				if (Math.abs(tempDifficulty-difficulty) < 0.01) {
+					continue;
+				}
+				questionSelectMap.put("difficulty", tempDifficulty);
+				subtopicQuestionList = questionService.createPaper(questionSelectMap);
+				if (subtopicQuestionList.size() != 0) {
+					return subtopicQuestionList;
+				}
+			}
+			return subtopicQuestionList;
+		}
+		return subtopicQuestionList;
 	}
 }
