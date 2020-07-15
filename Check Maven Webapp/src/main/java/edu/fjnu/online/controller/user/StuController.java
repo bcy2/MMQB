@@ -8,9 +8,6 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.util.StringUtil;
-import org.codehaus.jackson.JsonParseException;
-import org.codehaus.jackson.map.JsonMappingException;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -191,7 +188,7 @@ public class StuController {
 	public String toRegistPage(Model model, HttpSession session){
 		List<Grade> gradeList = gradeService.findActive(new Grade());
 		model.addAttribute("grade", gradeList);
-		List<Course> curricuLumList = courseService.find(new Course());
+		List<Course> curricuLumList = courseService.findActive(new Course());
 		model.addAttribute("curriculum", curricuLumList);
 		return "/user/regist.jsp";
 	}
@@ -204,21 +201,37 @@ public class StuController {
 	 */
 	@RequestMapping("/addUserInfo.action")
 	public String addUserInfo(User user, Model model, HttpSession session){
-		String userId = user.getUserId().trim();//username
-		String userFirstName = user.getUserFirstName().trim();
-		String userLastName = user.getUserLastName().trim();
-		String userParentName = user.getParentName().trim();
-		String userPwd = user.getUserPwd().trim();
-		String userGrade = user.getGrade().trim();
-		String userEmail = user.getEmail().trim();
-		String userTel = user.getTelephone().trim();
-//		String userAddr = user.getAddress();
-		String userCurriculum = user.getCurriculum().trim();
+		String userId = user.getUserId();//username
+		String userFirstName = user.getUserFirstName();
+		String userLastName = user.getUserLastName();
+		String userParentName = user.getParentName();
+		String userPwd = user.getUserPwd();
+		String userGrade = user.getGrade();
+		String userEmail = user.getEmail();
+		String userTel = user.getTelephone();
+		String userCurriculum = user.getCurriculum();
+		if (userId == null || userFirstName == null || userLastName == null || 
+				userParentName == null || userPwd == null || userGrade == null || 
+				userEmail == null || userTel == null || userCurriculum == null) {
+			return "/user/badReg.jsp";
+		}
+		
+		userId = userId.trim();//username
+		userFirstName = userFirstName.trim();
+		userLastName = userLastName.trim();
+		userParentName = userParentName.trim();
+		userPwd = userPwd.trim();
+		userGrade = userGrade.trim();
+		userEmail = userEmail.trim();
+		userTel = userTel.trim();
+		userCurriculum = userCurriculum.trim();
 		
 		String emailPatternString = "^\\w+([\\.-]?\\w+)*@\\w+([\\.-]?\\w+)*(\\.\\w{2,3})+$";
 		String numPattern = "^[0-9]{8}$";
 		
-		if (userId.length()<6 || userFirstName.equals("") || userLastName.equals("") || userParentName.equals("") || userPwd.length()<6 || userGrade.equals("") || !userEmail.matches(emailPatternString) || !userTel.matches(numPattern) || userCurriculum.equals("")) {
+		if (userId.length()<6 || userFirstName.equals("") || userLastName.equals("") || 
+				userParentName.equals("") || userPwd.length()<6 || userGrade.equals("") || 
+				!userEmail.matches(emailPatternString) || !userTel.matches(numPattern) || userCurriculum.equals("")) {
 			return "/user/badReg.jsp";
 		}
 		
@@ -280,11 +293,22 @@ public class StuController {
 			return "redirect:/toLogin.action";
 		}
 		
-		String userNickName = user.getUserName().trim();
-		String userParentName = user.getParentName().trim();
-		String parentEmail = user.getParentEmail().trim();
-		String userEmail = user.getEmail().trim();
-		String userTel = user.getTelephone().trim();
+		String userNickName = user.getUserName();
+		String userParentName = user.getParentName();
+		String parentEmail = user.getParentEmail(); 
+		String userEmail = user.getEmail();
+		String userTel = user.getTelephone();
+		
+		if (userNickName == null || userParentName == null || parentEmail == null || 
+				userEmail == null || userTel == null) {
+			return "redirect:/toUserInfo.action";
+		}
+		
+		userNickName = userNickName.trim();
+		userParentName = userParentName.trim();
+		parentEmail = parentEmail.trim();
+		userEmail = userEmail.trim();
+		userTel = userTel.trim();
 		
 		String emailPatternString = "^\\w+([\\.-]?\\w+)*@\\w+([\\.-]?\\w+)*(\\.\\w{2,3})+$";
 		String numPattern = "^[0-9]{8}$";

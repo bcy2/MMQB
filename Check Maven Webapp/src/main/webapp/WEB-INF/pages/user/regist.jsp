@@ -32,130 +32,13 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <script src="${ctx}/js/supersized.3.2.7.min.js"></script>
 <script src="${ctx}/js/supersized-init.js"></script>
 <script src="${ctx}/js/scripts.js"></script>
-<script type="text/javascript">
-	function regist(){
-		var Pwd = $("#Pwd").val();
-		var userPwd =$("#userPwd").val();
-		var userId = $("#userId").val();
-		var userFirstName = $("#userFirstName").val();
-		var userLastName = $("#userLastName").val();
-		var parentName = $("#parentName").val();
-		var email = $("#email").val();
-		var tel = $("#telephone").val();
-		/* var address = $("#address").val(); */
-		
-		if(userId.length<6){
-			alert("Username has to consist of at least 6 characters.");
-			return;
-		}
-		if(userFirstName == ""){
-			alert("Please type in your first name.");
-			$("#userFirstName").focus();
-			return;
-		}
-		if(userLastName == ""){
-			alert("Please type in your last name.");
-			$("#userLastName").focus();
-			return;
-		}
-		if(parentName == ""){
-			alert("Please type in parent name.");
-			$("#parentName").focus();
-			return;
-		}
-		if(Pwd.length<6){
-			alert("Password has to consist of at least 6 characters.");
-			return;
-		}
-/* 		if(userPwd ==""){
-			alert("Confirm password is empty!");
-			return;
-		} */
-		if(Pwd!=userPwd){
-			alert("Passwords don't match, please check.");
-			return;
-		}
-		
-		if ($("#curriculum option:selected").val() == ""){
-			alert("Please choose a curriculum.");
-			return;
-		}
-		if ($("#grade option:selected").val() == ""){
-			alert("Please choose a grade.");
-			return;
-		}
-		var mailFormat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-		if(!email.match(mailFormat)){
-			alert("Email format is wrong!");
-			$("#email").focus();
-			return;
-		}
-		var numbersFormat = /^[0-9]{8}$/;
-		if(tel.length != 8 || !tel.match(numbersFormat)){
-			alert("Phone Number format is wrong!");
-			$("#tel").focus();
-			return;
-		}
-		/* if(address == ""){
-			alert("Address is empty!");
-			$("#address").focus();
-			return;
-		} */
-		document.myform.attributes["action"].value = "${ctx}/addUserInfo.action"; 
-		$("form").submit();
-	}
-	
-	function checkUserId(){
-		var userId = $("#userId").val();
-		var tipInfo = $("#tipInfo").val();
-		if(userId.length<6){
-			$("#tipInfo").html("Username has to consist of at least 6 characters.");
-			$("#userId").focus();
-			return;
-		}
-	 	$.ajax({
-	        type: "post",
-	        url: "${ctx}/admin/userRegist.action",
-	        data: {userId:userId},
-	        dataType: "json",
-	        success: function(data){
-	        	$("#tipInfo").html(data.errorInfo);
-	        	if(data.errorNo == "1"){
-	    			$("#userId").focus();
-	    			return;
-	    		}
-/* 	        	else if (data.errorNo == "0"){
-	    			$("#tipInfo").css("color","green");
-	    		} */
-	        }
-	    });
-	}
-	
-	function checkPwd(){
-		var Pwd = $("#Pwd").val();
-		var userPwd =$("#userPwd").val();
-		if(Pwd.length<6){
-			alert("Password has to consist of at least 6 characters.");
-			return;
-		}
-/* 		if(userPwd ==""){
-			alert("Confirm password is empty!");
-			return;
-		} */
-/* 		if(Pwd!=userPwd){
-			alert("Passwords don't match, please check.");
-			return;
-		} */
-		
-	}
-	
-</script>
+<script src="${ctx}/js/reg.js"></script>
 </head>
 <body>
     <div class="page-container">
         <h1>Sign up for an account</h1>
         <form action="${ctx}/toIndex.action" method="post" name="myform" id="myform">
-            <input type="text" name="userId" id="userId" class="username" placeholder="Username" onblur="checkUserId()"><br><span style="color: red" id="tipInfo">${message }</span><br>
+            <input type="text" name="userId" id="userId" class="username" placeholder="Username" onblur="checkUserId('${ctx}')"><br><span style="color: red" id="tipInfo">${message }</span><br>
             <input type="text" name="userFirstName" id="userFirstName" placeholder="Your first Name">
             <input type="text" name="userLastName" id="userLastName" placeholder="Your last name">
             <input type="text" name="parentName" id="parentName" placeholder="Parent/Guardian name">
@@ -164,6 +47,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
             
             <label for="curriculum">Curriculum:</label>
             <select name="curriculum" id="curriculum">
+            	<option value="">Please choose...</option>
 	            <c:forEach items="${curriculum}" var="curriculum">
 					<option value="${curriculum.courseId }">${curriculum.courseName }</option>
 				</c:forEach>
@@ -173,7 +57,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			<label for="grade">Grade:</label>
 			<select name="grade" id="grade">
 	            <c:forEach items="${grade}" var="grade">
-					<option value="${grade.gradeId }">${grade.gradeName }</option>
+					<option data-parent="${grade.courseId }" value="${grade.gradeId }">${grade.gradeName }</option>
 				</c:forEach>
 			</select>
             <%-- <c:forEach items="${grade}" var="grade">
@@ -182,7 +66,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
             <input type="text" name="email" id="email" class="username" placeholder="Contact email: xxx@xxx.xxx">
             <input type="text" name="telephone" id="telephone" placeholder="8-digit Contact phone: xxxxxxxx">
             <!-- <input type="text" name="address" id="address" placeholder="Address"> -->
-            <button type="button" onclick="regist()">Sign up</button>
+            <button type="button" onclick="regist('${ctx}')">Sign up</button>
             <div class="error"><span>${message }</span></div>
         </form>
         <div class="connect"></div>

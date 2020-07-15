@@ -39,6 +39,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		where 1=1
 	</select>
 	
+	<select id="findActive" parameterType="int" resultMap="courseRM">
+		select * from curriculum
+		where curriculum_status = "1"
+	</select>
+	
 	<!-- 查询一个录 -->
 	<select id="get" parameterType="edu.fjnu.online.domain.Course" resultMap="courseRM">
 		select * from curriculum

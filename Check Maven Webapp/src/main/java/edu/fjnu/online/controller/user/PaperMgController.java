@@ -55,7 +55,6 @@ import edu.fjnu.online.util.Computeclass;
 import edu.fjnu.online.domain.Attachment;
 import edu.fjnu.online.service.AttachmentService;
 import edu.fjnu.online.util.QuestionStuffs;
-import jnr.ffi.Struct.int16_t;
 //import edu.fjnu.online.util.EmailThread;
 /**
  * 试卷综合管理
@@ -1067,7 +1066,7 @@ public class PaperMgController {
 		}
 		
 		difficulty = difficulty/maxDifficulty;
-		difficulty = Math.round(difficulty*100)/100;
+		difficulty = (float) Math.round(difficulty*100)/100;
 		
 		if(map.get("quizName").toString().isEmpty()) {
 			paper.setPaperName("Untitled");
@@ -1086,7 +1085,7 @@ public class PaperMgController {
 		questionSelectMap.put("num", 1);
 		questionSelectMap.put("addedQuestionIdList", temp);
 		
-		long start = System.nanoTime();
+//		long start = System.nanoTime();
 		for(int i = 0; i < totalQuesNo; i+=1) {
 			int j = i % subtopicIdList.size();
 			String subtopicId = subtopicIdList.get(j);
@@ -1096,7 +1095,7 @@ public class PaperMgController {
 			List<Question> subtopicQuestionList = selectSubtopicQuesWithDifficulty(questionSelectMap, difficulty, maxDifficulty);
 	        
 			if (subtopicQuestionList.size() == 0) {
-				msgItem.setErrorInfo(String.format("Error: No available questions for subtopic: %s.", subtopicId));
+				msgItem.setErrorInfo(String.format("Error: No enough questions for subtopic: %s.", subtopicId));
 				return msgItem;
 			}
 			Question question = new Question();
@@ -1112,10 +1111,10 @@ public class PaperMgController {
 //			questionList.addAll(subtopicQuestionList);
 			questionList.add(question);
 		}
-		long end = System.nanoTime();
-        long elapsedTime = end - start;
-        double elapsedTimeInSecond = (double) elapsedTime / 1000000000;
-        System.out.println(elapsedTimeInSecond + " seconds");
+//		long end = System.nanoTime();
+//        long elapsedTime = end - start;
+//        double elapsedTimeInSecond = (double) elapsedTime / 1000000000;
+//        System.out.println(elapsedTimeInSecond + " seconds");
 		System.out.println(String.format("%d questions selected.", addedQuestionIdList.size()));
 //		if(inputNum>0){//判断题
 //			map.put("num", inputNum);
@@ -1160,7 +1159,7 @@ public class PaperMgController {
 		paper.setCurrentQuestion(1);
 		paper.setQuestionId(quesId);
 		System.out.println(paper.toString());
-//		paperService.insert(paper);
+		paperService.insert(paper);
 		msgItem.setErrorNo("0");
 		return msgItem;
 	}
@@ -1171,7 +1170,7 @@ public class PaperMgController {
 		if(subtopicQuestionList.size() == 0) {
 			for (int k = 1; k <= (int) maxDifficulty; k++) {
 				float tempDifficulty = (float) k/maxDifficulty;
-				tempDifficulty = Math.round(tempDifficulty*100)/100;
+				tempDifficulty = (float) Math.round(tempDifficulty*100)/100;
 				if (Math.abs(tempDifficulty-difficulty) < 0.01) {
 					continue;
 				}

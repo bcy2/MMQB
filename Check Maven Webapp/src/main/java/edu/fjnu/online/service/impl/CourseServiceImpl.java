@@ -20,6 +20,10 @@ public class CourseServiceImpl implements CourseService {
 	public List<Course> find(Course course) {
 		return courseDao.find(course);
 	}
+	
+	public List<Course> findActive(Course course){
+		return courseDao.findActive(course);
+	}
 
 	public Course get(int id) {
 		return courseDao.get(id);

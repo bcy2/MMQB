@@ -55,7 +55,7 @@ public class ErrorBookController {
 		List<Grade> gradeList = gradeService.findActive(new Grade());
 		Map<String,String> gradeMap = new HashMap();
 		for (Grade grade : gradeList) gradeMap.put(String.valueOf(grade.getGradeId()),grade.getGradeName());
-		List<Course> courseList = courseService.find(new Course());
+//		List<Course> courseList = courseService.findActive(new Course());
 		List<Type> typeList = typeService.find(new Type());
 		Map map = new HashMap();
 		map.put("userId", user.getUserId());
@@ -93,9 +93,12 @@ public class ErrorBookController {
 		
 		double accuracy = QuestionStuffs.calcAccuracyForQuesSet(bookList);
 		
+		user = userService.getStu(user);
+		model.addAttribute("user", user);
+		
 		model.addAttribute("accuracy", accuracy);
 		model.addAttribute("grade", gradeList);
-		model.addAttribute("course", courseList);
+//		model.addAttribute("course", courseList);
 		model.addAttribute("type", typeList);
 		model.addAttribute("questionRecordList", bookList);
 		return "/user/mybooks.jsp";			

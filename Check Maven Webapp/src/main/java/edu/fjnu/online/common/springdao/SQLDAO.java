@@ -30,13 +30,15 @@ public class SQLDAO {
 
 	public int findInt(String sql){
 		log.debug(sql);
-		int i = jdbcTemplate.queryForInt(sql);
+//		int i = jdbcTemplate.queryForInt(sql);
+		int i = jdbcTemplate.queryForObject(sql, Integer.class);
 		return i;
 	}
 	
 	public int findInt(String sql, Object[] objs){
 		log.debug(sql);
-		int i = jdbcTemplate.queryForInt(sql, objs);
+//		int i = jdbcTemplate.queryForInt(sql, objs);
+		int i = jdbcTemplate.queryForObject(sql, objs, Integer.class);
 		return i;
 	}
 	

@@ -126,7 +126,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			  <span class="input-group-addon" id="basic-addon1">Grade:</span>
 			  <select id="grade" name="grade" class="form-control">
 			  	<c:forEach items="${grade}" var="grade">
-					<option value="${grade.gradeId }" <c:if test="${grade.gradeId == user.grade}">selected</c:if>>${grade.gradeName }</option>
+			  		<c:if test="${grade.courseId == user.curriculum}">
+						<option value="${grade.gradeId }" <c:if test="${grade.gradeId == user.grade}">selected</c:if>>${grade.gradeName }</option>
+					</c:if>
 				</c:forEach>
 			  </select>
 			  <%-- <input type="text" class="form-control" 

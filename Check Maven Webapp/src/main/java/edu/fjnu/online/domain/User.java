@@ -229,10 +229,14 @@ public class User
 //		}
 //		return hexString.toString();
 //	}
-	
 	@Override
 	public String toString() {
-		return super.toString();
+		return "User [userId=" + userId + ", userName=" + userName + ", userPwd=" + userPwd + ", grade=" + grade
+				+ ", userType=" + userType + ", userState=" + userState + ", email=" + email + ", telephone="
+				+ telephone + ", address=" + address + ", remark=" + remark + ", userIdGlobal=" + userIdGlobal
+				+ ", userFirstName=" + userFirstName + ", userLastName=" + userLastName + ", authority=" + authority
+				+ ", parentName=" + parentName + ", parentEmail=" + parentEmail + ", parentPwd=" + parentPwd
+				+ ", rewardPoints=" + rewardPoints + ", curriculum=" + curriculum + "]";
 	}
 	
 }

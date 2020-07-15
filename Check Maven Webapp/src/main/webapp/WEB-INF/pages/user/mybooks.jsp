@@ -144,7 +144,9 @@ MathJax = {
  			  <h5 class="typ1 t-button">
 				<span>Grade:</span>
 				<c:forEach items="${grade}" var="grade">
-					<a href="#"><span class="label label-success" onclick="grade('grade${grade.gradeId}')">${grade.gradeName}</span></a>
+					<c:if test="${grade.courseId == user.curriculum}">
+						<a href="#"><span class="label label-success" onclick="grade('grade${grade.gradeId}')">${grade.gradeName}</span></a>
+					</c:if>
 				</c:forEach>
 			  </h5>
 <%--			  <h5 class="typ1 t-button">
