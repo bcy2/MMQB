@@ -110,7 +110,8 @@ public class UserController extends BaseController{
 			session.removeAttribute("userName");
 			return "forward:/admin/login.action";
 		}
-		return "/admin/login.jsp";			
+		session.invalidate();
+		return "redirect:/admin/userLogin.action";				
 	}
 	
 	//跳转到题库录入页面

@@ -97,28 +97,28 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<select id="find" parameterType="string" resultMap="userRM">
 		select * from user
 <!-- 		where id > 2 -->
-		order by user_type;
+		order by user_type
 		<!-- select  L.user_id, L.username, L.password, L.user_type, L.user_status, L.email, L.tel, coalesce(s.name, t.name, org.name) as name, coalesce(s.nickname, t.nickname) as nickname, s.parent, s.parent_email, s.parent_password, s.game_time, s.curriculum_id, s.grade, coalesce(s.auth, t.auth, org.auth) as auth
 		from login as L
 		left join student_profile as s on L.user_id = s.id
 		left join teacher_profile as t on L.user_id = t.id
 		left join organization_profile as org on L.user_id = org.id
 		where L.user_id > 2
-		order by L.user_type; -->
+		order by L.user_type -->
 	</select>
 	
 	<!-- 查询所有待审核记录 -->
 	<select id="findPending" parameterType="string" resultMap="userRM">
 		select * from user
 		where user_status = 0<!--  and id > 2 -->
-		order by user_type;
+		order by user_type
 		<!-- select L.user_id, L.username, L.password, L.user_type, L.user_status, L.email, L.tel, coalesce(s.name, t.name, org.name) as name, coalesce(s.nickname, t.nickname) as nickname, s.parent, s.parent_email, s.parent_password, s.game_time, s.curriculum_id, s.grade, coalesce(s.auth, t.auth, org.auth) as auth
 		from login as L
 		left join student_profile as s on L.user_id = s.id
 		left join teacher_profile as t on L.user_id = t.id
 		left join organization_profile as org on L.user_id = org.id
 		where L.user_id > 2 and L.user_status = 0
-		order by L.user_type; -->
+		order by L.user_type -->
 	</select>
 	
 	<!-- 查询一个录 -->

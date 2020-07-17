@@ -29,11 +29,13 @@ import edu.fjnu.online.service.UserService;
 import edu.fjnu.online.service.ErrorBookService;
 import edu.fjnu.online.util.MD5Util;
 import edu.fjnu.online.util.QuestionStuffs;
+import jxl.read.biff.Record;
 
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -391,105 +393,157 @@ public class StuController {
 		}
 		
 		List<Paper> paperDone = paperService.getUserPaperById(user.getUserId());
-		Map map =new HashMap();
+		Map map = new HashMap();
 		map.put("userId", user.getUserId());
-		List<Paper> paperUndo = paperService.qryUndoPaper(map);
 		List<Paper> paperInProgress = paperService.qryInProgressPaper(map);
+		List<Paper> paperUndo = paperService.qryUndoPaper(map);
+		
+//		Map quizDoneMap = new HashMap();
+//		for(Paper paper : paperDone){
+//			Map quizMap = new HashMap();
+//			quizMap.put("userId", user.getUserId());
+//			quizMap.put("quizId", paper.getPaperId());
+//			
+//			SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); 
+//			Date quizStartTime = null;
+//			try {
+//				quizStartTime = formatter.parse(paper.getBeginTime());
+//			} catch (ParseException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+//			Date quizEndTime = null;
+//			try {
+//				quizEndTime = formatter.parse(paper.getEndTime());
+//			} catch (ParseException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+//			List<ErrorBook> bookList = bookService.getBookInfoForQuiz(quizMap);
+//			
+//			for (Iterator iterator = bookList.iterator(); iterator.hasNext();) {
+//				ErrorBook errorBook = (ErrorBook) iterator.next();
+//				
+//				String questionEndTimeString = errorBook.getEndTime();
+//				if (questionEndTimeString == null) {
+//					iterator.remove();
+//					continue;
+//				}
+//				
+//				Date questionEndTime = null;
+//				try {
+//					questionEndTime = formatter.parse(questionEndTimeString);
+//				} catch (ParseException e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				}
+//				if (questionEndTime.before(quizStartTime) || questionEndTime.after(quizEndTime)) {
+//					iterator.remove();
+//				}
+//				
+//				errorBook.setUserId(null);
+//				errorBook.setUserAnswer(null);
+//				Question origQuestion = errorBook.getQuestion();
+//				Question abridgedQuestion = new Question();
+////				abridgedQuestion.setQuestionId(origQuestion.getQuestionId());
+////				abridgedQuestion.setCourseId(origQuestion.getCourseId());
+//				abridgedQuestion.setGradeId(origQuestion.getGradeId());
+//				abridgedQuestion.setDifficulty(origQuestion.getDifficulty());
+//				abridgedQuestion.setTopic(origQuestion.getTopic());
+//				abridgedQuestion.setSubtopic(origQuestion.getSubtopic());
+//				abridgedQuestion.setSubtopicId(origQuestion.getSubtopicId());
+//				errorBook.setQuestion(abridgedQuestion);
+//				
+//				// set grade name
+////				Grade grade = gradeService.get(Integer.valueOf(errorBook.getQuestion().getGradeId()));
+////				errorBook.setGradeName(grade.getGradeName());
+////				errorBook.setGradeName(errorBook.getQuestion().getGradeId());
+//				
+//			}
+//			
+//			List<Object> quizDoneNAccuracy = new ArrayList <Object>();
+//			double quizDoneAccuracy = QuestionStuffs.calcAccuracyForQuesSet(bookList);
+//			quizDoneNAccuracy.add(quizDoneAccuracy);
+//			quizDoneNAccuracy.add(bookList.size());
+////			System.out.println(String.format("Accuracy for %s: %f",paper.getPaperName(),quizDoneAccuracy));
+//			
+//			quizDoneMap.put(paper.getPaperName(), quizDoneNAccuracy);
+//		}
+//		model.addAttribute("quizDoneMap", quizDoneMap);
 		
 		List<ErrorBook> allBooksList = bookService.getBookInfo(map);
 		
-		Map quizDoneMap = new HashMap();
-		for(Paper paper : paperDone){
-			Map quizMap = new HashMap();
-			quizMap.put("userId", user.getUserId());
-			quizMap.put("quizId", paper.getPaperId());
+		List<Integer> periodsInDay = new ArrayList<Integer>(Arrays.asList(-1,1,2,7,14,30,90,180));
+		model.addAttribute("periodsInDay", periodsInDay.stream().map(String::valueOf).collect(Collectors.toList()));
+		
+		Map paperMap = new HashMap();
+		Map allGradesAccuraciesInPeriod =  new HashMap();
+		Map gradeAccuraciesInPeriod =  new HashMap();
+		Map topicAccuraciesInPeriod =  new HashMap();
+		Map subtopicAccuraciesInPeriod =  new HashMap();
+		
+		for (Integer integer : periodsInDay) {
+			String periodString = String.valueOf(integer);
 			
-			SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); 
-			Date quizStartTime = null;
-			try {
-				quizStartTime = formatter.parse(paper.getBeginTime());
-			} catch (ParseException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			Date quizEndTime = null;
-			try {
-				quizEndTime = formatter.parse(paper.getEndTime());
-			} catch (ParseException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			List<ErrorBook> bookList = bookService.getBookInfoForQuiz(quizMap);
+			List<Paper> paperDoneInPeriod = paperDone.stream()
+					.filter(record -> QuestionStuffs.quizAfterDate(record, integer))
+					.collect(Collectors.toList());
+			List<Paper> paperInProgressInPeriod = paperInProgress.stream()
+					.filter(record -> QuestionStuffs.quizAfterDate(record, integer))
+					.collect(Collectors.toList());
+			List<Paper> paperUndoInPeriod = paperUndo.stream()
+					.filter(record -> QuestionStuffs.quizAfterDate(record, integer))
+					.collect(Collectors.toList());
 			
-			for (Iterator iterator = bookList.iterator(); iterator.hasNext();) {
-				ErrorBook errorBook = (ErrorBook) iterator.next();
-				
-				String questionEndTimeString = errorBook.getEndTime();
-				if (questionEndTimeString == null) {
-					iterator.remove();
-					continue;
-				}
-				
-				Date questionEndTime = null;
-				try {
-					questionEndTime = formatter.parse(questionEndTimeString);
-				} catch (ParseException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				if (questionEndTime.before(quizStartTime) || questionEndTime.after(quizEndTime)) {
-					iterator.remove();
-				}
-				
-				errorBook.setUserId(null);
-				errorBook.setUserAnswer(null);
-				Question origQuestion = errorBook.getQuestion();
-				Question abridgedQuestion = new Question();
-//				abridgedQuestion.setQuestionId(origQuestion.getQuestionId());
-//				abridgedQuestion.setCourseId(origQuestion.getCourseId());
-				abridgedQuestion.setGradeId(origQuestion.getGradeId());
-				abridgedQuestion.setDifficulty(origQuestion.getDifficulty());
-				abridgedQuestion.setTopic(origQuestion.getTopic());
-				abridgedQuestion.setSubtopic(origQuestion.getSubtopic());
-				abridgedQuestion.setSubtopicId(origQuestion.getSubtopicId());
-				errorBook.setQuestion(abridgedQuestion);
-				
-				// set grade name
-//				Grade grade = gradeService.get(Integer.valueOf(errorBook.getQuestion().getGradeId()));
-//				errorBook.setGradeName(grade.getGradeName());
-//				errorBook.setGradeName(errorBook.getQuestion().getGradeId());
-				
-			}
+			List<Object> paperNumList = new ArrayList<Object>();
+			paperNumList.add(paperDoneInPeriod.size());
+			paperNumList.add(paperInProgressInPeriod.size());
+			paperNumList.add(paperUndoInPeriod.size());
+			paperMap.put(periodString, paperNumList);
 			
-			List<Object> quizDoneNAccuracy = new ArrayList <Object>();
-			double quizDoneAccuracy = QuestionStuffs.calcAccuracyForQuesSet(bookList);
-			quizDoneNAccuracy.add(quizDoneAccuracy);
-			quizDoneNAccuracy.add(bookList.size());
-//			System.out.println(String.format("Accuracy for %s: %f",paper.getPaperName(),quizDoneAccuracy));
+			List<ErrorBook> bookListInPeriod = allBooksList.stream()
+											.filter(record -> QuestionStuffs.quesAfterDate(record, integer))
+											.collect(Collectors.toList());
 			
-			quizDoneMap.put(paper.getPaperName(), quizDoneNAccuracy);
+			double allGradesAccuracy = QuestionStuffs.calcAccuracyForQuesSet(bookListInPeriod);
+			int allGradesQuesNum = bookListInPeriod.size();
+			List<Object> allGradesAccuracyNQuesNum = new ArrayList<Object>();
+			allGradesAccuracyNQuesNum.add(allGradesAccuracy);
+			allGradesAccuracyNQuesNum.add(allGradesQuesNum);
+			allGradesAccuraciesInPeriod.put(periodString, allGradesAccuracyNQuesNum);
+			
+			Map gradeAccuracies = QuestionStuffs.calcAccuracyForAllGrades(curriculumSubtopicMap, bookListInPeriod, gradeMap);
+			gradeAccuraciesInPeriod.put(periodString, gradeAccuracies);
+			
+			Map topicAccuracies = QuestionStuffs.calcAccuracyForAllTopics(curriculumSubtopicMap, bookListInPeriod);
+			topicAccuraciesInPeriod.put(periodString, topicAccuracies);
+			
+			Map subtopicAccuracies = QuestionStuffs.calcAccuracyForAllSubtopics(curriculumSubtopicMap, bookListInPeriod);
+			subtopicAccuraciesInPeriod.put(periodString, subtopicAccuracies);
 		}
-		model.addAttribute("quizDoneMap", quizDoneMap);
 		
-		double allGradesAccuracy = QuestionStuffs.calcAccuracyForQuesSet(allBooksList);
-		int allGradesQuesNum = allBooksList.size();
-		List<Object> item = new ArrayList<Object>();
-//		Object[] item = new Object[2];
-		item.add(allGradesAccuracy);
-		item.add(allGradesQuesNum);
-		model.addAttribute("allGradesAccuracy", item);
+		System.out.println("===============\nPapers:");
+		System.out.println(paperMap);
+		model.addAttribute("paperMap", paperMap);
 		
-		Map gradeAccuracies = QuestionStuffs.calcAccuracyForAllGrades(curriculumSubtopicMap, allBooksList, gradeMap);
-		System.out.println(gradeAccuracies);
-		model.addAttribute("gradeAccuracies", gradeAccuracies);
+		System.out.println("===============\nOverall:");
+		System.out.println(allGradesAccuraciesInPeriod);
+		model.addAttribute("allGradesAccuraciesInPeriod", allGradesAccuraciesInPeriod);
 		
-		Map topicAccuracies = QuestionStuffs.calcAccuracyForAllTopics(curriculumSubtopicMap, allBooksList);
-		System.out.println(topicAccuracies);
-		model.addAttribute("topicAccuracies", topicAccuracies);
+//		Map gradeAccuracies = QuestionStuffs.calcAccuracyForAllGrades(curriculumSubtopicMap, allBooksList, gradeMap, 1);
+		System.out.println("===============\nGrade:");
+		System.out.println(gradeAccuraciesInPeriod);
+		model.addAttribute("gradeAccuraciesInPeriod", gradeAccuraciesInPeriod);
 		
-		Map subtopicAccuracies = QuestionStuffs.calcAccuracyForAllSubtopics(curriculumSubtopicMap, allBooksList);
-		System.out.println(subtopicAccuracies);
-		model.addAttribute("subtopicAccuracies", subtopicAccuracies);
+//		Map topicAccuracies = QuestionStuffs.calcAccuracyForAllTopics(curriculumSubtopicMap, allBooksList,1);
+		System.out.println("===============\nTopic:");
+		System.out.println(topicAccuraciesInPeriod);
+		model.addAttribute("topicAccuraciesInPeriod", topicAccuraciesInPeriod);
+		
+//		Map subtopicAccuracies = QuestionStuffs.calcAccuracyForAllSubtopics(curriculumSubtopicMap, allBooksList,1);
+		System.out.println("===============\nSubtopic:");
+		System.out.println(subtopicAccuraciesInPeriod);
+		model.addAttribute("subtopicAccuraciesInPeriod", subtopicAccuraciesInPeriod);
 
 //		Grade grade = gradeService.get(Integer.parseInt(user.getGrade()));
 //		user.setGrade(grade.getGradeName());

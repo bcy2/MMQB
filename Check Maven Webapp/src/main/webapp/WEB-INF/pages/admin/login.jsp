@@ -23,11 +23,11 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                 <div class="login-input">
                 	<p class="user ue-clear">
                     	<label>Username</label>
-                        <input type="text" id="userId" name="userId"/>
+                        <input type="text" id="userId" name="userId" style="width:64%;"/>
                     </p>
                     <p class="password ue-clear">
                     	<label>Password</label>
-                        <input type="password" id="userPwd" name="userPwd"/>
+                        <input type="password" id="userPwd" name="userPwd" style="width:64%;"/>
                     </p>
                     <div style="color: red" id="tipInfo" align="justify">${message }</div>
                 </div>
@@ -36,14 +36,14 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                     <div class="remember ue-clear">
                     	<input type="checkbox" id="remember" />
                         <em></em>
-                        <label for="remember">Remember Password</label>
+                        <label for="remember">Remember me</label>
                     </div>
                 </div>
                 </form>
             </div>
 		</div>
 	</div>
-    <div id="ft">CopyRight&nbsp;2020,&nbsp; Koding Kingdom (HK) Ltd.</div>
+    <div id="ft">Copyright&nbsp;2020,&nbsp; Koding Kingdom (HK) Ltd.</div>
 </body>
 <script type="text/javascript" src="${ctx}/js/jquery.js"></script>
 <script type="text/javascript" src="${ctx}/js/common.js"></script>

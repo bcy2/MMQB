@@ -10,7 +10,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <html>
 <head>
 <meta charset="utf-8">
-<!-- <script>
+<script>
 MathJax = {
   tex: {
     inlineMath: [['$', '$'], ['\\(', '\\)']]
@@ -20,7 +20,7 @@ MathJax = {
   }
 };
 </script>
-<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script> -->
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 <link rel="stylesheet" href="${ctx}/css/base.css" />
 <link rel="stylesheet" href="${ctx}/css/info-mgt.css" />
 <link rel="stylesheet" href="${ctx}/css/WdatePicker.css" />
@@ -28,7 +28,7 @@ MathJax = {
 </head>
 
 <body>
-<div class="title"><h2>题目管理</h2></div>
+<div class="title"><h2>Question management</h2></div>
 <form action="${ctx}/deleteQuestion.action" method="post" name="myform" id="myform">
 <!-- <div>
 When \(a \ne 0\), there are two solutions to \(ax^2 + bx + c = 0\) and they are
@@ -44,7 +44,7 @@ $$x = {-b \pm \sqrt{b^2-4ac} \over 2a}.$$
         	<tr>
         		<th class="num"></th>
         		<th class="name">题目编号</th>
-                <th class="operate">题目名称</th>
+                <th class="question">题目名称</th>
                 <th class="process">对应科目</th>
                 <th class="process">题型</th>
                 <th class="node">难度</th>
@@ -110,7 +110,7 @@ $('.pagination').pagination(${pageInfo.total},{
 				html += "<table border='1' cellspacing='1'>";
 				html += "<thead>";
 				html += "<th class='num'></th>";
-				html += "<th class='name'>题目编号</th><th class='operate'>题目名称</th>";
+				html += "<th class='name'>题目编号</th><th class='question'>题目名称</th>";
 				html += "<th class='process'>对应科目</th><th class='process'>题型</th><th class='node'>难度</th>";
 				html += "<th class='time'>备注</th><th class='operate'>操作</th>";
 				html += "</thead>";
@@ -151,7 +151,7 @@ $('.pagination').pagination(${pageInfo.total},{
 	setPageNo: false
 });
 
-function callback(ddatalist){
+function callback(datalist){
 	alert(datalist);
 	//todo:根据返回的datalist数据创建html结构展现给用户。
 }

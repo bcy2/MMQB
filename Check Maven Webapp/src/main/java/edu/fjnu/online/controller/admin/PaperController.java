@@ -55,6 +55,9 @@ public class PaperController {
 //		List<Paper> dataList = paperService.find(paper);
 		Course course=null;
 		for(Paper g : dataList){
+			if(g.getPaperName() == null) {
+				continue;
+			}
 			String courseName= "";
 			String id = g.getCourseId();
 			if(id != null){
@@ -95,6 +98,9 @@ public class PaperController {
 //		List<Paper> dataList = paperService.find(paper);
 		Course course=null;
 		for(Paper g : dataList){
+			if(g.getPaperName() == null) {
+				continue;
+			}
 			String courseName= "";
 			String id = g.getCourseId();
 			if(id != null){
