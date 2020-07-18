@@ -31,6 +31,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.errorprone.annotations.Var;
 
 import edu.fjnu.online.domain.Course;
@@ -83,6 +85,8 @@ public class PaperMgController {
 	EmailService emailService;
 	@Autowired
 	AttachmentService attachmentService;
+	
+	SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	
 	/**
 	 * reset quiz to available
@@ -222,7 +226,7 @@ public class PaperMgController {
 		quizMap.put("userId", user.getUserId());
 		quizMap.put("quizId", paperId);
 		
-		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); 
+		 
 		Date quizStartTime = null;
 		try {
 			quizStartTime = formatter.parse(paper.getBeginTime());
@@ -347,7 +351,7 @@ public class PaperMgController {
 			return "redirect:/toMyPaperPage.action";
 		}else {
 			if(paper.getPaperState() == 0 || paper.getBeginTime() == null || paper.getBeginTime().isEmpty()) {
-				SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");  
+				  
 				String beginTime = formatter.format(new Date());
 				map.put("beginTime", beginTime);
 			}
@@ -584,7 +588,7 @@ public class PaperMgController {
 			}
 		}
 		System.out.println("最后得分："+endScore);
-		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");  
+		  
 		Date currentTime = new Date();//得到当前系统时间  
 		String endTime = formatter.format(currentTime); //将日期时间格式化  
 		map.put("beginTime", paper.getBeginTime());
@@ -708,7 +712,6 @@ public class PaperMgController {
 //		String []ids = paperInfo.getQuestionId().split(",");
 //		List<Question> question = new ArrayList<Question>();
 //		Question ques = null;
-		int endScore = 0;
 		ErrorBook questionRecord = new ErrorBook();
 //		book.setUserId(user.getUserId());
 //		System.out.println("answer:"+answer);
@@ -755,7 +758,7 @@ public class PaperMgController {
 //			}
 //		}
 //		System.out.println("最后得分："+endScore);
-//		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");  
+//		  
 //		Date currentTime = new Date();//得到当前系统时间  
 //		String endTime = formatter.format(currentTime); //将日期时间格式化  
 //		map.put("beginTime", paper.getBeginTime());
@@ -799,7 +802,7 @@ public class PaperMgController {
 		questionRecord.setCorrectness(correctness);
 		questionRecord.setQuizId(Integer.parseInt(paperId));
 		questionRecord.setQuizName(paper.getPaperName());
-		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");  
+		  
 		String questionEndTime = formatter.format(new Date());
 		questionRecord.setStartTime(questionEndTime);// TO-DO
 		questionRecord.setEndTime(questionEndTime);
@@ -807,27 +810,44 @@ public class PaperMgController {
 		
 		if(paper.getCurrentQuestion() == paperQuesIdx.length) {
 			map.put("paperState", 2);
-//			SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");  
+//			  
 			String endTime = formatter.format(new Date());
 			map.put("endTime", endTime);
 			msgItem.setErrorNo("1");
 //			session.removeAttribute("currentQuestion");
-			Boolean sendEmailBoolean = false;
+			
+			double quizDoneAccuracy = calculateQuizScore(paper, user.getUserId());
+			map.put("score", String.format("%d", (int) (quizDoneAccuracy * 100)));
+			
 			final String parentEmailString = user.getParentEmail();
 			final String emailTitleString = "[Major Maths] Reminder";
-			if (sendEmailBoolean) {
+			
+			Boolean emailNotEmpty = parentEmailString != null && !parentEmailString.trim().equals("");
+			
+			ObjectMapper mapper = new ObjectMapper();
+			Map<String, Boolean> emailMap = null;
+			try {
+				emailMap = mapper.readValue(user.getAuthority(), Map.class);
+			} catch (JsonProcessingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			if (emailNotEmpty && emailMap.get("sendEmail")) {
 				System.out.println("Sending email to " + parentEmailString);
 				new Thread(new Runnable() {
 					@Override
 					public void run() {
-						emailService.sendMail(parentEmailString, emailTitleString, String.format("%s finished %s questions.", user.getUserName(), String.valueOf(paperQuesIdx.length)));//change to parent email
+						emailService.sendMail(parentEmailString, emailTitleString, String.format("%s just finished %s questions and scored %d marks.", user.getUserName(), String.valueOf(paperQuesIdx.length), (int) (quizDoneAccuracy * 100)));//change to parent email
 					}
 				}).start();
-				emailService.sendMail(parentEmailString, emailTitleString, String.format("%s finished %s questions.", user.getUserName(), String.valueOf(paperQuesIdx.length)));//change to parent email
+//				emailService.sendMail(parentEmailString, emailTitleString, String.format("%s finished %s questions.", user.getUserName(), String.valueOf(paperQuesIdx.length)));//change to parent email
+			}else {
+				System.out.println("User chooses not to sent email.");
 			}
 		}else {
 //			if(paper.getPaperState() == 0 || paper.getBeginTime() == null || paper.getBeginTime().isEmpty()) {
-////				SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");  
+////				  
 //				String beginTime = formatter.format(new Date());
 //				map.put("beginTime", beginTime);
 //			}
@@ -910,44 +930,66 @@ public class PaperMgController {
 		}else {
 			paperId = paper.getPaperId();
 		}
+		userId = user.getUserId();
 		Map map = new HashMap();
 		map.put("paperId", paperId);
-		map.put("userId", user.getUserId());
+		map.put("userId", userId);
 		paper = paperService.getPaperDetail(map);
-		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");  
+		  
 		String endTime = formatter.format(new Date());
 		map.put("endTime", endTime);
 		map.put("paperState", 2);
 		
-		//calculate score
-		Map quizMap = new HashMap();
-		quizMap.put("userId", user.getUserId());
-		quizMap.put("quizId", paperId);
+		if (paper.getScore().equals("-1")) {
+			double quizDoneAccuracy = calculateQuizScore(paper, userId);
+			map.put("score", String.format("%d", (int) (quizDoneAccuracy * 100)));
+		}
 		
+		paperService.updateUserPaper(map);
+		
+//		session.removeAttribute("currentQuestion");
+		session.removeAttribute("paperId");
+		
+		return "redirect:/toScoreQry.action";
+	}
+	
+	public double calculateQuizScore(Paper paper, String userId) {
+		Map quizMap = new HashMap();
+		quizMap.put("userId", userId);
+		quizMap.put("quizId", paper.getPaperId());
+
+		String quizStartTimeString = paper.getBeginTime();
 		Date quizStartTime = null;
 		try {
-			quizStartTime = formatter.parse(paper.getBeginTime());
+			quizStartTime = formatter.parse(quizStartTimeString);
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+		String quizEndTimeString = paper.getEndTime();
 		Date quizEndTime = null;
-		try {
-			quizEndTime = formatter.parse(paper.getEndTime());
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		if (quizEndTimeString.equals("")) {
+			quizEndTime = new Date();
+		}else {
+			try {
+				quizEndTime = formatter.parse(quizEndTimeString);
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
+		
 		List<ErrorBook> bookList = bookService.getBookInfoForQuiz(quizMap);
 		for (Iterator iterator = bookList.iterator(); iterator.hasNext();) {
 			ErrorBook errorBook = (ErrorBook) iterator.next();
-			
+
 			String questionEndTimeString = errorBook.getEndTime();
 			if (questionEndTimeString == null) {
 				iterator.remove();
 				continue;
 			}
-			
+
 			Date questionEndTime = null;
 			try {
 				questionEndTime = formatter.parse(questionEndTimeString);
@@ -959,16 +1001,9 @@ public class PaperMgController {
 				iterator.remove();
 			}
 		}
-		
-		double quizDoneAccuracy = QuestionStuffs.calcAccuracyForQuesSet(bookList);
-		
-		map.put("score", String.format("%d", (int) (quizDoneAccuracy*100)));
-		paperService.updateUserPaper(map);
-		
-//		session.removeAttribute("currentQuestion");
-		session.removeAttribute("paperId");
-		
-		return "redirect:/toScoreQry.action";
+
+		return QuestionStuffs.calcAccuracyForQuesSet(bookList);
+
 	}
 	
 	/**
@@ -1150,7 +1185,7 @@ public class PaperMgController {
 		paper.setUserId(user.getUserId());
 		paper.setCourseId(user.getCurriculum());
 		paper.setGradeId(gradeId);
-		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");  
+		  
 		String createTime = formatter.format(new Date());
 		paper.setCreateTime(createTime);
 		paper.setAllowTime(map.get("expectTime").toString());
