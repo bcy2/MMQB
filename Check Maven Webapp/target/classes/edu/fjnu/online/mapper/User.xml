@@ -144,6 +144,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<select id="getStu" parameterType="edu.fjnu.online.domain.User" resultMap="userRM">
 		select * from user
 		where username=#{userId}
-		and user_status=1
+		<!-- and user_status=1 -->
+		and user_type=0
 	</select>
 </mapper>

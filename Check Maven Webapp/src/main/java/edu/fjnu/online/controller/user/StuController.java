@@ -491,17 +491,19 @@ public class StuController {
 			List<Paper> paperDoneInPeriod = paperDone.stream()
 					.filter(record -> QuestionStuffs.quizAfterDate(record, integer))
 					.collect(Collectors.toList());
-			List<Paper> paperInProgressInPeriod = paperInProgress.stream()
-					.filter(record -> QuestionStuffs.quizAfterDate(record, integer))
-					.collect(Collectors.toList());
-			List<Paper> paperUndoInPeriod = paperUndo.stream()
-					.filter(record -> QuestionStuffs.quizAfterDate(record, integer))
-					.collect(Collectors.toList());
+//			List<Paper> paperInProgressInPeriod = paperInProgress.stream()
+//					.filter(record -> QuestionStuffs.quizAfterDate(record, integer))
+//					.collect(Collectors.toList());
+//			List<Paper> paperUndoInPeriod = paperUndo.stream()
+//					.filter(record -> QuestionStuffs.quizAfterDate(record, integer))
+//					.collect(Collectors.toList());
 			
 			List<Object> paperNumList = new ArrayList<Object>();
 			paperNumList.add(paperDoneInPeriod.size());
-			paperNumList.add(paperInProgressInPeriod.size());
-			paperNumList.add(paperUndoInPeriod.size());
+//			paperNumList.add(paperInProgressInPeriod.size());
+			paperNumList.add(paperInProgress.size());
+//			paperNumList.add(paperUndoInPeriod.size());
+			paperNumList.add(paperUndo.size());
 			paperMap.put(periodString, paperNumList);
 			
 			List<ErrorBook> bookListInPeriod = allBooksList.stream()

@@ -787,6 +787,12 @@ public class PaperMgController {
 		if(!"5".equalsIgnoreCase(ques.getTypeId())){//Operational question
 			if (answerNoSpace.equalsIgnoreCase(stuAnswerNoSpace)) {
 				correctness = true;
+				User tempUser = new User();
+				tempUser.setUserId(user.getUserId());
+				tempUser.setUserType(user.getUserType());
+				tempUser.setUserState(user.getUserState());
+				tempUser.setRewardPoints(user.getRewardPoints()+1);
+				userService.update(tempUser);
 				System.out.println("Correct");
 			}else {
 				System.out.println("Wrong");
@@ -1088,7 +1094,8 @@ public class PaperMgController {
 		
 		int totalQuesNo = Integer.valueOf(map.get("quesNo").toString());
 		int maxQuesNo = 50;
-		if(totalQuesNo <= 0 || totalQuesNo > 50){
+		int minQuesNo = 5;
+		if(totalQuesNo < minQuesNo || totalQuesNo > maxQuesNo){
 			msgItem.setErrorInfo("Error: Invalid No. of questions.");
 			return msgItem;
 		}

@@ -61,7 +61,6 @@ public class ErrorBookController {
 		map.put("userId", user.getUserId());
 		List<ErrorBook> bookList = bookService.getBookInfo(map);
 		System.out.println("No. of question records: "+String.valueOf(bookList.size()));
-		int correctCount = 0;
 		
 		for (Iterator iterator = bookList.iterator(); iterator.hasNext();) {
 			ErrorBook errorBook = (ErrorBook) iterator.next();
@@ -77,10 +76,6 @@ public class ErrorBookController {
 				question.setAttachmentFile(attachmentService.get(question.getAttachmentId()).getAttachmentFile());
 			}
 			errorBook.setQuestion(question);
-			
-			if (errorBook.isCorrectness()) {
-				correctCount+=1;
-			}
 			
 			// set grade name
 			//Grade grade = gradeService.get(Integer.valueOf(errorBook.getQuestion().getGradeId()));

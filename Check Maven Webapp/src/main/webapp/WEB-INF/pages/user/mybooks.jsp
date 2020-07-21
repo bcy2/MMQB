@@ -1,5 +1,6 @@
 <%@ page language="java" import="java.util.*" pageEncoding="utf-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <c:set var="ctx" value="${pageContext.request.contextPath}"/>
 <c:set var="newLine" value="\\n"/>
@@ -149,18 +150,12 @@ MathJax = {
 					</c:if>
 				</c:forEach>
 			  </h5>
-<%--			  <h5 class="typ1 t-button">
-				<span>Course:</span>
-				<c:forEach items="${course}" var="course">
-					<a href="#"><span class="label label-success" onclick="course(${course.courseId})">${course.courseName}</span></a>
-				</c:forEach>
-			  </h5> --%>
-			  <h5 class="typ1 t-button">
+			  <%-- <h5 class="typ1 t-button">
 				<span>Type:</span>
 				<c:forEach items="${type}" var="type">
 					<a href="#"><span class="label label-success" onclick="type('type${type.typeId}')">${type.typeName}</span></a>
 				</c:forEach>
-			  </h5>
+			  </h5> --%>
 			</div>
 			
 			<h2>Accuracy: 
@@ -170,7 +165,7 @@ MathJax = {
 							N/A
 						</c:when>
 						<c:otherwise>
-							${accuracy*100 }%
+							<fmt:formatNumber type="number" maxFractionDigits="1" value="${accuracy*100}"/>%
 						</c:otherwise>
 					</c:choose>
 				</span>
