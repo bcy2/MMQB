@@ -135,8 +135,27 @@ MathJax = {
 			$("form").submit(); 
 		},"json");
 	}
-</script>
+	
+	/* function pdf() {
+		var doc = new jsPDF();
+		var elementHandler = {
+				  '#actualTime': function (element, renderer) {
+				    return true;
+				  }
+				};
+		var source = window.document.getElementsByClassName("container")[1];
+		doc.fromHTML(
+			    source,
+			    15,
+			    15,
+			    {
+			      'width': 180,'elementHandlers': elementHandler
+			    });
 
+		doc.output("dataurlnewwindow");
+	} */
+</script>
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.debug.js" integrity="sha384-NaWTHo/8YCBYJ59830LTz/P4aQZK1sS0SneOgAvhsIl3zBu8r9RevNg5lHCHAuQ/" crossorigin="anonymous"></script> -->
 </head>
 <body>
 <div class="header">
@@ -198,76 +217,76 @@ MathJax = {
 	 		<br />
 			<h2 class="bars" align="center"><font color="blue">${paper.paperName }</font></h2>
 			<h4 class="bars" align="center">Expected time: <font color="green">${paper.allowTime }min</font></h4>
-			<h4 class="bars" align="center">Actual time: <font color="green">${paper.allowTime }min</font></h4>
+			<h4 class="bars" align="center" id="actualTime">Actual time: <font color="green">${paper.allowTime }min</font></h4>
 				<%-- <input type="hidden" name="currentQ" id="currentQ" value="${currentQuestion}"/> --%>
-				<input type="hidden" name="paperId" id="paperId" value="${paper.paperId }"/>
-				<div class="question-group">
-				<c:forEach items="${requestScope.questionRecordList }" var="questionRecordList">
-				<c:if test="${questionRecordList.question.typeId==1}">
-					<div class="questionItem type${questionRecordList.question.typeId } grade${questionRecordList.question.gradeId }">
-					<hr>
-					<!-- 选择题 -->
+			<input type="hidden" name="paperId" id="paperId" value="${paper.paperId }"/>
+			<div class="question-group">
+				<hr>
+				<c:forEach items="${requestScope.questionRecordList }" var="questionRecordList" varStatus="loop">
+					<h4 class="bars" align="left"><strong><u>Question ${loop.index+1}:</u></strong></h4>
+					<c:if test="${questionRecordList.question.typeId==1}">
+						<div class="questionItem type${questionRecordList.question.typeId } grade${questionRecordList.question.gradeId }">
+						<!-- 选择题 -->
+							<p><h4 class="bars" align="left">${fn:replace(questionRecordList.question.quesName, newLine, "<br />")}</h4></p>
+							<c:if test="${questionRecordList.question.attachmentId != 0}">
+								<img src="data:image/png;base64,${questionRecordList.question.attachmentFile}">
+							</c:if>
+							<div class="input-group">
+								A.&nbsp;<font size="4">${questionRecordList.question.optionA }</font></br>
+								B.&nbsp;<font size="4">${questionRecordList.question.optionB }</font></br>
+								C.&nbsp;<font size="4">${questionRecordList.question.optionC }</font></br>
+								D.&nbsp;<font size="4">${questionRecordList.question.optionD }</font></br>
+								<p><h4 class="bars">My answer:
+									<c:choose>
+										<c:when test="${questionRecordList.correctness}">
+											<font color='green'>${questionRecordList.userAnswer }&nbsp;&check;</font>
+										</c:when>
+										<c:otherwise>
+											<font color='red'>${questionRecordList.userAnswer }&nbsp;&cross;</font>
+										</c:otherwise>
+									</c:choose>
+								</h4></p>
+								<c:if test="${!questionRecordList.correctness}">
+									<p><h4 class="bars">Correct answer: <font color="green">${questionRecordList.question.answer }</font></h4></p>
+								</c:if>
+								<c:if test="${questionRecordList.question.answerDetail}">
+									<p><h4 class="bars">Explanation: ${questionRecordList.question.answerDetail }</h4></p>
+								</c:if>
+								<%-- <p><h4 class="bars">From quiz: <strong>${questionRecordList.quizName }</strong> / Question grade: <strong>${questionRecordList.gradeName }</strong></h4></p> --%>
+							</div>
+						</div>
+					</c:if>
+					
+					<c:if test="${questionRecordList.question.typeId==2}">
+						<div class="questionItem type${questionRecordList.question.typeId } grade${questionRecordList.question.gradeId }">
+						<!-- 填空题 -->
 						<p><h4 class="bars" align="left">${fn:replace(questionRecordList.question.quesName, newLine, "<br />")}</h4></p>
-						<c:if test="${questionRecordList.question.attachmentId != 0}">
-							<img src="data:image/png;base64,${questionRecordList.question.attachmentFile}">
-						</c:if>
-						<div class="input-group">
-							A.&nbsp;<font size="4">${questionRecordList.question.optionA }</font></br>
-							B.&nbsp;<font size="4">${questionRecordList.question.optionB }</font></br>
-							C.&nbsp;<font size="4">${questionRecordList.question.optionC }</font></br>
-							D.&nbsp;<font size="4">${questionRecordList.question.optionD }</font></br>
-							<p><h4 class="bars">My answer:
-								<c:choose>
-									<c:when test="${questionRecordList.correctness}">
-										<font color='green'>${questionRecordList.userAnswer }&nbsp;&check;</font>
-									</c:when>
-									<c:otherwise>
-										<font color='red'>${questionRecordList.userAnswer }&nbsp;&cross;</font>
-									</c:otherwise>
-								</c:choose>
-							</h4></p>
-							<c:if test="${!questionRecordList.correctness}">
-								<p><h4 class="bars">Correct answer: <font color="green">${questionRecordList.question.answer }</font></h4></p>
+							<c:if test="${questionRecordList.question.attachmentId != 0}">
+								<img src="data:image/png;base64,${questionRecordList.question.attachmentFile}">
 							</c:if>
-							<c:if test="${questionRecordList.question.answerDetail}">
-								<p><h4 class="bars">Explanation: ${questionRecordList.question.answerDetail }</h4></p>
-							</c:if>
-							<%-- <p><h4 class="bars">From quiz: <strong>${questionRecordList.quizName }</strong> / Question grade: <strong>${questionRecordList.gradeName }</strong></h4></p> --%>
+							<div class="input-group">
+								<p><h4 class="bars">My answer:
+									<c:choose>
+										<c:when test="${questionRecordList.correctness}">
+											<font color='green'>${questionRecordList.userAnswer }&nbsp;&check;</font>
+										</c:when>
+										<c:otherwise>
+											<font color='red'>${questionRecordList.userAnswer }&nbsp;&cross;</font>
+										</c:otherwise>
+									</c:choose>
+								</h4></p>
+								<c:if test="${!questionRecordList.correctness}">
+									<p><h4 class="bars">Correct answer: <font color="green">${questionRecordList.question.answer }</font></h4></p>
+								</c:if>
+								<c:if test="${questionRecordList.question.answerDetail}">
+									<p><h4 class="bars"><font color="red">Explanation:${questionRecordList.question.answerDetail }</font></h4></p>
+								</c:if>
+								<%-- <p><h4 class="bars">From quiz: <strong>${questionRecordList.quizName }</strong> / Question grade: <strong>${questionRecordList.gradeName }</strong></h4></p> --%>
+							</div>
 						</div>
-					</div>
-				</c:if>
-				
-				<c:if test="${questionRecordList.question.typeId==2}">
-					<div class="questionItem type${questionRecordList.question.typeId } grade${questionRecordList.question.gradeId }">
+					</c:if>
 					<hr>
-					<!-- 填空题 -->
-					<p><h4 class="bars" align="left">${fn:replace(questionRecordList.question.quesName, newLine, "<br />")}</h4></p>
-						<c:if test="${questionRecordList.question.attachmentId != 0}">
-							<img src="data:image/png;base64,${questionRecordList.question.attachmentFile}">
-						</c:if>
-						<div class="input-group">
-							<p><h4 class="bars">My answer:
-								<c:choose>
-									<c:when test="${questionRecordList.correctness}">
-										<font color='green'>${questionRecordList.userAnswer }&nbsp;&check;</font>
-									</c:when>
-									<c:otherwise>
-										<font color='red'>${questionRecordList.userAnswer }&nbsp;&cross;</font>
-									</c:otherwise>
-								</c:choose>
-							</h4></p>
-							<c:if test="${!questionRecordList.correctness}">
-								<p><h4 class="bars">Correct answer: <font color="green">${questionRecordList.question.answer }</font></h4></p>
-							</c:if>
-							<c:if test="${questionRecordList.question.answerDetail}">
-								<p><h4 class="bars"><font color="red">Explanation:${questionRecordList.question.answerDetail }</font></h4></p>
-							</c:if>
-							<%-- <p><h4 class="bars">From quiz: <strong>${questionRecordList.quizName }</strong> / Question grade: <strong>${questionRecordList.gradeName }</strong></h4></p> --%>
-						</div>
-					</div>
-				</c:if>
-				
-			</c:forEach>
+				</c:forEach>
 				<%-- <c:forEach items="${questionList}" var="quesType" varStatus="loop">
 				<p><h4 class="bars" align="left">${loop.index+1}.</h4></p>
 					<c:if test="${quesType.typeId == 1}">
@@ -307,14 +326,13 @@ MathJax = {
 					</c:if>
 					<hr>
 				</c:forEach> --%>
-			
-				</div>
+			</div>
 		<div class="grid_3 grid_5" align="center">
 		  <h3 class="t-button">
 			<!-- <a href="javascript:;" onclick="submitPaper()"><span class="label label-success">提交试卷</span></a>&nbsp;&nbsp; -->
 			<a href="${ctx}/toScoreQry.action?userId=${user.userId}"><span class="label label-info">Back to quiz review</span></a>
 		  </h3>
-      </div>
+      	</div>
 	</div>
 </form>	  
 <!-- </div> -->

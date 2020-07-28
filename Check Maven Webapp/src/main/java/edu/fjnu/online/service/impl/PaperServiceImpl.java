@@ -30,6 +30,10 @@ public class PaperServiceImpl implements PaperService {
 	public void insert(Paper paper) {
 		paperDao.insert(paper);
 	}
+	
+	public void insertPaper(Paper paper) {
+		paperDao.insertPaper(paper);
+	}
 
 	public void update(Paper paper) {
 		paperDao.update(paper);
@@ -71,6 +75,16 @@ public class PaperServiceImpl implements PaperService {
 	public List<Paper> qryInProgressPaper(Map map){
 		// TODO Auto-generated method stub
 		return paperDao.qryInProgressPaper(map);
+	}
+	
+	public List<Paper> qryExamPaper(Map map) {
+		// TODO Auto-generated method stub
+		return paperDao.qryExamPaper(map);
+	}
+	
+	public Paper getExamPaperDetail(Map map) {
+		// TODO Auto-generated method stub
+		return paperDao.getExamPaperDetail(map);
 	}
 
 	public PageInfo<Paper> findAllPage(Paper paper, Integer pageNo,

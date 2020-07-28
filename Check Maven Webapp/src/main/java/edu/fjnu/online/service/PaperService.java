@@ -13,6 +13,7 @@ public interface PaperService {
 	public List<Paper> find(Paper paper);
 	public Paper get(Serializable id);
 	public void insert(Paper paper);
+	public void insertPaper(Paper paper);
 	public void update(Paper paper);
 	public void delete(Serializable id);
 	public void delete(Serializable[] ids);
@@ -29,4 +30,6 @@ public interface PaperService {
 	/**查询学生正在考试的试卷*/
 	public List<Paper> qryInProgressPaper(Map map);
 	public PageInfo<Paper> findAllPage(Paper paper, Integer pageNo,Integer pageSize);
+	public List<Paper> qryExamPaper(Map map);
+	public Paper getExamPaperDetail(Map map);
 }

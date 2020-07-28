@@ -29,9 +29,17 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<!-- 新增 -->
 	<insert id="insert" parameterType="edu.fjnu.online.domain.Paper">
 		insert into quiz
-		(id,name,curriculum_id,grade_id,student_name,question_id,begin_time,submit_time,expected_duration,score,status,teacher_name,create_time,current_question)
+		(id,name,curriculum_id,grade_id,student_name,question_id,begin_time,submit_time,expected_duration,score,status,teacher_name,create_time,current_question,difficulty)
 		values
-		(#{paperId},#{paperName},#{courseId},#{gradeId},#{userId},#{questionId},#{beginTime},#{endTime},#{allowTime},#{score},#{paperState},#{teacherName},#{createTime},#{currentQuestion})
+		(#{paperId},#{paperName},#{courseId},#{gradeId},#{userId},#{questionId},#{beginTime},#{endTime},#{allowTime},#{score},#{paperState},#{teacherName},#{createTime},#{currentQuestion},#{difficulty})
+	</insert>
+	
+	<!-- 新增paper -->
+	<insert id="insertPaper" parameterType="edu.fjnu.online.domain.Paper">
+		insert into paper_record
+		(id,name,curriculum_id,grade_id,username,question_id,expected_duration,score,status,create_time,difficulty)
+		values
+		(#{paperId},#{paperName},#{courseId},#{gradeId},#{userId},#{questionId},#{allowTime},#{score},#{paperState},#{createTime},#{difficulty})
 	</insert>
 	
 	<!-- 修改 -->
@@ -173,5 +181,17 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<!-- 查询正在考试的试卷 -->
 	<select id="qryInProgressPaper" parameterType="map" resultMap="paperRM">
 		select * from quiz where status = 1 and student_name=#{userId}
+	</select>
+	
+	<!-- 查询paper -->
+	<select id="qryExamPaper" parameterType="map" resultMap="paperRM">
+		select *, username as student_name from paper_record
+		where username=#{userId}
+	</select>
+	
+	<select id="getExamPaperDetail" parameterType="map" resultMap="paperRM">
+		select *, username as student_name from paper_record
+		where username=#{userId}
+		and id=#{paperId}
 	</select>
 </mapper>

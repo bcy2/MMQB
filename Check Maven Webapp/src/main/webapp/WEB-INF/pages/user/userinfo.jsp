@@ -72,7 +72,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					<div class="collapse navbar-collapse nav-wil" id="bs-example-navbar-collapse-1">
 						<ul class="nav navbar-nav">
 							<li><a class="hvr-overline-from-center button2" href="${ctx}/toIndex.action?userId=${user.userId}">Home</a></li>
-							<li><a class="hvr-overline-from-center button2  active" href="${ctx}/toUserStatistics.action?userId=${user.userId}">My statistics</a></li>
+							<li><a class="hvr-overline-from-center button2" href="${ctx}/toUserStatistics.action?userId=${user.userId}">My statistics</a></li>
 							<!-- <li><a class="hvr-overline-from-center button2" href="onlinecheck.html">在线考试</a></li> -->
 							<li><a class="hvr-overline-from-center button2" href="${ctx}/toScoreQry.action?userId=${user.userId}">Review quizzes</a></li>
 							<li><a class="hvr-overline-from-center button2" href="${ctx}/toMyBooksPage.action?userId=${user.userId}">Question record</a></li>
@@ -91,11 +91,12 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 </div>
 <div class="container">
 	<form action="${ctx}/updateUserInfo.action" method="post" name="myform" id="myform">
-	<div class="bs-example bs-example-tabs" role="tabpanel" data-example-id="togglable-tabs">
-		<ul id="myTab" class="nav nav-tabs" role="tablist">
-		  <li role="presentation" class="active"><a href="#home" id="home-tab" role="tab" data-toggle="tab" aria-controls="home" aria-expanded="true" onclick="userInfo()"> Personal Profile</a></li>
-		  <li role="presentation"><a href="#profile" role="tab" id="profile-tab" data-toggle="tab" aria-controls="profile" onclick="updatePwd()">Change Password</a></li>
-		</ul>
+		<div class="bs-example bs-example-tabs" role="tabpanel" data-example-id="togglable-tabs">
+			<ul id="myTab" class="nav nav-tabs" role="tablist">
+		  		<li role="presentation" class="active"><a href="#home" id="home-tab" role="tab" data-toggle="tab" aria-controls="home" aria-expanded="true" onclick="userInfo()"> Personal Profile</a></li>
+		  		<li role="presentation"><a href="#profile" role="tab" id="profile-tab" data-toggle="tab" aria-controls="profile" onclick="updatePwd()">Change Password</a></li>
+			</ul>
+		</div>
 		<div id="myTabContent" class="tab-content">
 		  <div role="tabpanel" class="tab-pane fade in active" id="home" aria-labelledby="home-tab">
 		  	<input type="hidden" id="userState" name="userState" value="${user.userState }"/>

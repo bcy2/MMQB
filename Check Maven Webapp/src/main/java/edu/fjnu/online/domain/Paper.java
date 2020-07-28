@@ -35,6 +35,14 @@ public class Paper {
 	
 	private Integer currentQuestion;
 	
+	private Float difficulty;
+	
+	public Float getDifficulty() {
+		return difficulty;
+	}
+	public void setDifficulty(Float difficulty) {
+		this.difficulty = difficulty;
+	}
 	public String getTeacherName() {
 		return teacherName;
 	}
@@ -59,7 +67,7 @@ public class Paper {
 
 	public Paper(Integer paperId, String paperName, String courseId, String gradeId, String userId, String questionId,
 			String beginTime, String endTime, String allowTime, String score, Integer paperState, String teacherName,
-			String createTime, Integer currentQuestion) {
+			String createTime, Integer currentQuestion, Float difficulty) {
 		super();
 		this.paperId = paperId;
 		this.paperName = paperName;
@@ -75,6 +83,7 @@ public class Paper {
 		this.teacherName = teacherName;
 		this.createTime = createTime;
 		this.currentQuestion = currentQuestion;
+		this.difficulty = difficulty;
 	}
 	public String getPaperId() {
 		if (paperId == null) {
@@ -151,7 +160,7 @@ public class Paper {
 				+ gradeId + ", userId=" + userId + ", questionId=" + questionId + ", beginTime=" + beginTime
 				+ ", endTime=" + endTime + ", allowTime=" + allowTime + ", score=" + score + ", paperState="
 				+ paperState + ", teacherName=" + teacherName + ", createTime=" + createTime + ", currentQuestion="
-				+ currentQuestion + "]";
+				+ currentQuestion + ", difficulty=" + difficulty + "]";
 	}
 	
 }
