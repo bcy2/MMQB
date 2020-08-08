@@ -37,6 +37,19 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	.input-group .form-control{
   		width:100%;
 	}
+	
+	.auxDiv{
+		font-size:small;
+		position: absolute;
+		top: -4px;
+		right: 0;
+		width: 30%;
+		-webkit-transform: translate(104%, 0);
+    	-moz-transform: translate(104%, 0);
+     	-ms-transform: translate(104%, 0); /* Only for graceful degradation in IE9, cannot be transitioned */
+      	-o-transform: translate(104%, 0);
+        transform: translate(104%, 0);
+	}
 </style>
 <script src="${ctx}/js/jquery-1.11.1.min.js"></script>
 <script src="${ctx}/js/modernizr.custom.js"></script>
@@ -146,10 +159,16 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			  		id="parentName" name="parentName" value="${user.parentName }">
 			</div>
 			<div class="input-group">
-			  <span class="input-group-addon" id="basic-addon1">Parent/Guardian email:</span>
+			  <span class="input-group-addon" id="basic-addon1">Parent/Guardian email:
+			  </span>
 			  <input type="text" class="form-control"
 			  		id="parentEmail" name="parentEmail" value="${user.parentEmail }" placeholder="Student updates will be sent to this email">
+			  <div class="auxDiv">
+			  	<span>* Receive learning updates:</span><br />
+			  	<input id="se" name="sendEmail" type="checkbox" value="1" <c:if test="${se}">checked</c:if>/><label for="se">&nbsp;Yes</label>
+			  </div>
 			</div>
+			 
 			<div class="input-group">
 			  <span class="input-group-addon" id="basic-addon1">Contact phone:</span>
 			  <input type="text" class="form-control" 
@@ -162,6 +181,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			  		id="rewardPoints" name="rewardPoints" value="${user.rewardPoints }" readonly="readonly">
 			</div>
 		  </div>
+		  
 		  <div role="tabpanel" class="tab-pane fade" id="profile" aria-labelledby="profile-tab">
 		  <c:if test="${'hide!!!'}">
 			<div class="input-group">

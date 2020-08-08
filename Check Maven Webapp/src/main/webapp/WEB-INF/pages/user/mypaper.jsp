@@ -330,7 +330,7 @@ if (session.getAttribute("user") == null) {
 									</font>
 								</td>
 								<td>
-									<button onclick="">Book a review session</button>
+									<button onclick="window.location.href = '${ctx}/toBookRevSes.action?userId=${user.userId}'">Book a review session</button>
 								</td>
 							</tr>
 						</c:forEach>

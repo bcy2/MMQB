@@ -893,6 +893,7 @@ public class PaperMgController {
 			map.put("paperState", 2);
 //			  
 			String endTime = formatter.format(new Date());
+			paper.setEndTime(endTime);
 			map.put("endTime", endTime);
 			msgItem.setErrorNo("1");
 //			session.removeAttribute("currentQuestion");
@@ -902,6 +903,8 @@ public class PaperMgController {
 			
 			final String parentEmailString = user.getParentEmail();
 			final String emailTitleString = "[Major Maths] Reminder";
+			final String userNameString = user.getUserName();
+			final String paperNameString = paper.getPaperName();
 			
 			Boolean emailNotEmpty = parentEmailString != null && !parentEmailString.trim().equals("");
 			
@@ -919,7 +922,7 @@ public class PaperMgController {
 				new Thread(new Runnable() {
 					@Override
 					public void run() {
-						emailService.sendMail(parentEmailString, emailTitleString, String.format("%s just finished %s questions and scored %d marks.", user.getUserName(), String.valueOf(paperQuesIdx.length), (int) (quizDoneAccuracy * 100)));//change to parent email
+						emailService.sendMail(parentEmailString, emailTitleString, String.format("%s just finished %s questions from quiz: *%s* and scored *%d* marks.", userNameString, String.valueOf(paperQuesIdx.length), paperNameString, (int) (quizDoneAccuracy * 100)));//change to parent email
 					}
 				}).start();
 //				emailService.sendMail(parentEmailString, emailTitleString, String.format("%s finished %s questions.", user.getUserName(), String.valueOf(paperQuesIdx.length)));//change to parent email
@@ -1050,7 +1053,7 @@ public class PaperMgController {
 		
 		String quizEndTimeString = paper.getEndTime();
 		Date quizEndTime = null;
-		if (quizEndTimeString.equals("")) {
+		if (quizEndTimeString == null || quizEndTimeString.equals("")) {
 			quizEndTime = new Date();
 		}else {
 			try {

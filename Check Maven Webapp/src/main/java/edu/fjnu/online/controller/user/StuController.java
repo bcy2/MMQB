@@ -64,6 +64,8 @@ public class StuController {
 	@Autowired
 	ErrorBookService bookService;
 	
+	ObjectMapper mapper = new ObjectMapper();
+	
 	public void showAllAttributes(HttpSession session){
 		Enumeration<String> attributes = session.getAttributeNames();
 		System.out.println("All attributes:");
@@ -281,6 +283,15 @@ public class StuController {
 //		user.setGrade(grade.getGradeName());
 //		model.addAttribute("userGradeName", grade.getGradeName());
 		model.addAttribute("user", user);
+		
+		Map<String, Boolean> authMap = null;
+		try {
+			authMap = mapper.readValue(loginUser.getAuthority(), Map.class);
+		} catch (JsonProcessingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		model.addAttribute("se", authMap.get("sendEmail"));
 		return "/user/userinfo.jsp";			
 	}
 	
@@ -292,10 +303,19 @@ public class StuController {
 	 * @return
 	 */
 	@RequestMapping("/updateUserInfo.action")
-	public String updateUserInfo(String newPwd,User user, Model model, HttpSession session){
+	public String updateUserInfo(String newPwd, String sendEmail, User user, Model model, HttpSession session){
 //		temp security implementation
 		if(session.getAttribute("user") == null){
 			return "redirect:/toLogin.action";
+		}
+		
+		if(!newPwd.equals("")){//password length >= 6
+			if (newPwd.trim().length() < 6) {
+				return "redirect:/toUserInfo.action";
+			}
+			//密码加密
+			newPwd = MD5Util.getData(newPwd);
+			user.setUserPwd(newPwd);
 		}
 		
 		String userNickName = user.getUserName();
@@ -328,13 +348,23 @@ public class StuController {
 			}
 		}
 		
-		if(!newPwd.equals("")){//password length >= 6
-			if (newPwd.trim().length() < 6) {
-				return "redirect:/toUserInfo.action";
-			}
-			//密码加密
-			newPwd = MD5Util.getData(newPwd);
-			user.setUserPwd(newPwd);
+		User loginUser = (User) session.getAttribute("user");
+		boolean se = sendEmail == null ? false : true;
+		
+		Map<String, Boolean> authMap = null;
+		try {
+			authMap = mapper.readValue(loginUser.getAuthority(), Map.class);
+		} catch (JsonProcessingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		authMap.put("sendEmail", se);
+		
+		try {
+			user.setAuthority(mapper.writeValueAsString(authMap));
+		} catch (JsonProcessingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		
 		user.setUserName(userNickName);
@@ -346,9 +376,7 @@ public class StuController {
 		
 		userService.update(user);
 		user = userService.get(user.getUserId());
-		if(session.getAttribute("user")== null){
-			session.setAttribute("user", userService.getStu(user));
-		}
+		session.setAttribute("user", userService.getStu(user));
 		session.setAttribute("userName", user.getUserName());
 		return "redirect:/toIndex.action";			
 	}
@@ -555,6 +583,17 @@ public class StuController {
 //		model.addAttribute("userGradeName", grade.getGradeName());
 		model.addAttribute("user", user);
 		return "/user/userStatistics.jsp";			
+	}
+	
+	@RequestMapping("/toBookRevSes.action")
+	public String toBookRevSes(User user, Model model, HttpSession session){
+//		temp security implementation
+		if(session.getAttribute("user") == null){
+			return "redirect:/toLogin.action";
+		}
+		User loginUser = (User) session.getAttribute("user");
+		model.addAttribute("user", loginUser);
+		return "/user/bookRevSes.jsp";			
 	}
 	
 	// 跳转到登录页面

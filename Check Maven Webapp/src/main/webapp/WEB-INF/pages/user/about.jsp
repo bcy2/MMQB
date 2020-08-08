@@ -130,36 +130,28 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	<div class="container">
 		<div class="footer-grids">
 			<div class="col-md-3 footer-grid">
-				<h3>a</h3>
+				<h3>Locations</h3>
 				<ul>
-					<li><a href="#">SUMMER CAMPS</a></li>
-					<li><a href="#">CELEBRATIONS</a></li>
+					<li><a href="#">Whampoa</a></li>	
+					<i style="color: gray;">Rm 11, Office Tower,6/F Harbourfront Landmark, 11 Wan Hoi St, Hung Hom</i>		
 				</ul>
 			</div>
 			<div class="col-md-3 footer-grid">
-				<h3>b</h3>
+				<h3>Contact</h3>
 				<ul>
-					<li><a href="#">KK</a></li>
+					<li><a href="#">+852 5422 0996</a></li>
+					<li><a href="#">info@majormaths.com</a></li>
 				</ul>
 			</div>
 			<div class="col-md-3 footer-grid">
-				<h3>c</h3>
+				<h3>Opening Hours</h3>
 				<ul>
-					<li><a href="#">+852 12341234</a></li>
-					<li><a href="#">0591 55555555</a></li>
+					<li><a href="#">Mon: 2:30pm - 6:30pm</a></li>
+					<li><a href="#">Tue to Sun: 9:30 am - 6:30 pm</a></li>
 				</ul>
 			</div>
-			<div class="col-md-3 footer-grid">
-				<h3>d</h3>
-				<ul>
-					<li><a href="#">PRESENTATIONS</a></li>
-					<li><a href="#">SEMINARS</a></li>
-				</ul>
-			</div>
-
 
 		</div>
-</p>
 	</div>
 </div>
 <!-- //footer -->

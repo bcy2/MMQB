@@ -33,6 +33,15 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 </script>
 <link href="${ctx}/css/bootstrap.css" rel="stylesheet" type="text/css" media="all" />
 <link href="${ctx}/css/style.css" rel="stylesheet" type="text/css" media="all" />
+<style type="text/css">
+body {
+  counter-reset: questionNo;           /* 重置计数器成0 */
+}
+div.questionItem:before {
+  counter-increment: questionNo;      /* 增加计数器值 */
+  content: "Question " counter(questionNo) ": "; /* 显示计数器 */
+}
+</style>
 <script src="${ctx}/js/jquery-1.11.1.min.js"></script>
 <script src="${ctx}/js/modernizr.custom.js"></script>
 <script type="text/javascript" src="${ctx}/js/move-top.js"></script>
@@ -177,12 +186,12 @@ MathJax = {
 				 <%-- <div class="progress-bar progress-bar-danger" style="width: ${(1-accuracy)*100 }%"><span class="sr-only">10% Complete (danger)</span></div> --%>
 			</div>
 			
+			<hr>
 			
 			<c:forEach items="${requestScope.questionRecordList }" var="questionRecordList">
 				<c:if test="${questionRecordList.question.typeId==1}">
 					<div class="questionItem type${questionRecordList.question.typeId } grade${questionRecordList.question.gradeId }">
-					<hr>
-					<!-- 选择题 -->
+						<!-- 选择题 -->
 						<p><h4 class="bars" align="left">${fn:replace(questionRecordList.question.quesName, newLine, "<br />")}</h4></p>
 						<c:if test="${questionRecordList.question.attachmentId != 0}">
 							<img src="data:image/png;base64,${questionRecordList.question.attachmentFile}">
@@ -210,14 +219,14 @@ MathJax = {
 							</c:if>
 							<p><h4 class="bars">From quiz: <strong>${questionRecordList.quizName }</strong> / Question grade: <strong>${questionRecordList.gradeName }</strong></h4></p>
 						</div>
+						<hr>
 					</div>
 				</c:if>
 				
 				<c:if test="${questionRecordList.question.typeId==2}">
 					<div class="questionItem type${questionRecordList.question.typeId } grade${questionRecordList.question.gradeId }">
-					<hr>
-					<!-- 填空题 -->
-					<p><h4 class="bars" align="left">${fn:replace(questionRecordList.question.quesName, newLine, "<br />")}</h4></p>
+						<!-- 填空题 -->
+						<p><h4 class="bars" align="left">${fn:replace(questionRecordList.question.quesName, newLine, "<br />")}</h4></p>
 						<c:if test="${questionRecordList.question.attachmentId != 0}">
 							<img src="data:image/png;base64,${questionRecordList.question.attachmentFile}">
 						</c:if>
@@ -240,22 +249,9 @@ MathJax = {
 							</c:if>
 							<p><h4 class="bars">From quiz: <strong>${questionRecordList.quizName }</strong> / Question grade: <strong>${questionRecordList.gradeName }</strong></h4></p>
 						</div>
+						<hr>
 					</div>
 				</c:if>
-				
-				<%-- <c:if test="${questionRecordList.question.typeId==5}">
-					<div class="questionItem type${questionRecordList.question.typeId } grade${questionRecordList.question.gradeId }">
-					<hr>
-					<!-- 多选题 -->
-					<p><h4 class="bars" align="left">${questionRecordList.question.quesName }</h4></p>
-						<div class="input-group">
-							<p><h4 class="bars"><font color="blue">My answer：${questionRecordList.userAnswer } </font></h4></p>
-							<p><h4 class="bars">Correct answer：${questionRecordList.question.answer }</h4></p>
-							<p><h4 class="bars"><font color="red">Explanation:${questionRecordList.question.answerDetail }</font></h4></p>
-						</div>
-					</div>
-				</c:if> --%>
-				
 			</c:forEach>
 	</div>
 <!-- </div> -->
