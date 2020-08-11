@@ -193,12 +193,14 @@
 			<version>4.0.0</version>
 		</dependency>
 		
-		<!-- https://mvnrepository.com/artifact/org.json/json -->
-		<!-- <dependency>
-		    <groupId>org.json</groupId>
-		    <artifactId>json</artifactId>
-		    <version>20190722</version>
-		</dependency> -->
+		 <dependency>
+            <groupId>de.nixosoft</groupId>
+            <artifactId>jlr</artifactId>
+            <version>2.1</version>
+             <type>jar</type>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/jlr-2.1.jar</systemPath>
+        </dependency>
 
 	</dependencies>
 
@@ -212,6 +214,23 @@
 			    <configuration>
 			        <release>11</release>  <!--or <release>10</release>-->
 			        <!-- <failOnMissingWebXml>false</failOnMissingWebXml> -->
+			    </configuration>
+			</plugin>
+			
+			<!-- 设置 maven-war-plugins 插件，否则外部依赖无法打进 war 包 -->
+			<plugin>
+			    <groupId>org.apache.maven.plugins</groupId>
+			    <artifactId>maven-war-plugin</artifactId>
+			    <configuration>
+			        <webResources>
+			            <resource>
+			                <directory>${project.basedir}/lib</directory>
+			                <targetPath>WEB-INF/lib/</targetPath>
+			                <includes>
+			                    <include>**/*.jar</include>
+			                </includes>
+			            </resource>
+			        </webResources>
 			    </configuration>
 			</plugin>
 		</plugins>

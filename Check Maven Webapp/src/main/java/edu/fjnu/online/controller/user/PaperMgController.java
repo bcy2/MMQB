@@ -57,6 +57,7 @@ import edu.fjnu.online.util.Computeclass;
 import edu.fjnu.online.domain.Attachment;
 import edu.fjnu.online.service.AttachmentService;
 import edu.fjnu.online.util.QuestionStuffs;
+import edu.fjnu.online.util.TexToPDF;
 //import edu.fjnu.online.util.EmailThread;
 /**
  * 试卷综合管理
@@ -485,6 +486,7 @@ public class PaperMgController {
 				question = QuestionStuffs.convertAnsForMCQ(question);
 			}
 			question = QuestionStuffs.replaceLatexAnsWithUnderscore(question);
+			question = QuestionStuffs.replaceLineSepWithDblSlash(question);
 			
 			if (question.getAttachmentId() != 0) {
 				question.setAttachmentFile(attachmentService.get(question.getAttachmentId()).getAttachmentFile());
@@ -506,14 +508,14 @@ public class PaperMgController {
 			
 			String testString = question.getQuesName();
 			System.out.println("Question: "+testString);
-			String optionAString = question.getOptionA();
-			String optionBString = question.getOptionB();
-			String optionCString = question.getOptionC();
-			String optionDString = question.getOptionD();
-			System.out.println("A: "+optionAString);
-			System.out.println("B: "+optionBString);
-			System.out.println("C: "+optionCString);
-			System.out.println("D: "+optionDString);
+//			String optionAString = question.getOptionA();
+//			String optionBString = question.getOptionB();
+//			String optionCString = question.getOptionC();
+//			String optionDString = question.getOptionD();
+//			System.out.println("A: "+optionAString);
+//			System.out.println("B: "+optionBString);
+//			System.out.println("C: "+optionCString);
+//			System.out.println("D: "+optionDString);
 			System.out.println("Ans:"+question.getAnswer());
 		}
 		
@@ -539,6 +541,7 @@ public class PaperMgController {
 		model.addAttribute("paper", paper);
 		model.addAttribute("user", user);
 		session.setAttribute("paperId", paperId);
+		TexToPDF.toPDF(session.getServletContext().getRealPath("/"), paper, quesList);
 
 		return "/user/showPaperPage.jsp";
 	}

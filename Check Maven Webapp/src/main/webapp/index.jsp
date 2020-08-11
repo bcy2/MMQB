@@ -20,7 +20,7 @@
 </head>
 <body>
 	<div class="page-container">
-		<h1>Hello!</h1>
+		<h1>Welcome to Major Maths Online Platform</h1>
 		<br />
 		<p>I am a...</p>
 		<button onclick = "window.location.href = 'toLogin.action';">Student</button>

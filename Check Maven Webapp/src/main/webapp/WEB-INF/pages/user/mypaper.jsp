@@ -264,6 +264,8 @@ if (session.getAttribute("user") == null) {
 				<h3 class="t-button" style="margin-top: 0; padding-top: 0;">
 					<a href="${ctx}/toPaperGeneratePage.action?userId=${user.userId}"><span
 						class="label label-info">+ New mock exam paper</span></a>
+					<%-- <a href="${ctx}/toBookRevSes.action?userId=${user.userId}"><span
+						class="label label-info">+ New mock exam paper</span></a> --%>
 				</h3>
 				<table class="table table-bordered">
 					<caption>
