@@ -1,5 +1,9 @@
 package edu.fjnu.online.controller.user;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -19,11 +23,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.text.StringEscapeUtils;
 import org.jfree.chart.labels.IntervalCategoryItemLabelGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -540,10 +548,73 @@ public class PaperMgController {
 		
 		model.addAttribute("paper", paper);
 		model.addAttribute("user", user);
-		session.setAttribute("paperId", paperId);
+		model.addAttribute("paperId", paperId);
 		TexToPDF.toPDF(session.getServletContext().getRealPath("/"), paper, quesList);
 
 		return "/user/showPaperPage.jsp";
+	}
+	
+//	@RequestMapping(value = "/downloadPaper.action",
+//			  produces = "application/x-tex")
+	@RequestMapping("/downloadPaper.action")
+	@ResponseBody
+	public byte[] downloadPaper(User user,String paperId,String userId,Model model, HttpSession session, HttpServletRequest request, HttpServletResponse response) throws IOException {
+//		temp security implementation
+		if(session.getAttribute("user") == null){
+			return null;
+		}
+		
+//		if("".equals(user.getUserId()) || user.getUserId()==null){
+			user = (User) session.getAttribute("user");
+//		}
+//		if(session.getAttribute("user")== null){
+//			session.setAttribute("user", userService.get(user.getUserId()));
+//		}
+		
+		user = userService.getStu(user);
+		System.out.println(user);
+		Map map = new HashMap();
+		map.put("paperId", paperId);
+		map.put("userId", userId);
+		Paper paper = paperService.getExamPaperDetail(map);
+		
+		System.out.println(user.getUserId());
+		System.out.println(userId+" asks for paper: " + paperId);
+		if (!paper.getUserId().equals(user.getUserId())) {
+			System.out.println("Paper " + paperId + "does NOT belong to " + userId);
+			return null;
+		}
+        
+		File workingDirectory = new File(session.getServletContext().getRealPath("/")+
+//				System.getProperty("user.dir") + 
+//				File.separator + "src" + 
+//				File.separator + "main" + 
+//				File.separator + "resources" + 
+				File.separator + "paperTexTemplate");
+		File tempDir = new File(workingDirectory.getAbsolutePath() + File.separator + "temp");
+
+        File paperTex = new File(tempDir.getAbsolutePath() + File.separator + paperId +".tex");
+	    if(!paperTex.exists()) {
+	    	return null;
+	    }
+	    
+	    String mimeType = session.getServletContext().getMimeType(paperTex.getAbsolutePath());
+	    System.out.println("File type: " + mimeType);
+	    
+	    FileInputStream in = new FileInputStream(paperTex);
+	    
+	    // modifies response
+	    response.setContentType(mimeType);
+	    response.setContentLength((int) paperTex.length());
+	    
+	    // forces download
+        String headerKey = "Content-Disposition";
+        String headerValue = String.format("attachment; filename=%s", paperTex.getName());
+        response.setHeader(headerKey, headerValue);
+	    
+//	    getClass().getClassLoader();
+//		InputStream in = ClassLoader.getSystemResourceAsStream(paperTex.getAbsolutePath());
+	    return IOUtils.toByteArray(in);
 	}
 	
 	/**
