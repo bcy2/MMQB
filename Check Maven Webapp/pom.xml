@@ -10,6 +10,7 @@
 
 	<properties>
 		<org.springframework.version>4.3.17.RELEASE</org.springframework.version>
+		
 		<!-- 4.0.4 -->
 	</properties>
 
@@ -84,11 +85,18 @@
 		    <artifactId>spring-security-taglibs</artifactId>
 		    <version>${org.springframework.version}</version>
 		</dependency> -->
-
-		<dependency>
+		
+<!-- 		<dependency>
 			<groupId>org.aspectj</groupId>
 			<artifactId>com.springsource.org.aspectj.weaver</artifactId>
 			<version>1.6.8.RELEASE</version>
+		</dependency> -->
+
+		<!-- https://mvnrepository.com/artifact/org.aspectj/aspectjweaver -->
+		<dependency>
+		    <groupId>org.aspectj</groupId>
+		    <artifactId>aspectjweaver</artifactId>
+		    <version>1.6.8</version>
 		</dependency>
 
 		<dependency>
@@ -193,6 +201,13 @@
 			<version>4.0.0</version>
 		</dependency>
 		
+		<dependency>
+		  <groupId>com.example.appengine.demo</groupId>
+  		  <artifactId>simple-jetty-main</artifactId>
+		  <version>1</version>
+		  <scope>provided</scope>
+		</dependency>
+		
 		 <dependency>
             <groupId>de.nixosoft</groupId>
             <artifactId>jlr</artifactId>
@@ -221,6 +236,7 @@
 			<plugin>
 			    <groupId>org.apache.maven.plugins</groupId>
 			    <artifactId>maven-war-plugin</artifactId>
+			    <version>3.2.3</version>
 			    <configuration>
 			        <webResources>
 			            <resource>
@@ -232,6 +248,32 @@
 			            </resource>
 			        </webResources>
 			    </configuration>
+			</plugin>
+			
+			<plugin>
+			   <groupId>com.google.cloud.tools</groupId>
+			   <artifactId>appengine-maven-plugin</artifactId>
+			   <version>2.2.0</version>
+			</plugin>
+			
+			<plugin>
+			  <groupId>org.apache.maven.plugins</groupId>
+			  <artifactId>maven-dependency-plugin</artifactId>
+			  <version>3.1.2</version>
+			  <executions>
+			    <execution>
+			      <id>copy</id>
+			      <phase>prepare-package</phase>
+			      <goals>
+			        <goal>copy-dependencies</goal>
+			      </goals>
+			      <configuration>
+			        <outputDirectory>
+			          ${project.build.directory}/appengine-staging
+			        </outputDirectory>
+			      </configuration>
+			    </execution>
+			  </executions>
 			</plugin>
 		</plugins>
 	</build>

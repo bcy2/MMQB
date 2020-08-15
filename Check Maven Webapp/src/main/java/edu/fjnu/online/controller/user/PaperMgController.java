@@ -66,6 +66,7 @@ import edu.fjnu.online.domain.Attachment;
 import edu.fjnu.online.service.AttachmentService;
 import edu.fjnu.online.util.QuestionStuffs;
 import edu.fjnu.online.util.TexToPDF;
+import jnr.ffi.Struct.int16_t;
 //import edu.fjnu.online.util.EmailThread;
 /**
  * 试卷综合管理
@@ -96,6 +97,7 @@ public class PaperMgController {
 	AttachmentService attachmentService;
 	
 	SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	ObjectMapper mapper = new ObjectMapper();
 	
 	/**
 	 * reset quiz to available
@@ -410,7 +412,7 @@ public class PaperMgController {
 		System.out.println("================");
 		int currentQ = paper.getCurrentQuestion();
 		System.out.println("Q:"+ String.valueOf(currentQ));
-		System.out.println("Qs:"+ paper.getQuestionId());
+//		System.out.println("Qs:"+ paper.getQuestionId());
 //		final String [] ids = paper.getQuestionId().split(",");
 		String currentQId = ids[currentQ-1];
 		System.out.println("QId:"+ String.valueOf(currentQId));
@@ -807,7 +809,7 @@ public class PaperMgController {
 	@SuppressWarnings("unchecked")
 	@RequestMapping("/dealQuestion.action")
 	@ResponseBody
-	public MsgItem dealQuestion(@RequestBody String json, Paper paper, Model model, HttpSession session) throws UnsupportedEncodingException{
+	public MsgItem dealQuestion(@RequestBody String json, String stuAnswer, Paper paper, Model model, HttpSession session) throws UnsupportedEncodingException{
 //		int currentQ = (Integer) session.getAttribute("currentQuestion");
 //		System.out.println("Q:"+ String.valueOf(currentQ));
 		
@@ -829,9 +831,9 @@ public class PaperMgController {
 		String answer = ques.getAnswer();
 		String answerNoSpace = "";//for checking FBQs
 		answer = URLDecoder.decode(answer,"UTF-8");
-		//System.out.println(json);//paperId=sj005&answer=%E5%93%A5%E5%93%A5
-		String delimiter = "answer=";
-		String stuAnswer = json.substring(json.indexOf(delimiter)+delimiter.length());
+//		System.out.println(json);//paperId=17&answer=D
+//		String delimiter = "answer=";
+//		String stuAnswer = json.substring(json.indexOf(delimiter)+delimiter.length());
 		String stuAnswerNoSpace = "";//for checking FBQs
 		stuAnswer = URLDecoder.decode(stuAnswer, "UTF-8");
 		if ("2".equalsIgnoreCase(ques.getTypeId())) {
@@ -982,7 +984,6 @@ public class PaperMgController {
 			
 			Boolean emailNotEmpty = parentEmailString != null && !parentEmailString.trim().equals("");
 			
-			ObjectMapper mapper = new ObjectMapper();
 			Map<String, Boolean> emailMap = null;
 			try {
 				emailMap = mapper.readValue(user.getAuthority(), Map.class);
