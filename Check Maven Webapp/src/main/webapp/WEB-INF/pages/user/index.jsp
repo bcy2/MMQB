@@ -116,22 +116,12 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 				<ul class="rslides" id="slider3">
 					<li>
 						<div class="banner-info">
-							<h3>Welcome to MMQB</h3>
+							<h3>Major Maths Online Platform</h3>
 						</div>
 					</li>
 					<li>
 						<div class="banner-info">
-							<h3>Welcome to MMQB again</h3>
-						</div>
-					</li>
-					<li>
-						<div class="banner-info">
-							<h3>Welcome to MMQB again again</h3>
-						</div>
-					</li>
-					<li>
-						<div class="banner-info">
-							<h3>Welcome to MMQB again again again</h3>
+							<h3>Improve Your Maths Today!</h3>
 						</div>
 					</li>
 				</ul>
@@ -139,7 +129,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 	</div>
 </div>
 <!-- //banner -->
-<!-- banner-bottom -->
+<%-- <!-- banner-bottom -->
 <div class="banner-bottom">
 	<div class="container">
 		<div class="bottom-grids">
@@ -264,7 +254,36 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 			<div class="clearfix"></div>
 		</div>
 	</div>
+</div> --%>
+<div class="footer">
+	<div class="container">
+		<div class="footer-grids">
+			<div class="col-md-3 footer-grid">
+				<h3>Locations</h3>
+				<ul>
+					<li><a href="#">Whampoa</a></li>	
+					<i style="color: gray;">Rm 11, Office Tower,6/F Harbourfront Landmark, 11 Wan Hoi St, Hung Hom</i>		
+				</ul>
+			</div>
+			<div class="col-md-3 footer-grid">
+				<h3>Contact</h3>
+				<ul>
+					<li><a href="#">+852 5422 0996</a></li>
+					<li><a href="#">info@majormaths.com</a></li>
+				</ul>
+			</div>
+			<div class="col-md-3 footer-grid">
+				<h3>Opening Hours</h3>
+				<ul>
+					<li><a href="#">Mon: 2:30pm - 6:30pm</a></li>
+					<li><a href="#">Tue to Sun: 9:30 am - 6:30 pm</a></li>
+				</ul>
+			</div>
+
+		</div>
+	</div>
 </div>
+<!-- //footer -->
 <script src="${ctx}/js/bootstrap.js"></script>
 <script type="text/javascript">
 	$(document).ready(function() {

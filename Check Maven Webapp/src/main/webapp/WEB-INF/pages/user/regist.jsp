@@ -65,13 +65,17 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			</c:forEach> --%>
             <input type="text" name="email" id="email" class="username" placeholder="Contact email: xxx@xxx.xxx">
             <input type="text" name="telephone" id="telephone" placeholder="8-digit Contact phone: xxxxxxxx">
+            <div class="veri">
+            	<input type="text" id="input1" class="veriCode" placeholder="Verification code">
+            	<canvas id="canvas1"></canvas>
+            </div>
             <!-- <input type="text" name="address" id="address" placeholder="Address"> -->
             <button type="button" onclick="regist('${ctx}')">Sign up</button>
             <div class="error"><span>${message }</span></div>
         </form>
         <div class="connect"></div>
+        <div align="center">I have an account, <a href="${ctx}/toLogin.action" target="_self">Log in</a>!</div>
     </div>
-    <div align="center">I have an account, <a href="${ctx}/toLogin.action" target="_self">Log in</a>!</div>
 </body>
 
 </html>

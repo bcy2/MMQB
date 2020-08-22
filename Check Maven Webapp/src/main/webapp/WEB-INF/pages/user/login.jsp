@@ -39,11 +39,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                 <button type="button" onclick="login()">Log in</button>
                 <div class="error"><span>${message }</span></div>
             </form>
-            <div class="connect">
-
-            </div>
+            <div class="connect"></div>
+            <div align="center">No account? <a href="${ctx}/toRegistPage.action" target="_self" title="mbzj">Register</a></div>
         </div>
-        <div align="center">No account? <a href="${ctx}/toRegistPage.action" target="_self" title="mbzj">Register</a></div>
 
         <!-- Javascript -->
         <script src="${ctx}/js/jquery-1.8.2.min.js"></script>

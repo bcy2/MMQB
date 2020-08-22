@@ -67,45 +67,6 @@ MathJax = {
 	function exitSystem(){
 		window.location.href = "${ctx}/user/exitSys.action"	;
 	}
-
-	// to integrate
-	function hideAll() {
-	    var hideableSections = document.querySelectorAll('.questionItem');
-	    /* document.querySelectorAll() will return a JavaScript object
-	       containing all nodes which match the query. Since you are
-	       passing '.hideable-section' the returned object will contain
-	       all elements with that class. */
-	    for (var i = 0; i < hideableSections.length; i++) {
-	        hideableSections[i].style.display = 'none';
-	    }
-	}
-	
-	function showAll() {
-	    var hideableSections = document.querySelectorAll('.questionItem');
-	    /* document.querySelectorAll() will return a JavaScript object
-	       containing all nodes which match the query. Since you are
-	       passing '.hideable-section' the returned object will contain
-	       all elements with that class. */
-	    for (var i = 0; i < hideableSections.length; i++) {
-	        hideableSections[i].style.display = 'block';
-	    }
-	}
-	
-	function showOneType(className) {
-	    hideAll(); /* This will hide all of the sections with
-	                         the class .hideable-section */
-	    var hideableSections = document.querySelectorAll(className);
-	    for (var i = 0; i < hideableSections.length; i++) {
-	        hideableSections[i].style.display = 'block';
-	    }
-	}
-	
-	function type(typeId){
-		showOneType("."+typeId);
-	}
-	function grade(gradeId){
-		showOneType("."+gradeId);
-	}
 </script>
 
 </head>
@@ -149,20 +110,25 @@ MathJax = {
 			<div class="grid_4 grid_5">
 			  <h5 class="typ1 t-button">
 				<span>Filter:</span>
-				<a href="#"><span class="label label-success" onclick="showAll()">Show all</span></a>
+				<a href="#"><span class="label label-success" onclick="showAll('.questionItem')">Show all</span></a>
 			  </h5>
  			  <h5 class="typ1 t-button">
 				<span>Grade:</span>
 				<c:forEach items="${grade}" var="grade">
 					<c:if test="${grade.courseId == user.curriculum}">
-						<a href="#"><span class="label label-success" onclick="grade('grade${grade.gradeId}')">${grade.gradeName}</span></a>
+						<a href="#"><span class="label label-success" onclick="showOneType('.'+'grade${grade.gradeId}','.questionItem')">${grade.gradeName}</span></a>
 					</c:if>
 				</c:forEach>
+			  </h5>
+			  <h5 class="typ1 t-button">
+				<span>Correctness:</span>
+				<a href="#"><span class="label label-success" onclick="showOneType('.true','.questionItem')">Correct</span></a>
+				<a href="#"><span class="label label-success" onclick="showOneType('.false','.questionItem')">Wrong</span></a>
 			  </h5>
 			  <%-- <h5 class="typ1 t-button">
 				<span>Type:</span>
 				<c:forEach items="${type}" var="type">
-					<a href="#"><span class="label label-success" onclick="type('type${type.typeId}')">${type.typeName}</span></a>
+					<a href="#"><span class="label label-success" onclick="showOneType('.'+type${type.typeId},'.questionItem')">${type.typeName}</span></a>
 				</c:forEach>
 			  </h5> --%>
 			</div>
@@ -174,7 +140,7 @@ MathJax = {
 							N/A
 						</c:when>
 						<c:otherwise>
-							<fmt:formatNumber type="number" maxFractionDigits="1" value="${accuracy*100}"/>%
+							<fmt:formatNumber type="percent" maxFractionDigits="1" value="${accuracy}"/>
 						</c:otherwise>
 					</c:choose>
 				</span>
@@ -190,7 +156,7 @@ MathJax = {
 			
 			<c:forEach items="${requestScope.questionRecordList }" var="questionRecordList">
 				<c:if test="${questionRecordList.question.typeId==1}">
-					<div class="questionItem type${questionRecordList.question.typeId } grade${questionRecordList.question.gradeId }">
+					<div class="questionItem type${questionRecordList.question.typeId } grade${questionRecordList.question.gradeId } ${questionRecordList.correctness}">
 						<!-- 选择题 -->
 						<p><h4 class="bars" align="left">${fn:replace(questionRecordList.question.quesName, newLine, "<br />")}</h4></p>
 						<c:if test="${questionRecordList.question.attachmentId != 0}">
@@ -224,7 +190,7 @@ MathJax = {
 				</c:if>
 				
 				<c:if test="${questionRecordList.question.typeId==2}">
-					<div class="questionItem type${questionRecordList.question.typeId } grade${questionRecordList.question.gradeId }">
+					<div class="questionItem type${questionRecordList.question.typeId } grade${questionRecordList.question.gradeId } ${questionRecordList.correctness}">
 						<!-- 填空题 -->
 						<p><h4 class="bars" align="left">${fn:replace(questionRecordList.question.quesName, newLine, "<br />")}</h4></p>
 						<c:if test="${questionRecordList.question.attachmentId != 0}">
@@ -256,6 +222,7 @@ MathJax = {
 	</div>
 <!-- </div> -->
 <script src="${ctx}/js/bootstrap.js"></script>
+<script src="${ctx}/js/showHide.js"></script>
 <script type="text/javascript">
 	$(document).ready(function() {
 		$().UItoTop({ easingType: 'easeOutQuart' });

@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.api.client.json.Json;
 
 import edu.fjnu.online.domain.Course;
 import edu.fjnu.online.domain.ErrorBook;
@@ -390,12 +391,23 @@ public class StuController {
 //		System.out.println("user"+session.getAttribute("user"));//null when logged out
 		
 		User loginUser = (User) session.getAttribute("user");
-		List<Grade> gradeList = gradeService.findActive(new Grade());
+		List<Grade> gradeList = gradeService.findActive(new Grade()).stream()
+															.filter(item -> item.getCourseId().equals(loginUser.getCurriculum()))
+															.collect(Collectors.toList());
 		Map<String,String> gradeMap = new HashMap();
 		for (Grade grade : gradeList) gradeMap.put(String.valueOf(grade.getGradeId()),grade.getGradeName());
 		List<Course> courseList = courseService.find(new Course());
 		model.addAttribute("grade", gradeList);
 		model.addAttribute("course", courseList);
+		
+		String gradeJSON = null;
+		try {
+			gradeJSON = mapper.writeValueAsString(gradeList);
+		} catch (JsonProcessingException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		model.addAttribute("gradeJSON", gradeJSON);
 		
 		//==================================
 		
@@ -555,27 +567,43 @@ public class StuController {
 			subtopicAccuraciesInPeriod.put(periodString, subtopicAccuracies);
 		}
 		
-		System.out.println("===============\nPapers:");
-		System.out.println(paperMap);
+//		System.out.println("===============\nPapers:");
+//		System.out.println(paperMap);
 		model.addAttribute("paperMap", paperMap);
 		
-		System.out.println("===============\nOverall:");
-		System.out.println(allGradesAccuraciesInPeriod);
+//		System.out.println("===============\nOverall:");
+//		System.out.println(allGradesAccuraciesInPeriod);
 		model.addAttribute("allGradesAccuraciesInPeriod", allGradesAccuraciesInPeriod);
+		String allGradesJSON = null;
+		try {
+			allGradesJSON = mapper.writeValueAsString(allGradesAccuraciesInPeriod);
+		} catch (JsonProcessingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		model.addAttribute("allGradesJSON", allGradesJSON);
 		
 //		Map gradeAccuracies = QuestionStuffs.calcAccuracyForAllGrades(curriculumSubtopicMap, allBooksList, gradeMap, 1);
-		System.out.println("===============\nGrade:");
-		System.out.println(gradeAccuraciesInPeriod);
+//		System.out.println("===============\nGrade:");
+//		System.out.println(gradeAccuraciesInPeriod);
 		model.addAttribute("gradeAccuraciesInPeriod", gradeAccuraciesInPeriod);
+		String gradeAccuraciesJSON = null;
+		try {
+			gradeAccuraciesJSON = mapper.writeValueAsString(gradeAccuraciesInPeriod);
+		} catch (JsonProcessingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		model.addAttribute("gradeAccuraciesJSON", gradeAccuraciesJSON);
 		
 //		Map topicAccuracies = QuestionStuffs.calcAccuracyForAllTopics(curriculumSubtopicMap, allBooksList,1);
-		System.out.println("===============\nTopic:");
-		System.out.println(topicAccuraciesInPeriod);
+//		System.out.println("===============\nTopic:");
+//		System.out.println(topicAccuraciesInPeriod);
 		model.addAttribute("topicAccuraciesInPeriod", topicAccuraciesInPeriod);
 		
 //		Map subtopicAccuracies = QuestionStuffs.calcAccuracyForAllSubtopics(curriculumSubtopicMap, allBooksList,1);
-		System.out.println("===============\nSubtopic:");
-		System.out.println(subtopicAccuraciesInPeriod);
+//		System.out.println("===============\nSubtopic:");
+//		System.out.println(subtopicAccuraciesInPeriod);
 		model.addAttribute("subtopicAccuraciesInPeriod", subtopicAccuraciesInPeriod);
 
 //		Grade grade = gradeService.get(Integer.parseInt(user.getGrade()));

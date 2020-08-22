@@ -1431,6 +1431,13 @@ public class PaperMgController {
 		User user = (User) session.getAttribute("user");
 		MsgItem msgItem = new MsgItem();
 		msgItem.setErrorNo("1");
+		
+		int paperGenPointDeduction = 100;
+		if (user.getRewardPoints() < paperGenPointDeduction) {
+			msgItem.setErrorInfo(String.format("No enough reward points. Need at least %d points.", paperGenPointDeduction));
+			return msgItem;
+		}
+		
 		QuestionStuffs.iterate(map, 0);
 		if (QuestionStuffs.isAnyEndEmpty(map)) {
 			msgItem.setErrorInfo("Error: Empty areas.");
@@ -1547,6 +1554,12 @@ public class PaperMgController {
 		paper.setCurrentQuestion(1);
 		paper.setQuestionId(quesId);
 		System.out.println(paper.toString());
+		
+		user.setRewardPoints(user.getRewardPoints()-paperGenPointDeduction);
+		userService.update(user);
+		user = userService.get(user.getUserId());
+		session.setAttribute("user", userService.getStu(user));
+		
 		paperService.insertPaper(paper);
 		msgItem.setErrorNo("0");
 		return msgItem;

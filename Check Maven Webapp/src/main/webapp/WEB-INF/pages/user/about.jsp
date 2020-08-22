@@ -85,40 +85,24 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <div class="about-bottom-last">
 	<div class="container">
 				<div class="help-info">
-					<h3 class="tittle">Major Maths Question Bank</h3>
+					<h3 class="tittle">Major Maths Online Platform</h3>
 				</div>
 				<div class="client-say-grids">
 					<div class="col-md-3 client-say-grid">
-						<p>At vero eos et accusamus 
-						et iusto odio dignissimos ducimus 
-						qui blanditiis praesentium voluptatum 
-						deleniti atque corrupti quos dolores 
-						et quas molestias excepturi sint </p>
-						<h4>111</h4>
+						<p>The team at MajorMaths comprise of passionate educators with a mission to show students the joy of learning Maths and helping them attain the scores they want at any level. </p>
+						<!-- <h4>1</h4> -->
 					</div>
 					<div class="col-md-3 client-say-grid">
-						<p>At vero eos et accusamus 
-						et iusto odio dignissimos ducimus 
-						qui blanditiis praesentium voluptatum 
-						deleniti atque corrupti quos dolores 
-						et quas molestias excepturi sint </p>
-						<h4>222</h4>
+						<p>Across the spectrum, we have worked alongside students that struggle with Maths (not due to their ability but knowledge gaps in their foundation) to students who wish to further challenge themselves with advanced and interesting concepts.</p>
+						<!-- <h4>2</h4> -->
 					</div>
 					<div class="col-md-3 client-say-grid">
-						<p>At vero eos et accusamus 
-						et iusto odio dignissimos ducimus 
-						qui blanditiis praesentium voluptatum 
-						deleniti atque corrupti quos dolores 
-						et quas molestias excepturi sint </p>
-						<h4>333</h4>
+						<p>The MajorMaths team has  helped prepare students for their exams and improving their grades at school. Adopting the intuitive and well established CPA method has seen great popularity and success from families throughout Hong Kong and Singapore.</p>
+						<!-- <h4>3</h4> -->
 					</div>
 					<div class="col-md-3 client-say-grid">
-						<p>At vero eos et accusamus 
-						et iusto odio dignissimos ducimus 
-						qui blanditiis praesentium voluptatum 
-						deleniti atque corrupti quos dolores 
-						et quas molestias excepturi sint </p>
-						<h4>444</h4>
+						<p>The CPA Approach Concrete, Pictorial, Abstract (CPA) was developed by American psychologist Jerome Bruner. It is an essential technique within the Singapore method of teaching maths for mastery.</p>
+						<!-- <h4>4</h4> -->
 					</div>
 					<div class="clearfix"></div>
 				</div>
