@@ -33,11 +33,11 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                 </div>
                 <div class="login-btn ue-clear">
                 	<a class="btn" onclick="userLogin()">Log in</a>
-                    <div class="remember ue-clear">
+                    <!-- <div class="remember ue-clear">
                     	<input type="checkbox" id="remember" />
                         <em></em>
                         <label for="remember">Remember me</label>
-                    </div>
+                    </div> -->
                 </div>
                 </form>
             </div>
@@ -59,7 +59,7 @@ $(window).resize(function(){
 	
 });
 
-$('#remember').focus(function(){
+/* $('#remember').focus(function(){
    $(this).blur();
 });
 
@@ -70,12 +70,12 @@ $('#remember').click(function(e) {
 function checkRemember($this){
 	if(!-[1,]){
 		 if($this.prop("checked")){
-			$this.parent().addClass('checked');
+			$this.parent().addClass("checked");
 		}else{
-			$this.parent().removeClass('checked');
+			$this.parent().removeClass("checked");
 		}
 	}
-}
+} */
 
 function userLogin(){
 	var userId = $("#userId").val();

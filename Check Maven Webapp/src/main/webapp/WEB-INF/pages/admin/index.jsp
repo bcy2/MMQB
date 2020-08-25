@@ -5,7 +5,14 @@
 String path = request.getContextPath();
 String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
 %>
-
+<%
+	response.addHeader("Cache-Control", "no-cache,no-store,private,must-revalidate");
+response.addHeader("Pragma", "no-cache");
+response.addDateHeader("Expires", 0);
+if (session.getAttribute("user") == null) {
+	response.sendRedirect("exitSys.action");
+}
+%>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
@@ -25,7 +32,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
         	<div class="top-light"></div>
              <h1 class="logo"></h1> 
             <div class="login-info ue-clear">
-                <div class="welcome ue-clear"><span style="color: white;">Welcome, </span><a href="javascript:;" class="user-name">${userName }</a><span>.</span></div>
+                <div class="welcome ue-clear"><span style="color: white;">Welcome,&nbsp;</span><a href="javascript:;" class="user-name">${userName }</a><span>.</span></div>
 <!--                 <div class="login-msg ue-clear">
                     <a href="javascript:;" class="msg-txt">消息</a>
                     <a href="javascript:;" class="msg-num">10</a>
@@ -40,32 +47,44 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     <div id="bd">
     	<div class="wrap ue-clear">
         	<div class="sidebar">
-            	<h2 class="sidebar-header"><p>功能导航</p></h2>
+            	<!-- <h2 class="sidebar-header"><p>功能导航</p></h2> -->
+            	<h2 class="sidebar-header"><p>Functions</p></h2>
                 <ul class="nav">
                     <li class="nav-info">
-                    	<div class="nav-header"><a href="javascript:;" class="ue-clear"><span>题库管理</span><i class="icon"></i></a></div>
+                    	<!-- <div class="nav-header"><a href="javascript:;" class="ue-clear"><span>题库管理</span><i class="icon"></i></a></div> -->
+                    	<div class="nav-header"><a href="javascript:;" class="ue-clear"><span>Question Bank</span><i class="icon"></i></a></div>
                         <ul class="subnav">
-                        	<li><a href="javascript:;" onclick="formSubmit('${ctx}/toQuestionPage.action','mframe');this.blur();">试题管理</a></li>
-                            <li><a href="javascript:;" onclick="formSubmit('${ctx}/toTypePage.action','mframe');this.blur();">题型管理</a></li>
+                        	<%-- <li><a href="javascript:;" onclick="formSubmit('${ctx}/toQuestionPage.action','mframe');this.blur();">试题管理</a></li>
+                            <li><a href="javascript:;" onclick="formSubmit('${ctx}/toTypePage.action','mframe');this.blur();">题型管理</a></li> --%>
+                        	<li><a href="javascript:;" onclick="formSubmit('${ctx}/toQuestionPage.action','mframe');this.blur();">Question Mngmt</a></li>
+                            <li><a href="javascript:;" onclick="formSubmit('${ctx}/toTypePage.action','mframe');this.blur();">Type Mngmt</a></li>
                         </ul>
                     </li>
                     <li class="konwledge">
-						<div class="nav-header"><a href="javascript:;" class="ue-clear"><span>用户管理</span><i class="icon"></i></a></div>
+						<!-- <div class="nav-header"><a href="javascript:;" class="ue-clear"><span>用户管理</span><i class="icon"></i></a></div> -->
+						<div class="nav-header"><a href="javascript:;" class="ue-clear"><span>User Mngmt</span><i class="icon"></i></a></div>
 						<ul class="subnav">
-                        	<li><a href="#" onclick="formSubmit('${ctx}/admin/getAllUser.action','mframe');this.blur();">信息管理</a></li>
-                            <li><a href="#" onclick="formSubmit('${ctx}/admin/getFindPending.action','mframe');this.blur();">身份审核</a></li>
+                        	<%-- <li><a href="#" onclick="formSubmit('${ctx}/admin/getAllUser.action','mframe');this.blur();">信息管理</a></li>
+                            <li><a href="#" onclick="formSubmit('${ctx}/admin/getFindPending.action','mframe');this.blur();">身份审核</a></li> --%>
+                            <li><a href="#" onclick="formSubmit('${ctx}/admin/getAllUser.action','mframe');this.blur();">User Info</a></li>
+                            <li><a href="#" onclick="formSubmit('${ctx}/admin/getFindPending.action','mframe');this.blur();">Verification</a></li>
                         </ul>
 					</li>
                     <li class="agency">
-						<div class="nav-header"><a href="javascript:;" class="ue-clear"><span>基础管理</span><i class="icon"></i></a></div>
+						<!-- <div class="nav-header"><a href="javascript:;" class="ue-clear"><span>基础管理</span><i class="icon"></i></a></div> -->
+						<div class="nav-header"><a href="javascript:;" class="ue-clear"><span>System Mngmt</span><i class="icon"></i></a></div>
 						<ul class="subnav">
-                        	<li><a href="javascript:;" onclick="formSubmit('${ctx}/toGradePage.action','mframe');this.blur();">年级管理</a></li>
-                            <li><a href="javascript:;" onclick="formSubmit('${ctx}/toCoursePage.action','mframe');this.blur();">课程管理</a></li>
+                        	<%-- <li><a href="javascript:;" onclick="formSubmit('${ctx}/toGradePage.action','mframe');this.blur();">年级管理</a></li>
+                            <li><a href="javascript:;" onclick="formSubmit('${ctx}/toCoursePage.action','mframe');this.blur();">课程管理</a></li> --%>
+                            <li><a href="javascript:;" onclick="formSubmit('${ctx}/toGradePage.action','mframe');this.blur();">Grade Mngmt</a></li>
+                            <li><a href="javascript:;" onclick="formSubmit('${ctx}/toCoursePage.action','mframe');this.blur();">Curriculum Mngmt</a></li>
                         </ul>
 					</li>
-                    <li class="system"><div class="nav-header"><a href="javascript:;" class="ue-clear"><span>试卷管理</span><i class="icon"></i></a></div>
+                    <!-- <li class="system"><div class="nav-header"><a href="javascript:;" class="ue-clear"><span>试卷管理</span><i class="icon"></i></a></div> -->
+                    <li class="system"><div class="nav-header"><a href="javascript:;" class="ue-clear"><span>Quiz Mngmt</span><i class="icon"></i></a></div>
                     	<ul class="subnav">
-                        	<li><a href="javascript:;" onclick="formSubmit('${ctx}/toPaperPage.action','mframe');this.blur();">试卷管理</a></li>
+                        	<%-- <li><a href="javascript:;" onclick="formSubmit('${ctx}/toPaperPage.action','mframe');this.blur();">试卷管理</a></li> --%>
+                        	<li><a href="javascript:;" onclick="formSubmit('${ctx}/toPaperPage.action','mframe');this.blur();">Quiz Mngmt</a></li>
                         </ul>
                     </li>
                 </ul>

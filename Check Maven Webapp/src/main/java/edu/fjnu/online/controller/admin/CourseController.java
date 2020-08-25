@@ -34,7 +34,7 @@ public class CourseController {
 	public String toCoursePage(@RequestParam(value="page", defaultValue="1") int page,
 			Course course,Model model, HttpSession session){
 		//List<Course> dataList = courseService.find(course);
-		PageInfo<Course> pageInfo = courseService.findByPage(course, page, 5);
+		PageInfo<Course> pageInfo = courseService.findByPage(course, page, 10);
 		List<Course> dataList = pageInfo.getList();
 		model.addAttribute("dataList", dataList);
 		model.addAttribute("pageInfo", pageInfo);
@@ -46,7 +46,7 @@ public class CourseController {
 	public List<Course> qryCoursePage(@RequestParam(value="page", defaultValue="1") int page,
 			Course course,Model model, HttpSession session){
 		//List<Course> dataList = courseService.find(course);
-		PageInfo<Course> pageInfo = courseService.findByPage(course, page, 5);
+		PageInfo<Course> pageInfo = courseService.findByPage(course, page, 10);
 		List<Course> dataList = pageInfo.getList();
 		model.addAttribute("dataList", dataList);
 		model.addAttribute("pageInfo", pageInfo);

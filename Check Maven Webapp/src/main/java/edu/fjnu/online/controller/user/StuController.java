@@ -33,6 +33,7 @@ import edu.fjnu.online.service.UserService;
 import edu.fjnu.online.service.ErrorBookService;
 import edu.fjnu.online.util.MD5Util;
 import edu.fjnu.online.util.QuestionStuffs;
+import jnr.ffi.Struct.int16_t;
 import jxl.read.biff.Record;
 
 import java.io.IOException;
@@ -179,6 +180,9 @@ public class StuController {
 			if(loginUser.getUserState()==0 ){
 				item.setErrorNo("1");
 				item.setErrorInfo("Account not verified!");
+			}else if(loginUser.getUserState()==2 ){
+				item.setErrorNo("1");
+				item.setErrorInfo("This account has been deactivated!");
 			}else{
 				item.setErrorNo("0");
 				item.setErrorInfo("login successful!");
@@ -611,6 +615,149 @@ public class StuController {
 //		model.addAttribute("userGradeName", grade.getGradeName());
 		model.addAttribute("user", user);
 		return "/user/userStatistics.jsp";			
+	}
+	
+	@RequestMapping("/toAiPractice.action")
+	public String toAiPractice(User user, Model model, HttpSession session){
+//		temp security implementation
+		if(session.getAttribute("user") == null){
+			return "redirect:/toLogin.action";
+		}
+//		System.out.println("user"+session.getAttribute("user"));//null when logged out
+		
+		User loginUser = (User) session.getAttribute("user");
+		
+		Map map = new HashMap();
+		map.put("userId", user.getUserId());
+		
+		// Analysis
+		
+		List<ErrorBook> allBooksList = bookService.getBookInfo(map);
+		
+		int noOfQueslowerLimit = 20;
+		if (allBooksList.size() < noOfQueslowerLimit) { // too few ques to analyze
+			model.addAttribute("enoughQues", false);
+			return "/user/aiPractice.jsp";
+		}
+		model.addAttribute("enoughQues", true);
+		
+		List<Grade> gradeList = gradeService.findActive(new Grade()).stream()
+															.filter(item -> item.getCourseId().equals(loginUser.getCurriculum()))
+															.collect(Collectors.toList());
+		Map<String,String> gradeMap = new HashMap();
+		for (Grade grade : gradeList) gradeMap.put(String.valueOf(grade.getGradeId()),grade.getGradeName());
+		List<Course> courseList = courseService.find(new Course());
+		model.addAttribute("grade", gradeList);
+		model.addAttribute("course", courseList);
+		
+		String gradeJSON = null;
+		try {
+			gradeJSON = mapper.writeValueAsString(gradeList);
+		} catch (JsonProcessingException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		model.addAttribute("gradeJSON", gradeJSON);
+		
+		//==================================
+		
+		user = userService.getStu(loginUser);
+		
+		Map curriculumSubtopicMap = new HashMap();
+		List<Question> uniqueSubtopics = questionService.findSubtopic(user.getCurriculum());
+		for (Question q: uniqueSubtopics) {
+			if (!curriculumSubtopicMap.containsKey(q.getGradeId())) {
+				Map topicMap = new HashMap();
+				curriculumSubtopicMap.put(q.getGradeId(), topicMap);
+			}
+			Map topicMap = (Map) curriculumSubtopicMap.get(q.getGradeId());
+	
+			if (!topicMap.containsKey(q.getTopic())) {
+				Map subtopicMap = new HashMap();
+				topicMap.put(q.getTopic(), subtopicMap);
+			}
+			Map subtopicMap = (Map) topicMap.get(q.getTopic());
+	
+			if (!subtopicMap.containsKey(q.getSubtopic())) {
+//				Map typeMap = new HashMap();
+				subtopicMap.put(q.getSubtopic(), q.getSubtopicId());
+			}
+//			Map typeMap = (Map) subtopicMap.get(q.getSubtopic());
+		}
+		
+		// Analysis
+		List<Integer> periodsInDay = new ArrayList<Integer>(Arrays.asList(-1,1,2,7,14,30,90,180));
+		model.addAttribute("periodsInDay", periodsInDay.stream().map(String::valueOf).collect(Collectors.toList()));
+		
+		Map allGradesAccuraciesInPeriod =  new HashMap();
+		Map gradeAccuraciesInPeriod =  new HashMap();
+		Map topicAccuraciesInPeriod =  new HashMap();
+		Map subtopicAccuraciesInPeriod =  new HashMap();
+		
+		for (Integer integer : periodsInDay) {
+			String periodString = String.valueOf(integer);
+			
+			List<ErrorBook> bookListInPeriod = allBooksList.stream()
+											.filter(record -> QuestionStuffs.quesAfterDate(record, integer))
+											.collect(Collectors.toList());
+			
+			double allGradesAccuracy = QuestionStuffs.calcAccuracyForQuesSet(bookListInPeriod);
+			int allGradesQuesNum = bookListInPeriod.size();
+			List<Object> allGradesAccuracyNQuesNum = new ArrayList<Object>();
+			allGradesAccuracyNQuesNum.add(allGradesAccuracy);
+			allGradesAccuracyNQuesNum.add(allGradesQuesNum);
+			allGradesAccuraciesInPeriod.put(periodString, allGradesAccuracyNQuesNum);
+			
+			Map gradeAccuracies = QuestionStuffs.calcAccuracyForAllGrades(curriculumSubtopicMap, bookListInPeriod, gradeMap);
+			gradeAccuraciesInPeriod.put(periodString, gradeAccuracies);
+			
+			Map topicAccuracies = QuestionStuffs.calcAccuracyForAllTopics(curriculumSubtopicMap, bookListInPeriod);
+			topicAccuraciesInPeriod.put(periodString, topicAccuracies);
+			
+			Map subtopicAccuracies = QuestionStuffs.calcAccuracyForAllSubtopics(curriculumSubtopicMap, bookListInPeriod);
+			subtopicAccuraciesInPeriod.put(periodString, subtopicAccuracies);
+		}
+		
+//		System.out.println("===============\nOverall:");
+//		System.out.println(allGradesAccuraciesInPeriod);
+		model.addAttribute("allGradesAccuraciesInPeriod", allGradesAccuraciesInPeriod);
+		String allGradesJSON = null;
+		try {
+			allGradesJSON = mapper.writeValueAsString(allGradesAccuraciesInPeriod);
+		} catch (JsonProcessingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		model.addAttribute("allGradesJSON", allGradesJSON);
+		
+//		Map gradeAccuracies = QuestionStuffs.calcAccuracyForAllGrades(curriculumSubtopicMap, allBooksList, gradeMap, 1);
+//		System.out.println("===============\nGrade:");
+//		System.out.println(gradeAccuraciesInPeriod);
+		model.addAttribute("gradeAccuraciesInPeriod", gradeAccuraciesInPeriod);
+		String gradeAccuraciesJSON = null;
+		try {
+			gradeAccuraciesJSON = mapper.writeValueAsString(gradeAccuraciesInPeriod);
+		} catch (JsonProcessingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		model.addAttribute("gradeAccuraciesJSON", gradeAccuraciesJSON);
+		
+//		Map topicAccuracies = QuestionStuffs.calcAccuracyForAllTopics(curriculumSubtopicMap, allBooksList,1);
+//		System.out.println("===============\nTopic:");
+//		System.out.println(topicAccuraciesInPeriod);
+		model.addAttribute("topicAccuraciesInPeriod", topicAccuraciesInPeriod);
+		
+//		Map subtopicAccuracies = QuestionStuffs.calcAccuracyForAllSubtopics(curriculumSubtopicMap, allBooksList,1);
+//		System.out.println("===============\nSubtopic:");
+//		System.out.println(subtopicAccuraciesInPeriod);
+		model.addAttribute("subtopicAccuraciesInPeriod", subtopicAccuraciesInPeriod);
+
+//		Grade grade = gradeService.get(Integer.parseInt(user.getGrade()));
+//		user.setGrade(grade.getGradeName());
+//		model.addAttribute("userGradeName", grade.getGradeName());
+		model.addAttribute("user", user);
+		return "/user/aiPractice.jsp";
 	}
 	
 	@RequestMapping("/toBookRevSes.action")

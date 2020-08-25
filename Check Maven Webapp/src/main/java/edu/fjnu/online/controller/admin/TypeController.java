@@ -32,7 +32,7 @@ public class TypeController {
 	public String toTypePage(@RequestParam(value="page", defaultValue="1") int page,
 			Type type,Model model, HttpSession session){
 //		List<Type> dataList = typeService.find(type);
-		PageInfo<Type> pageInfo = typeService.findByPage(type, page, 5);
+		PageInfo<Type> pageInfo = typeService.findByPage(type, page, 10);
 		List<Type> dataList = pageInfo.getList();
 		model.addAttribute("dataList", dataList);
 		model.addAttribute("pageInfo", pageInfo);
@@ -44,7 +44,7 @@ public class TypeController {
 	public List<Type> qryTypePage(@RequestParam(value="page", defaultValue="1") int page,
 			Type type,Model model, HttpSession session){
 //		List<Type> dataList = typeService.find(type);
-		PageInfo<Type> pageInfo = typeService.findByPage(type, page, 5);
+		PageInfo<Type> pageInfo = typeService.findByPage(type, page, 10);
 		List<Type> dataList = pageInfo.getList();
 		model.addAttribute("dataList", dataList);
 		model.addAttribute("pageInfo", pageInfo);

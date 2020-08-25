@@ -121,6 +121,8 @@ if (session.getAttribute("user") == null) {
 				<h3 class="t-button" style="margin-top: 0; padding-top: 0;">
 					<a href="${ctx}/toQuizGeneratePage.action?userId=${user.userId}"><span
 						class="label label-info">+ New quiz</span></a>
+					<a href="${ctx}/toAiPractice.action?userId=${user.userId}"><span
+						class="label label-info">Practice with smart AI</span></a>
 				</h3>
 				<table class="table table-bordered">
 					<caption>

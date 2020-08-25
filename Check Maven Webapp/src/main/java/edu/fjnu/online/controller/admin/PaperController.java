@@ -50,7 +50,7 @@ public class PaperController {
 	@RequestMapping("/toPaperPage.action")
 	public String toPaperPage(@RequestParam(value="page", defaultValue="1") int page,
 			Paper paper,Model model, HttpSession session){
-		PageInfo<Paper> pageInfo = paperService.findAllPage(paper, page, 5);
+		PageInfo<Paper> pageInfo = paperService.findAllPage(paper, page, 10);
 		List<Paper> dataList = pageInfo.getList();
 //		List<Paper> dataList = paperService.find(paper);
 		Course course=null;
@@ -93,7 +93,7 @@ public class PaperController {
 	@ResponseBody
 	public List<Paper> qryAllPaper(@RequestParam(value="page", defaultValue="1") int page,
 			Paper paper,Model model, HttpSession session){
-		PageInfo<Paper> pageInfo = paperService.findAllPage(paper, page, 5);
+		PageInfo<Paper> pageInfo = paperService.findAllPage(paper, page, 10);
 		List<Paper> dataList = pageInfo.getList();
 //		List<Paper> dataList = paperService.find(paper);
 		Course course=null;

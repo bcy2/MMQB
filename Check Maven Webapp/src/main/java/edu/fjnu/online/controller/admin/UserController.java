@@ -56,10 +56,27 @@ public class UserController extends BaseController{
 		
 		if(loginUser!=null && loginUser.getUserType() == 2){
 			session.setAttribute("userName", loginUser.getUserName());
-			return "/admin/index.jsp";
+			session.setAttribute("user", loginUser);
+			return "redirect:/admin/toIndex.action";
 		}else{
 			model.addAttribute("message", "Wrong username / password!");
 			return "/admin/login.jsp";
+		}
+	}
+	
+	/**
+	 * 后台用户登录
+	 * @param user
+	 * @param model
+	 * @param session
+	 * @return
+	 */
+	@RequestMapping("/admin/toIndex.action")
+	public String toIndex(User user, Model model, HttpSession session){
+		if(session.getAttribute("user")!= null){
+			return "/admin/index.jsp";
+		}else{
+			return "redirect:/admin/login.action";
 		}
 	}
 	
@@ -108,10 +125,10 @@ public class UserController extends BaseController{
 	public String exitSys(User user, Model model, HttpSession session){
 		if(session.getAttribute("userName")!= null){
 			session.removeAttribute("userName");
-			return "forward:/admin/login.action";
+			session.removeAttribute("user");	
 		}
 		session.invalidate();
-		return "redirect:/admin/userLogin.action";				
+		return "redirect:/admin/login.action";				
 	}
 	
 	//跳转到题库录入页面
@@ -125,7 +142,7 @@ public class UserController extends BaseController{
 	public String getAllUserInfo(@RequestParam(value="page", defaultValue="1") int page,
 			User user, Model model, HttpSession session){
 //		List<User> dataList = userService.find(user);
-		PageInfo<User> pageInfo = userService.findByPage(user, page, 5);
+		PageInfo<User> pageInfo = userService.findByPage(user, page, 10);
 		List<User> dataList = pageInfo.getList();
 		model.addAttribute("dataList", dataList);
 		model.addAttribute("pageInfo", pageInfo);
@@ -138,7 +155,7 @@ public class UserController extends BaseController{
 	public List<User> qryAllUser(@RequestParam(value="page", defaultValue="1") int page,
 			User user, Model model, HttpSession session){
 //			List<User> dataList = userService.find(user);
-		PageInfo<User> pageInfo = userService.findByPage(user, page, 5);
+		PageInfo<User> pageInfo = userService.findByPage(user, page, 10);
 		List<User> dataList = pageInfo.getList();
 		model.addAttribute("dataList", dataList);
 		model.addAttribute("pageInfo", pageInfo);
@@ -197,7 +214,7 @@ public class UserController extends BaseController{
 	 */
 	@RequestMapping("/admin/getFindPending.action")
 	public String findPending(@RequestParam(value="page", defaultValue="1") int page,User user, Model model){
-		PageInfo<User> pageInfo = userService.findPendingByPage(user, page, 5);
+		PageInfo<User> pageInfo = userService.findPendingByPage(user, page, 10);
 		List<User> dataList = pageInfo.getList();
 		model.addAttribute("dataList", dataList);
 		model.addAttribute("pageInfo", pageInfo);
@@ -210,7 +227,7 @@ public class UserController extends BaseController{
 	public List<User> qryFindPending(@RequestParam(value="page", defaultValue="1") int page,
 			User user, Model model, HttpSession session){
 //				List<User> dataList = userService.find(user);
-		PageInfo<User> pageInfo = userService.findPendingByPage(user, page, 5);
+		PageInfo<User> pageInfo = userService.findPendingByPage(user, page, 10);
 		List<User> dataList = pageInfo.getList();
 		model.addAttribute("dataList", dataList);
 		model.addAttribute("pageInfo", pageInfo);

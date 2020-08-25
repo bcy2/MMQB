@@ -38,7 +38,7 @@ public class GradeController {
 	public String toGradePage(@RequestParam(value="page", defaultValue="1") int page,
 			Grade grade,Model model, HttpSession session){
 //		List<Grade> dataList = gradeService.find(grade);
-		PageInfo<Grade> pageInfo = gradeService.findByPage(grade, page, 5);
+		PageInfo<Grade> pageInfo = gradeService.findByPage(grade, page, 10);
 		List<Grade> dataList = pageInfo.getList();
 		Course course=null;
 		for(Grade g : dataList){
@@ -70,7 +70,7 @@ public class GradeController {
 	public List<Grade> qryAllGrade(@RequestParam(value="page", defaultValue="1") int page,
 			Grade grade,Model model, HttpSession session){
 //		List<Grade> dataList = gradeService.find(grade);
-		PageInfo<Grade> pageInfo = gradeService.findByPage(grade, page, 5);
+		PageInfo<Grade> pageInfo = gradeService.findByPage(grade, page, 10);
 		List<Grade> dataList = pageInfo.getList();
 		Course course=null;
 		for(Grade g : dataList){

@@ -49,7 +49,7 @@ public class QuestionController extends BaseController {
 	public String toQuestionPage(@RequestParam(value="page", defaultValue="1") int page,
 			Question question,Model model, HttpSession session){
 //		List<Question> dataList = questionService.find(question);
-		PageInfo<Question> pageInfo = questionService.findByPage(question, page, 5);
+		PageInfo<Question> pageInfo = questionService.findByPage(question, page, 10);
 		List<Question> dataList = pageInfo.getList();
 		Course course=null;
 		Type type=null;
@@ -80,7 +80,7 @@ public class QuestionController extends BaseController {
 	public List<Question> quesPage(@RequestParam(value="page", defaultValue="1") int page,
 			Question question,Model model, HttpSession session){
 //		List<Question> dataList = questionService.find(question);
-		PageInfo<Question> pageInfo = questionService.findByPage(question, page, 5);
+		PageInfo<Question> pageInfo = questionService.findByPage(question, page, 10);
 		List<Question> dataList = pageInfo.getList();
 		Course course=null;
 		Type type=null;
