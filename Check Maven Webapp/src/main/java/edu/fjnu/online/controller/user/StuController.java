@@ -686,7 +686,7 @@ public class StuController {
 		}
 		
 		// Analysis
-		List<Integer> periodsInDay = new ArrayList<Integer>(Arrays.asList(-1,1,2,7,14,30,90,180));
+		List<Integer> periodsInDay = new ArrayList<Integer>(Arrays.asList(-1));
 		model.addAttribute("periodsInDay", periodsInDay.stream().map(String::valueOf).collect(Collectors.toList()));
 		
 		Map allGradesAccuraciesInPeriod =  new HashMap();
@@ -715,8 +715,11 @@ public class StuController {
 			topicAccuraciesInPeriod.put(periodString, topicAccuracies);
 			
 			Map subtopicAccuracies = QuestionStuffs.calcAccuracyForAllSubtopics(curriculumSubtopicMap, bookListInPeriod);
+			subtopicAccuracies = QuestionStuffs.subtopicAccuraciesSort(subtopicAccuracies);
 			subtopicAccuraciesInPeriod.put(periodString, subtopicAccuracies);
 		}
+		
+		model.addAttribute("curriculumSubtopicMap", curriculumSubtopicMap);
 		
 //		System.out.println("===============\nOverall:");
 //		System.out.println(allGradesAccuraciesInPeriod);
@@ -749,8 +752,8 @@ public class StuController {
 		model.addAttribute("topicAccuraciesInPeriod", topicAccuraciesInPeriod);
 		
 //		Map subtopicAccuracies = QuestionStuffs.calcAccuracyForAllSubtopics(curriculumSubtopicMap, allBooksList,1);
-//		System.out.println("===============\nSubtopic:");
-//		System.out.println(subtopicAccuraciesInPeriod);
+		System.out.println("===============\nSubtopic:");
+		System.out.println(subtopicAccuraciesInPeriod);
 		model.addAttribute("subtopicAccuraciesInPeriod", subtopicAccuraciesInPeriod);
 
 //		Grade grade = gradeService.get(Integer.parseInt(user.getGrade()));

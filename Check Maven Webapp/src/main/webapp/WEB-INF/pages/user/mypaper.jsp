@@ -122,7 +122,7 @@ if (session.getAttribute("user") == null) {
 					<a href="${ctx}/toQuizGeneratePage.action?userId=${user.userId}"><span
 						class="label label-info">+ New quiz</span></a>
 					<a href="${ctx}/toAiPractice.action?userId=${user.userId}"><span
-						class="label label-info">Practice with smart AI</span></a>
+						class="label label-info">Practice with AI</span></a>
 				</h3>
 				<table class="table table-bordered">
 					<caption>
