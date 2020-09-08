@@ -22,7 +22,7 @@ public class Question {
 	/**题型*/
 	private String typeId;
 	/**难度（0：容易，1：中等，2：难）*/
-	private int difficulty;
+	private float difficulty;
 	/**备注*/
 	private String remark;
 	private String answerDetail;
@@ -169,10 +169,10 @@ public class Question {
 	public void setTypeId(String typeId) {
 		this.typeId = typeId;
 	}
-	public int getDifficulty() {
+	public float getDifficulty() {
 		return difficulty;
 	}
-	public void setDifficulty(int difficulty) {
+	public void setDifficulty(float difficulty) {
 		this.difficulty = difficulty;
 	}
 	public String getRemark() {
@@ -197,7 +197,7 @@ public class Question {
 		
 	}
 	public Question(int questionId, String quesName, String optionA, String optionB, String optionC, String optionD,
-			String answer, String userAnswer, String courseId, String typeId, int difficulty, String remark,
+			String answer, String userAnswer, String courseId, String typeId, float difficulty, String remark,
 			String answerDetail, String gradeId, String topic, String subtopic, String subtopicId, String optionOther,
 			boolean isPastPaper, int rawQuestionId, int attachmentId, String attachmentFile, String script,
 			String scriptParameter) {

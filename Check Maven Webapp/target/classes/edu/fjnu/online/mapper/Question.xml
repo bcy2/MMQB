@@ -81,7 +81,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 				remark=#{remark},
 			</if> -->
 			<if test="answerDetail!=null">
-				explain=#{answerDetail},
+				`explain`=#{answerDetail},
 			</if>
 			<if test="courseId!=null">
 				curriculum_id=#{courseId},
@@ -89,10 +89,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="topic!=null">
 				topic=#{topic},
 			</if>
-			<if test="subtopic">
+			<if test="subtopic!=null">
 				subtopic=#{subtopic},
 			</if>
-			<if test="subtopicId">
+			<if test="subtopicId!=null">
 				subtopic_id=#{subtopicId},
 			</if>
 			<if test="optionOther!=null">

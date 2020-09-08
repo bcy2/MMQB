@@ -131,7 +131,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			  	<c:if test="${course.courseId == user.curriculum}">
 			  		<span class="input-group-addon" id="basic-addon1">Curriculum:</span>
 			  		<input type="text" class="form-control" 
-			  		id="Curriculum" name="Curriculum" value="${course.courseName }" readonly="readonly">
+			  		id="curriculum" name="curriculum" value="${course.courseName }" readonly="readonly">
 			  	</c:if>
 			  </c:forEach>
 			</div>

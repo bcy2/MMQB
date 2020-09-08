@@ -13,41 +13,57 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <link rel="stylesheet" href="${ctx}/css/base.css" />
 <link rel="stylesheet" href="${ctx}/css/info-reg.css" />
 <link rel="stylesheet" href="${ctx}/css/jquery.searchableSelect.css" />
-<title>移动办公自动化系统</title>
+<title>iframe</title>
 </head>
 
 <body>
-<div class="title"><h2>查看试卷</h2></div>
+<div class="title"><h2>Quiz Details</h2></div>
 <form action="${ctx}/addQuesInfo.action" method="post" name="myform" id="myform">
 <div class="main">
 	<p class="short-input ue-clear newstyle">
-    	<label>试卷编号：</label><span style="color:blue" size="3">${paper.paperId }</span>
+    	<label>No.:</label><span style="color:blue" size="3">${paper.paperId }</span>
     </p>
     <p class="short-input ue-clear newstyle">
-    	<label>试卷名称：</label><span style="color:blue" size="3">${paper.paperName }</span>
+    	<label>Creator:</label><span style="color:blue" size="3">${paper.userId }</span>
     </p>
     <p class="short-input ue-clear newstyle">
-    	<label>允许时长：</label><span style="color:blue" size="3">${paper.allowTime }分钟</span>
+    	<label>QuizName:</label><span style="color:blue" size="3">${paper.paperName }</span>
     </p>
     <p class="short-input ue-clear newstyle">
-    	<label>对应科目：</label><span style="color:blue" size="3">${paper.courseId }</span>
+    	<label>Allow Time:</label><span style="color:blue" size="3">${paper.allowTime } min</span>
     </p>
     <p class="short-input ue-clear newstyle">
-    	<label>题目编号：</label><span style="color:blue" size="3">${paper.questionId }</span>
+    	<label>Curriculum:</label><span style="color:blue" size="3">${paper.courseId }</span>
     </p>
     <p class="short-input ue-clear newstyle">
-    	<label>选择题数量：</label><span style="color:blue" size="3">${paper.score }</span>
+    	<label>Grade:</label>
+    	<span style="color:blue" size="3">
+    		<c:forEach items="${grade}" var="grade">
+				<c:if test="${grade.gradeId == paper.gradeId}">
+					${grade.gradeName }
+				</c:if>
+			</c:forEach>
+    	</span>
     </p>
     <p class="short-input ue-clear newstyle">
-    	<label>填空题数量：</label><span style="color:blue" size="3">${paper.beginTime }</span>
+    	<label>Question IDs:</label><span style="color:blue;max-width: 75%;overflow-wrap: break-word;" size="3">${paper.questionId }</span>
     </p>
     <p class="short-input ue-clear newstyle">
-    	<label>简答题数量：</label><span style="color:blue" size="3">${paper.endTime }</span>
+    	<label>Current Ques:</label><span style="color:blue;max-width: 75%;overflow-wrap: break-word;" size="3">${paper.currentQuestion }</span>
     </p>
+<%--     <p class="short-input ue-clear newstyle">
+    	<label>选择题数量:</label><span style="color:blue" size="3">${paper.score }</span>
+    </p>
+    <p class="short-input ue-clear newstyle">
+    	<label>填空题数量:</label><span style="color:blue" size="3">${paper.beginTime }</span>
+    </p>
+    <p class="short-input ue-clear newstyle">
+    	<label>简答题数量:</label><span style="color:blue" size="3">${paper.endTime }</span>
+    </p> --%>
 </div>
 </form>
 <div class="btn ue-clear">
-    <a href="${ctx}/toPaperPage.action" class="confirm">返回</a>
+    <a href="${ctx}/toPaperPage.action" class="confirm">Back</a>
 </div>
 </body>
 <script type="text/javascript" src="${ctx}/js/jquery.js"></script>
@@ -71,7 +87,7 @@ $(".select-list").on("click","li",function(){
 function checkUserId(){
 	var questionId = $("#questionId").val();
 	if(questionId == ""){
-		$("#tipInfo").html("请输入题目名称");
+		$("#tipInfo").html("Question ID empty.");
 		$("#questionId").focus();
 		return;
 	}else{

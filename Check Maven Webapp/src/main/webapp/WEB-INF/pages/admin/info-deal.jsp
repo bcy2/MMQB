@@ -13,28 +13,30 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <link rel="stylesheet" href="${ctx}/css/base.css" />
 <link rel="stylesheet" href="${ctx}/css/info-mgt.css" />
 <link rel="stylesheet" href="${ctx}/css/WdatePicker.css" />
-<title>移动办公自动化系统</title>
+<title>iframe</title>
 </head>
 
 <body>
-<div class="title"><h2>身份审核</h2></div>
+<div class="title"><h2>Account Verification</h2></div>
 <form action="${ctx}/admin/failinfo.action" method="post" name="myform" id="myform">
 <div class="table-operate ue-clear">
-	<a href="#" class="add" onclick="addUser()">通过</a>
-    <a href="javascript:;" class="del" onclick="deleteUser()">注销</a>
+	<a href="#" class="add" onclick="addUser()"><font color="green">Verify</font></a>
+    <a href="javascript:;" class="del" onclick="deleteUser()">close</a>
 </div>
 <div class="table-box" id="myDiv">
 	<table border="1" cellspacing="1">
     	<thead>
         	<tr>
         		<th class="num"></th>
-        		<th class="name">账号</th>
-                <th class="name">昵称</th>
-                <th class="process">账户类型</th>
-                <th class="process">账户状态</th>
-                <th class="node">邮箱</th>
-                <th class="time">联系电话</th>
-                <th class="operate">操作</th>
+        		<th class="name">Username</th>
+                <th class="name">Nickname</th>
+                <th class="name">Type</th>
+                <th class="process">Grade</th>
+                <th class="process">Curriculum</th>
+                <th class="name">Status</th>
+                <th class="node">Email</th>
+                <th class="time">Contact Phone</th>
+                <th class="operate">Operation</th>
             </tr>
         </thead>
         <tbody align="center">
@@ -44,22 +46,36 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					<td>${o.userId}</td>
 					<td>${o.userName}</td>
 					<td>
-						<c:if test="${o.userType==0}">学生</c:if>
-						<c:if test="${o.userType==1}">老师</c:if>
-						<c:if test="${o.userType==2}">管理员</c:if>
+						<c:if test="${o.userType==0}">Student</c:if>
+						<c:if test="${o.userType==1}">Teacher</c:if>
+						<c:if test="${o.userType==2}">Admin</c:if>
 					</td>
 					<td>
-						<c:if test="${o.userState==0}"><font color="blue">待审核</font></c:if>
-						<c:if test="${o.userState==1}">在用</c:if>
-						<c:if test="${o.userState==2}"><font color="red">注销</font></c:if>
-						<c:if test="${o.userState==3}"><font color="red">审核不通过</font></c:if>
+						<c:forEach items="${grade}" var="grade">
+					  		<c:if test="${grade.gradeId == o.grade}">
+								${grade.gradeName }
+							</c:if>
+						</c:forEach>
+					</td>
+					<td>
+						<c:forEach items="${course}" var="course">
+						  	<c:if test="${course.courseId == o.curriculum}">
+						  		${course.courseName }
+						  	</c:if>
+						</c:forEach>
+					</td>
+					<td>
+						<c:if test="${o.userState==0}"><font color="blue">To verify</font></c:if>
+						<c:if test="${o.userState==1}">Active</c:if>
+						<c:if test="${o.userState==2}"><font color="red">Deactivated</font></c:if>
+						<c:if test="${o.userState==3}"><font color="red">Disqualified</font></c:if>
 					</td>
 					<td>${o.email}</td>
 					<td>${o.telephone}</td>
 					<td class="operate">
-						<a href="javascript:;" class="del" onclick="addUser()">通过</a>
-						<a href="javascript:;" class="edit" onclick="deleteUser()">注销</a>
-						<a href="javascript:;" class="count" onclick="showDetail('+${o.userId}+')">查看</a>
+						<a href="javascript:;" class="del" onclick="addUser()"><font color='green'>Verify</font></a>
+						<a href="javascript:;" class="count" onclick="showDetail('+${o.userId}+')">Details</a>
+						<a href="javascript:;" class="edit" onclick="deleteUser()"><font color='red'>Deactivate</font></a>
 					</td>
 				</tr>
 			</c:forEach>
@@ -97,9 +113,9 @@ $('.pagination').pagination(${pageInfo.total},{
 				html += "<table border='1' cellspacing='1'>";
 				html += "<thead>";
 				html += "<th class='num'></th>";
-				html += "<th class='name'>账号</th><th class='operate'>昵称</th>";
-				html += "<th class='process'>账户类型</th><th class='process'>账户状态</th><th class='node'>邮箱</th>";
-				html += "<th class='time'>联系电话</th><th class='operate'>操作</th>";
+				html += "<th class='name'>Username</th><th class='operate'>Nickname</th>";
+				html += "<th class='process'>Type</th><th class='process'>Status</th><th class='node'>Email</th>";
+				html += "<th class='time'>Contact Phone</th><th class='operate'>Operation</th>";
 				html += "</thead>";
 				html += "<tbody align='center'>";
 				for(dataList in data){
@@ -108,26 +124,26 @@ $('.pagination').pagination(${pageInfo.total},{
 					html += "<td>"+data[dataList].userId+"</td>";
 					html += "<td>"+data[dataList].userName+"</td>";
 					if(data[dataList].userType == 0){
-						html += "<td>学生</td>";
+						html += "<td>Student</td>";
 					}else if(data[dataList].userType == 1){
-						html += "<td>老师</td>";
+						html += "<td>Teacher</td>";
 					}else{
-						html += "<td>管理员</td>";
+						html += "<td>Admin</td>";
 					}
 					if(data[dataList].userState == 0){
-						html += "<td><font color='blue'>待审核</font></td>";
+						html += "<td><font color='blue'>To verify</font></td>";
 					}else if(data[dataList].userState == 1){
-						html += "<td>在用</td>";
+						html += "<td>Active</td>";
 					}else if(data[dataList].userState == 2){
-						html += "<font color='red'>注销</font>";
+						html += "<font color='red'>Deactivated</font>";
 					}else{
-						html += "<font color='red'>审核不通过</font>";
+						html += "<font color='red'>Disqualified</font>";
 					}
 					html += "<td>"+data[dataList].email+"</td>";
 					html += "<td>"+data[dataList].telephone+"</td>";
-					html += "<td class='operate'><a href='${ctx}/admin/passinfo.action?userId="+data[dataList].userId+"' class='del'>通过</a>&nbsp;";
-					html += "<a href='${ctx}/admin/failinfo.action?userId="+data[dataList].userId+"' class='del'>注销</a>&nbsp;";
-					html += "<a href='${ctx}/admin/toQryUser.action?userId="+data[dataList].userId+"' class='del'>查看</a></td>";
+					html += "<td class='operate'><a href='${ctx}/admin/passinfo.action?userId="+data[dataList].userId+"' class='del'><font color='green'>Verify</font></a>&nbsp;";
+					html += "<a href='${ctx}/admin/toQryUser.action?userId="+data[dataList].userId+"' class='del'>Details</a>&nbsp;";
+					html += "<a href='${ctx}/admin/failinfo.action?userId="+data[dataList].userId+"' class='del'><font color='red'>Deactivate</font></a></td>";
 					html += "</tr>";
 				}
 				html += "</tbody>"; 
@@ -135,15 +151,20 @@ $('.pagination').pagination(${pageInfo.total},{
 				html += "</div>";
 		        $("#myDiv").html("");
 		        $("#myDiv").html(html);
+		        $("tbody").find("tr:odd").css("backgroundColor","#eff6fa");
 		    }
 		});
 	},
 	display_msg: true,
-	setPageNo: false
+	setPageNo: true
 });
 
 //不通过审核,即注销用户信息
 function deleteUser(){
+	var del = confirm("Sure to delete?");
+	if (!del){
+		return;
+	}
 	var ids = "";
 	$("input:checkbox[name='userId']:checked").each(function() {
 		ids += $(this).val() + ",";
@@ -154,13 +175,17 @@ function deleteUser(){
 		ids = ids.substring(0, ids.length-1);
 	}
 	if(ids == ""){
-		alert("请选择要删除的记录！");
+		alert("Select at least one entry.");
 		return;
 	}
 	$("form").submit();
 }
 //通过审核
 function addUser(){
+	var del = confirm("Sure to add?");
+	if (!del){
+		return;
+	}
 	var ids = "";
 	$("input:checkbox[name='userId']:checked").each(function() {
 		ids += $(this).val() + ",";
@@ -171,7 +196,7 @@ function addUser(){
 		ids = ids.substring(0, ids.length-1);
 	}
 	if(ids == ""){
-		alert("请选择要通过的记录！");
+		alert("Select at least one entry.");
 		return;
 	}
 	//  以下三行，随便哪一行都行         
@@ -182,7 +207,6 @@ function addUser(){
 }
 
 function showDetail(id){
-	alert()
 	document.myform.attributes["action"].value = "${ctx}/admin/toQryUser.action?userId="+id; 
 	$("form").submit();
 }

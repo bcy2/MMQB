@@ -13,30 +13,31 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <link rel="stylesheet" href="${ctx}/css/base.css" />
 <link rel="stylesheet" href="${ctx}/css/info-reg.css" />
 <link rel="stylesheet" href="${ctx}/css/jquery.searchableSelect.css" />
-<title>移动办公自动化系统</title>
+<title>iframe</title>
 </head>
 
 <body>
-<div class="title"><h2>更新课程</h2></div>
+<div class="title"><h2>Edit Curriculum</h2></div>
 <form action="${ctx}/updCourse.action" method="post" name="myform" id="myform">
 <div class="main">
 	<p class="short-input ue-clear">
-    	<label><span style="color:red">*</span>课程编号：</label>
-        <input type="text" name="courseId" id="courseId" maxlength="10" value="${course.courseId }" readonly="readonly"/>
+    	<label><span style="color:red">*</span>No.:</label>
+    	<input type="text" name="courseId" id="courseId" maxlength="10" value="${course.courseId}" readonly="readonly"/>
     </p>
     <p class="short-input ue-clear">
-    	<label><span style="color:red">*</span>课程名称：</label>
+    	<label><span style="color:red">*</span>Name:</label>
         <input type="text" name="courseName" id="courseName" maxlength="10" value="${course.courseName }"/>
     </p>
-	<p class="short-input ue-clear">
-    	<label><span style="color:red">*</span>课程状态：</label>
-        <input type="text" name="courseState" id="courseState" maxlength="10" value="${course.courseState }"/>
-    </p>
+    <div class="short-input select ue-clear">
+    	<label><span style="color:red">*</span>Status:</label>
+    	<input name="courseState" type="radio" value="0" <c:if test="${course.courseState==0}">checked="checked"</c:if>/>Deactivated
+    	<input name="courseState" type="radio" value="1" <c:if test="${course.courseState==1}">checked="checked"</c:if>/>Active
+    </div>
 </div>
 </form>
 <div class="btn ue-clear">
-	<a href="javascript:;" class="confirm" onclick="addType()">确定</a>
-    <a href="${ctx}/toCoursePage.action" class="clear">返回</a>
+	<a href="javascript:;" class="confirm" onclick="addType()">Update</a>
+    <a href="${ctx}/toCoursePage.action" class="clear">Cancel</a>
 </div>
 </body>
 <script type="text/javascript" src="${ctx}/js/jquery.js"></script>

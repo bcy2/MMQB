@@ -124,16 +124,24 @@ public class QuestionController extends BaseController {
 	 */
 	@RequestMapping("/toAddQuestion.action")
 	public String toAddQuestion(Question question, Model model, HttpSession session){
-		//获取问题信息
-		List<Question> dataList = questionService.find(question);
-		//获取课程信息
+//		//获取问题信息
+//		List<Question> dataList = questionService.find(question);
+//		//获取课程信息
+//		List<Course> courseList = courseService.find(new Course());
+//		//获取年级信息
+//		model.addAttribute("grade", gradeService.find(new Grade()));
+//		//获取题型信息
+//		model.addAttribute("type", typeService.find(new Type()));
+//		model.addAttribute("dataList", dataList);
+//		model.addAttribute("course", courseList);
+		
+		List<Grade> gradeList = gradeService.findActive(new Grade());
 		List<Course> courseList = courseService.find(new Course());
-		//获取年级信息
-		model.addAttribute("grade", gradeService.find(new Grade()));
-		//获取题型信息
-		model.addAttribute("type", typeService.find(new Type()));
-		model.addAttribute("dataList", dataList);
+		List<Type> typeList = typeService.find(new Type());
+		model.addAttribute("grade", gradeList);
 		model.addAttribute("course", courseList);
+		model.addAttribute("type", typeList);
+		
 		return "/admin/question-reg.jsp";			
 	}
 	
@@ -180,12 +188,12 @@ public class QuestionController extends BaseController {
 	public String toUpdQuestion(int questionId, Model model, HttpSession session){
 		Question questionInfo = questionService.get(questionId);
 		model.addAttribute("question", questionInfo);
-		List<Grade>gradeList = gradeService.find(new Grade());
-		List<Course>courseList = courseService.find(new Course());
+		List<Grade> gradeList = gradeService.findActive(new Grade());
+		List<Course> courseList = courseService.find(new Course());
 		List<Type> typeList = typeService.find(new Type());
-		model.addAttribute("gradeList", gradeList);
-		model.addAttribute("courseList", courseList);
-		model.addAttribute("typeList", typeList);
+		model.addAttribute("grade", gradeList);
+		model.addAttribute("course", courseList);
+		model.addAttribute("type", typeList);
 		return "/admin/question-upd.jsp";			
 	}
 	
@@ -198,6 +206,16 @@ public class QuestionController extends BaseController {
 	 */
 	@RequestMapping("/updQuestion.action")
 	public String updQuestion(Question question, Model model, HttpSession session){
+		if (question.getAnswerDetail().trim().isEmpty()) {
+			question.setAnswerDetail(null);
+		}
+		if ("2".equalsIgnoreCase(question.getTypeId())) {
+			question.setOptionA(null);
+			question.setOptionB(null);
+			question.setOptionC(null);
+			question.setOptionD(null);
+		}
+		System.out.println(question);
 		questionService.update(question);
 		return "redirect:/toQuestionPage.action";			
 	}

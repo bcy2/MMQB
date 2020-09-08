@@ -17,10 +17,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.github.pagehelper.PageInfo;
 
 import edu.fjnu.online.controller.BaseController;
+import edu.fjnu.online.domain.Course;
 import edu.fjnu.online.domain.Grade;
 import edu.fjnu.online.domain.MsgItem;
 import edu.fjnu.online.domain.Question;
 import edu.fjnu.online.domain.User;
+import edu.fjnu.online.service.CourseService;
 import edu.fjnu.online.service.GradeService;
 import edu.fjnu.online.service.UserService;
 /**
@@ -35,6 +37,8 @@ public class UserController extends BaseController{
 	UserService userService;
 	@Autowired
 	GradeService gradeService;
+	@Autowired
+	CourseService courseService;
 	//跳转到登录页面
 	@RequestMapping("/admin/login.action")
 	public String toLoin(User user, Model model, HttpSession session){
@@ -146,6 +150,12 @@ public class UserController extends BaseController{
 		List<User> dataList = pageInfo.getList();
 		model.addAttribute("dataList", dataList);
 		model.addAttribute("pageInfo", pageInfo);
+		
+		List<Grade> gradeList = gradeService.findActive(new Grade());
+		List<Course> courseList = courseService.find(new Course());
+		model.addAttribute("grade", gradeList);
+		model.addAttribute("course", courseList);
+		
 		return "/admin/info-mgt.jsp";			
 	}
 	
@@ -171,9 +181,15 @@ public class UserController extends BaseController{
 	 */
 	@RequestMapping("/admin/toAddUser.action")
 	public String toAddUserInfo(User user, Model model, HttpSession session){
-		List<User> dataList = userService.find(user);
-		model.addAttribute("grade", gradeService.find(new Grade()));
-		model.addAttribute("dataList", dataList);
+//		List<User> dataList = userService.find(user);
+//		model.addAttribute("grade", gradeService.find(new Grade()));
+//		model.addAttribute("dataList", dataList);
+		
+		List<Grade> gradeList = gradeService.findActive(new Grade());
+		List<Course> courseList = courseService.find(new Course());
+		model.addAttribute("grade", gradeList);
+		model.addAttribute("course", courseList);
+		
 		return "/admin/info-reg.jsp";			
 	}
 	
@@ -185,6 +201,61 @@ public class UserController extends BaseController{
 	 */
 	@RequestMapping("/admin/addUser.action")
 	public String addUser(User user, Model model){
+		String userId = user.getUserId();//username
+//		String userFirstName = user.getUserFirstName();
+//		String userLastName = user.getUserLastName();
+		String userNickName = user.getUserName();
+		String userParentName = user.getParentName();
+		String userPwd = user.getUserPwd();
+		String userGrade = user.getGrade();
+		String userEmail = user.getEmail();
+		String userTel = user.getTelephone();
+		String userCurriculum = user.getCurriculum();
+		if (userId == null || 
+				userParentName == null || userPwd == null || userGrade == null || 
+				userEmail == null || userTel == null || userCurriculum == null) {
+			System.out.println("Null fields.");
+			return "/admin/badReg.jsp";
+		}
+		
+		userId = userId.trim();//username
+//		userFirstName = userFirstName.trim();
+//		userLastName = userLastName.trim();
+		userNickName = userNickName.trim();
+		userParentName = userParentName.trim();
+		userPwd = userPwd.trim();
+		userGrade = userGrade.trim();
+		userEmail = userEmail.trim();
+		userTel = userTel.trim();
+		userCurriculum = userCurriculum.trim();
+		
+		String emailPatternString = "^\\w+([\\.-]?\\w+)*@\\w+([\\.-]?\\w+)*(\\.\\w{2,3})+$";
+		String numPattern = "^[0-9]{8}$";
+		
+		if (userId.length()<6 || userNickName.equals("") ||
+				userParentName.equals("") || userPwd.length()<6 || userGrade.equals("") || 
+				!userEmail.matches(emailPatternString) || !userTel.matches(numPattern) || userCurriculum.equals("")) {
+			System.out.println("Bad formats.");
+			return "/admin/badReg.jsp";
+		}
+		
+		user.setUserId(userId);//username
+//		user.setUserFirstName(userFirstName);
+//		user.setUserLastName(userLastName);
+		user.setParentName(userParentName);
+		user.setUserName(userNickName);
+		user.setUserPwd(userPwd);
+		user.setGrade(userGrade);
+		user.setEmail(userEmail);
+		user.setTelephone(userTel);
+		user.setCurriculum(userCurriculum);
+		
+		user.setUserState(0);
+//		user.setUserType(0);
+		user.setRewardPoints(0);
+		user.setAuthority("{\"sendEmail\": true}");
+		user.setParentPwd("123456");//default parent pwd
+		
 		userService.insert(user);
 		return "redirect:/admin/getAllUser.action";			
 	}
@@ -218,6 +289,12 @@ public class UserController extends BaseController{
 		List<User> dataList = pageInfo.getList();
 		model.addAttribute("dataList", dataList);
 		model.addAttribute("pageInfo", pageInfo);
+		
+		List<Grade> gradeList = gradeService.findActive(new Grade());
+		List<Course> courseList = courseService.find(new Course());
+		model.addAttribute("grade", gradeList);
+		model.addAttribute("course", courseList);
+		
 		return "/admin/info-deal.jsp";
 	}
 	
@@ -286,6 +363,12 @@ public class UserController extends BaseController{
 		String userId = user.getUserId().trim();
 		User userInfo = userService.get(userId);
 		model.addAttribute("user", userInfo);
+		
+		List<Grade> gradeList = gradeService.findActive(new Grade());
+		List<Course> courseList = courseService.find(new Course());
+		model.addAttribute("grade", gradeList);
+		model.addAttribute("course", courseList);
+		
 		return "/admin/info-upd.jsp";			
 	}
 	
@@ -301,7 +384,13 @@ public class UserController extends BaseController{
 		String userId = user.getUserId().trim();
 		User userInfo = userService.get(userId);
 		model.addAttribute("user", userInfo);
-		model.addAttribute("grade", gradeService.find(new Grade()));
+//		model.addAttribute("grade", gradeService.find(new Grade()));
+		
+		List<Grade> gradeList = gradeService.findActive(new Grade());
+		List<Course> courseList = courseService.find(new Course());
+		model.addAttribute("grade", gradeList);
+		model.addAttribute("course", courseList);
+		
 		return "/admin/info-det.jsp";			
 	}
 	
@@ -317,7 +406,13 @@ public class UserController extends BaseController{
 		String userId = user.getUserId().trim();
 		User userInfo = userService.get(userId);
 		model.addAttribute("user", userInfo);
-		model.addAttribute("grade", gradeService.find(new Grade()));
+//		model.addAttribute("grade", gradeService.find(new Grade()));
+		
+		List<Grade> gradeList = gradeService.findActive(new Grade());
+		List<Course> courseList = courseService.find(new Course());
+		model.addAttribute("grade", gradeList);
+		model.addAttribute("course", courseList);
+		
 		return "/admin/info-qry.jsp";			
 	}
 	
@@ -338,7 +433,7 @@ public class UserController extends BaseController{
 	}
 	
 	@RequestMapping("/admin/updateUser.action")
-	public String updateUser(User user, Model model){
+	public String updateUser(User user, Model model){		
 		userService.update(user);
 		return "redirect:/admin/getAllUser.action";			
 	}

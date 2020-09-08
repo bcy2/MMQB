@@ -36,7 +36,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	
 	<!-- 新增paper -->
 	<insert id="insertPaper" parameterType="edu.fjnu.online.domain.Paper">
-		insert into paper_record
+		insert into quiz
 		(id,name,curriculum_id,grade_id,username,question_id,expected_duration,score,status,create_time,difficulty)
 		values
 		(#{paperId},#{paperName},#{courseId},#{gradeId},#{userId},#{questionId},#{allowTime},#{score},#{paperState},#{createTime},#{difficulty})
@@ -99,7 +99,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<select id="get" parameterType="edu.fjnu.online.domain.Paper" resultMap="paperRM">
 		select * from quiz
 		where id=#{paperId} 
-		and status=0
 	</select>
 	
 	<!-- 删除一条记录 -->

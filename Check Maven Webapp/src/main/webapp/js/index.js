@@ -26,7 +26,7 @@ $(".nav").on("click","li",function(e){
 });
 
 $('.exitDialog').Dialog({
-	title:'提示信息',
+	title:'Logout',
 	autoOpen: false,
 	width:400,
 	height:200

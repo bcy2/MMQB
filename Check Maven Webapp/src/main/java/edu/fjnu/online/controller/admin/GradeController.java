@@ -164,27 +164,28 @@ public class GradeController {
 	@RequestMapping("/toUpdGrade.action")
 	public String toUpdGrade(int gradeId, Model model, HttpSession session){
 		Grade gradeInfo = gradeService.get(gradeId);
-		String courseName= "";
-		Course course=null;
-		List<Course> dataList = courseService.find(course);
-		model.addAttribute("dataList", dataList);
-		String id = gradeInfo.getCourseId();
-		if(id != null){
-			String ids[] = id.split(",");
-			for(int i=0;i<ids.length;i++){
-				course = courseService.get(Integer.parseInt(ids[i]));
-				courseName+=course.getCourseName()+",";
-			}
-		}
-		//判断最后一个字符是否为逗号，若是截取
-		String str = courseName.substring(courseName.length() -1, courseName.length());
-		if(",".equals(str)){
-			str = courseName.substring(0, courseName.length()-1);
-		}else{
-			str = courseName;
-		}
-		gradeInfo.setCourseId(str);
+//		String courseName= "";
+//		Course course=null;
+//		List<Course> dataList = courseService.find(course);
+//		model.addAttribute("dataList", dataList);
+//		String id = gradeInfo.getCourseId();
+//		if(id != null){
+//			String ids[] = id.split(",");
+//			for(int i=0;i<ids.length;i++){
+//				course = courseService.get(Integer.parseInt(ids[i]));
+//				courseName+=course.getCourseName()+",";
+//			}
+//		}
+//		//判断最后一个字符是否为逗号，若是截取
+//		String str = courseName.substring(courseName.length() -1, courseName.length());
+//		if(",".equals(str)){
+//			str = courseName.substring(0, courseName.length()-1);
+//		}else{
+//			str = courseName;
+//		}
+//		gradeInfo.setCourseId(str);
 		model.addAttribute("grade", gradeInfo);
+		model.addAttribute("course", courseService.find(new Course()));
 		return "/admin/grade-upd.jsp";			
 	}
 	

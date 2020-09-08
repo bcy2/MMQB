@@ -13,80 +13,99 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <link rel="stylesheet" href="${ctx}/css/base.css" />
 <link rel="stylesheet" href="${ctx}/css/info-reg.css" />
 <link rel="stylesheet" href="${ctx}/css/jquery.searchableSelect.css" />
-<title>移动办公自动化系统</title>
+<title>iframe</title>
 </head>
 
 <body>
-<div class="title"><h2>题目录入</h2></div>
+<div class="title"><h2>New Question</h2></div>
 <form action="${ctx}/addQuesInfo.action" method="post" name="myform" id="myform">
 <div class="main">
-    <div class="long-input select ue-clear">
-    	<label><span style="color:red">*</span>年级：</label>
-    	<c:forEach items="${grade}" var="cs">
-			<input name="gradeId" type="radio" value="${cs.gradeId}" checked="checked"/>${cs.gradeName}
-		</c:forEach>
-    </div>
-    <div class="long-input select ue-clear">
-    	<label><span style="color:red">*</span>科目：</label>
-    	<c:forEach items="${course}" var="cs">
-			<input name="courseId" type="radio" value="${cs.courseId}" checked="checked"/>${cs.courseName}
-		</c:forEach>
+	<div class="long-input select ue-clear">
+    	<label><span style="color:red">*</span>Curriculum:</label>
+    	<select name="courseId" id="courseId">
+            <option value="" disabled="disabled" selected="selected">Please choose...</option>
+	        <c:forEach items="${course}" var="course">
+				<option value="${course.courseId }">${course.courseName }</option>
+			</c:forEach>
+		</select>
+	</div>
+	<div class="long-input select ue-clear">
+    	<label><span style="color:red">*</span>Grade:</label>
+    	<select name="gradeId" id="gradeId">
+	        <c:forEach items="${grade}" var="grade">
+				<option data-parent="${grade.courseId }" value="${grade.gradeId }">${grade.gradeName }</option>
+			</c:forEach>
+		</select>
     </div>
     <div class="short-input select ue-clear">
-    	<label><span style="color:red">*</span>难度：</label>
-    	<input name="difficulty" type="radio" value="0" checked="checked"/>简单
-    	<input name="difficulty" type="radio" value="1"/>中等
-    	<input name="difficulty" type="radio" value="2"/>较难
+    	<label><span style="color:red">*</span>Difficulty:</label>
+    	<input name="difficulty" type="radio" value="0.33" checked="checked"/>Easy
+    	<input name="difficulty" type="radio" value="0.66"/>Medium
+    	<input name="difficulty" type="radio" value="0.99"/>Difficult
     </div>
     <div class="long-input select ue-clear">
-    	<label><span style="color:red">*</span>题型：</label>
+    	<label><span style="color:red">*</span>Type:</label>
     	<c:forEach items="${type}" var="cs">
-			<input name="typeId" type="radio" value="${cs.typeId}" checked="checked" onclick="typeOnclick()"/>${cs.typeName}
+			<input name="typeId" type="radio" value="${cs.typeId}" onclick="typeOnclick()" required="required"/>${cs.typeName}
 		</c:forEach>
     </div>
     <p class="long-input ue-clear">
-    	<label>名称：</label>
-        <input type="text" placeholder="请输入问题名称" name="quesName" id="quesName" />
+    	<label>Raw Ques ID:</label>
+        <input type="number" placeholder="Put 0 if inapplicable" name="rawQuestionId" id="rawQuestionId" value="0"/>
+        <span style="color: red" id="tipInfo">${message }</span>
+    </p>
+    <p class="long-input ue-clear">
+    	<label>Question:</label>
+        <input type="text" placeholder="Type in the question" name="quesName" id="quesName" required="required"/>
         <span style="color: red" id="tipInfo">${message }</span>
     </p>
     <p class="long-input ue-clear" id="pa">
-    	<label>选项A：</label>
-        <input type="text" placeholder="选项A" name="optionA" id="optionA" value="${userId }"/>
+    	<label>option A:</label>
+        <input type="text" placeholder="Option A, leave empty if inapplicable" name="optionA" id="optionA"/>
         <span style="color: red" id="tipInfo">${message }</span>
     </p>
     <p class="long-input ue-clear" id="pb">
-    	<label>选项B：</label>
-        <input type="text" placeholder="选项B" name="optionB" id="optionB"  value="${userId }"/>
+    	<label>option B:</label>
+        <input type="text" placeholder="Option B, leave empty if inapplicable" name="optionB" id="optionB"/>
         <span style="color: red" id="tipInfo">${message }</span>
     </p>
     <p class="long-input ue-clear" id="pc">
-    	<label>选项C：</label>
-        <input type="text" placeholder="选项C" name="optionC" id="optionC"  value="${userId }"/>
+    	<label>option C:</label>
+        <input type="text" placeholder="Option C, leave empty if inapplicable" name="optionC" id="optionC"/>
         <span style="color: red" id="tipInfo">${message }</span>
     </p>
     <p class="long-input ue-clear" id="pd">
-    	<label>选项D：</label>
-        <input type="text" placeholder="选项D" name="optionD" id="optionD"  value="${userId }"/>
+    	<label>option D:</label>
+        <input type="text" placeholder="Option D, leave empty if inapplicable" name="optionD" id="optionD"/>
         <span style="color: red" id="tipInfo">${message }</span>
     </p>
     <p class="long-input ue-clear">
-    	<label>答案：</label>
-        <input type="text" placeholder="请输入答案" id="answer" name="answer"/>
+    	<label>Answer:</label>
+        <input type="text" placeholder="Answer" id="answer" name="answer"/>
     </p>
     <p class="long-input ue-clear">
-    	<label>详解：</label>
-        <input type="text"id="answerDetail" placeholder="请输入详解" name="answerDetail"/>
+    	<label>Attach. ID:</label>
+        <input type="number" placeholder="Put 0 if no attachment" id="attachmentId" name="attachmentId" value="0"/>
     </p>
     <p class="long-input ue-clear">
-    	<label>备注：</label>
-        <input type="text" id="remark" name="remark" placeholder="请输入备注信息"/>
+    	<label>Explanation:</label>
+        <input type="text"id="answerDetail" placeholder="Explanation" name="answerDetail"/>
     </p>
+<!--     <p class="long-input ue-clear">
+    	<label>Remarks:</label>
+        <input type="text" id="remark" name="remark" placeholder="Remarks"/>
+    </p> -->
+    <div class="short-input select ue-clear">
+    	<label>In past paper?</label>
+    	<input name="pastPaper" type="radio" value="0" checked="checked"/>No
+    	<input name="pastPaper" type="radio" value="1"/>Yes
+    </div>
 
 </div>
 </form>
 <div class="btn ue-clear">
-	<a href="javascript:;" class="confirm" onclick="addQuestion()">确定</a>
-    <a href="${ctx}/toQuestionPage.action" class="clear">返回</a>
+	<a href="javascript:;" class="confirm" onclick="addQuestion()">Add</a>
+    <a href="${ctx}/toQuestionPage.action" class="clear">Back</a>
 </div>
 </body>
 <script type="text/javascript" src="${ctx}/js/jquery.js"></script>
@@ -95,6 +114,36 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <script type="text/javascript" src="${ctx}/js/jquery-1.11.1.min.js"></script>
 <script type="text/javascript" src="${ctx}/js/jquery.searchableSelect.js"></script>
 <script type="text/javascript">
+jQuery(document).ready(function() {
+	// 获取子select的option
+	let childOptions = $("select[name='gradeId']").find("option");
+ 	childOptions.each(function() {
+		this.remove();
+	});
+	$("select[name='courseId']").change(cascadeSelect);
+
+	// 级联过滤方法
+	function cascadeSelect(event) {
+		// 获取选中index及value
+		let index = event.target["selectedIndex"];
+		let value = event.target[index].value;
+		// 过滤方法1
+		let options = childOptions.filter(function() {
+			// return (this.value == "" || this.dataset.parent == value);
+			return (this.dataset.parent == value);
+		});
+		// 过滤方法2
+		// let options = Array.from(childOptions).filter(function
+		// (option) {
+		// return option.value == "" || option.dataset.parent == value
+		// });
+		// 清空子select,重新绑定，并设定默认选中项
+		$("select[name='gradeId']").empty().append(options);
+		// $("select[name='grade']").find("option[value='']").prop(
+		// "selected", true);
+	}
+});
+
 $(function(){
 	$("#grade").searchableSelect();
 });

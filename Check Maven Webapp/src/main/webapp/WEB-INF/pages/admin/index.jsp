@@ -39,7 +39,7 @@ if (session.getAttribute("user") == null) {
                 </div> -->
             </div>
             <div class="toolbar ue-clear">
-                <a href="javascript:;" class="home-btn">Home</a>
+                <!-- <a href="javascript:;" class="home-btn">Home</a> -->
                 <a href="javascript:;" class="quit-btn exit"></a>
             </div>
         </div>

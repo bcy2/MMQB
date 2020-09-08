@@ -13,64 +13,68 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <link rel="stylesheet" href="${ctx}/css/base.css" />
 <link rel="stylesheet" href="${ctx}/css/info-reg.css" />
 <link rel="stylesheet" href="${ctx}/css/jquery.searchableSelect.css" />
-<title>移动办公自动化系统</title>
+<title>iframe</title>
 </head>
 
 <body>
-<div class="title"><h2>新增试卷</h2></div>
+<div class="title"><h2>Add Quiz</h2></div>
 <form action="${ctx}/addQuesInfo.action" method="post" name="myform" id="myform">
 <div class="main">
     <div class="long-input select ue-clear">
-    	<label><span style="color:red">*</span>年级：</label>
+    	<label><span style="color:red">*</span>Grade:</label>
     	<c:forEach items="${grade}" var="cs">
 			<input name="gradeId" type="radio" value="${cs.gradeId}" checked="checked"/>${cs.gradeName}
 		</c:forEach>
     </div>
     <div class="long-input select ue-clear">
-    	<label><span style="color:red">*</span>科目：</label>
+    	<label><span style="color:red">*</span>Curriculum:</label>
     	<c:forEach items="${course}" var="cs">
 			<input name="courseId" type="radio" value="${cs.courseId}" checked="checked"/>${cs.courseName}
 		</c:forEach>
     </div>
-    <p class="short-input ue-clear">
-    	<label>试卷编号：</label>
+<!--     <p class="short-input ue-clear">
+    	<label>试卷编号:</label>
         <input type="text" placeholder="请输入试卷编号" name="paperId" id="paperId" />
-    </p>
+    </p> -->
     <p class="short-input ue-clear">
-    	<label>试卷名称：</label>
-        <input type="text" placeholder="请输入试卷名称" name="paperName" id="paperName" />
+    	<label>Name:</label>
+        <input type="text" placeholder="Quiz name" name="paperName" id="paperName" />
         <span style="color: red" id="tipInfo">${message }</span>
     </p>
     <p class="short-input ue-clear">
-    	<label>允许时长：</label>
-        <input type="text" placeholder="请输入允许时长" name="allowTime" id="allowTime" />分钟
+    	<label>Allow Time:</label>
+        <input type="text" placeholder="Allow Time in minutes" name="allowTime" id="allowTime" />min
     </p>
     <p class="short-input ue-clear" id="pa">
-    	<label>选择题数量：</label>
+    	<label>No. of ques:</label>
+        <input type="text" placeholder="Number of questions (5-50)" name="quesNo" id="quesNo"/>
+    </p>
+<!--    <p class="short-input ue-clear" id="pa">
+    	<label>选择题数量:</label>
         <input type="text" placeholder="选择题" name="selectNum" id="selectNum"/>
     </p>
-<!--     <p class="short-input ue-clear" id="pb">
+    <p class="short-input ue-clear" id="pb">
     	<label><span style="color:red"></span></label>
-    	<label>简单：</label>
+    	<label>简单:</label>
         <input type="text" name="selectNum" id="selectNum"/>
-        <label>中等：</label>
+        <label>中等:</label>
         <input type="text" name="selectNum" id="selectNum"/>
-        <label>较难：</label>
+        <label>较难:</label>
         <input type="text" name="selectNum" id="selectNum"/>
-    </p> -->
+    </p>
     <p class="short-input ue-clear" id="pa">
-    	<label>填空题数量：</label>
+    	<label>填空题数量:</label>
         <input type="text" name="inputNum" id="inputNum"/>
     </p>
     <p class="short-input ue-clear" id="pa">
-    	<label>简答数量：</label>
+    	<label>简答数量:</label>
         <input type="text" name="descNum" id="descNum"/>
-    </p>
+    </p> -->
 </div>
 </form>
 <div class="btn ue-clear">
-	<a href="javascript:;" class="confirm" onclick="addQuestion()">确定</a>
-    <a href="${ctx}/toPaperPage.action" class="clear">返回</a>
+	<a href="javascript:;" class="confirm" onclick="addQuestion()">Add</a>
+    <a href="${ctx}/toPaperPage.action" class="clear">Cancel</a>
 </div>
 </body>
 <script type="text/javascript" src="${ctx}/js/jquery.js"></script>
@@ -94,7 +98,7 @@ $(".select-list").on("click","li",function(){
 function checkUserId(){
 	var questionId = $("#questionId").val();
 	if(questionId == ""){
-		$("#tipInfo").html("请输入题目名称");
+		$("#tipInfo").html("Question ID empty.");
 		$("#questionId").focus();
 		return;
 	}else{
@@ -104,8 +108,9 @@ function checkUserId(){
 
 //注册
 function addQuestion(){
-	document.myform.attributes["action"].value = "${ctx}/addPaper.action"; 
-	$("form").submit();
+	/* document.myform.attributes["action"].value = "${ctx}"+"/addPaper.action";  */
+	/* $("form").submit(); */
+	alert("Log in to the student account to use the full quiz-generation function.");
 }
 
 function typeOnclick(){

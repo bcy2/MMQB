@@ -1417,7 +1417,7 @@ public class PaperMgController {
 	}
 	
 	/**
-	 * User generate quiz
+	 * User generate paper
 	 * @param paper
 	 * @param model
 	 * @param session
@@ -1432,9 +1432,9 @@ public class PaperMgController {
 		MsgItem msgItem = new MsgItem();
 		msgItem.setErrorNo("1");
 		
-		int paperGenPointDeduction = 100;
+		int paperGenPointDeduction = 1000;
 		if (user.getRewardPoints() < paperGenPointDeduction) {
-			msgItem.setErrorInfo(String.format("No enough reward points. Need at least %d points.", paperGenPointDeduction));
+			msgItem.setErrorInfo(String.format("No enough reward points (currently %d). Need at least %d reward points to use this function. Contact us if you want to purchase more reward points.", user.getRewardPoints(), paperGenPointDeduction));
 			return msgItem;
 		}
 		

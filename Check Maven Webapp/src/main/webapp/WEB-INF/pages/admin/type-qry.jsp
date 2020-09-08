@@ -13,29 +13,29 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <link rel="stylesheet" href="${ctx}/css/base.css" />
 <link rel="stylesheet" href="${ctx}/css/info-reg.css" />
 <link rel="stylesheet" href="${ctx}/css/jquery.searchableSelect.css" />
-<title>移动办公自动化系统</title>
+<title>iframe</title>
 </head>
 
 <body>
-<div class="title"><h2>查看题型</h2></div>
+<div class="title"><h2>Type Details</h2></div>
 <form action="${ctx}/addType.action" method="post" name="myform" id="myform">
 <div class="main">
-    <p class="short-input ue-clear">
-    	<label><span style="color:red">*</span>名称：</label>
-        <input type="text" name="typeName" id="typeName" maxlength="10" value="${type.typeName }" disabled="disabled"/>
+    <p class="short-input ue-clear newstyle">
+    	<label>Name:</label>
+        ${type.typeName }
     </p>
-    <p class="short-input ue-clear">
-    	<label>分值：</label>
-        <input type="text" id="score" name="score" value="${type.score }" disabled="disabled"/>
+    <p class="short-input ue-clear newstyle">
+    	<label>Scores:</label>
+        ${type.score }
     </p>
-    <p class="short-input ue-clear">
-    	<label>备注：</label>
-        <textarea id="remark" name="remark" disabled="disabled">${type.remark }</textarea>
+    <p class="short-input ue-clear newstyle">
+    	<label>Remarks:</label>
+        ${type.remark }
     </p>
 </div>
 </form>
 <div class="btn ue-clear">
-    <a href="javascript:;" class="clear" onclick="returnList()">返回</a>
+    <a href="javascript:;" class="clear" onclick="returnList()">Back</a>
 </div>
 </body>
 <script type="text/javascript" src="${ctx}/js/jquery.js"></script>

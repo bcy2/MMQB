@@ -78,6 +78,12 @@ public class PaperController {
 		}
 		model.addAttribute("dataList", dataList);
 		model.addAttribute("pageInfo", pageInfo);
+		
+		List<Grade> gradeList = gradeService.findActive(new Grade());
+		List<Course> courseList = courseService.find(new Course());
+		model.addAttribute("grade", gradeList);
+		model.addAttribute("course", courseList);
+		
 		return "/admin/paper-mgt.jsp";			
 	}
 	
@@ -148,43 +154,44 @@ public class PaperController {
 	 */
 	@SuppressWarnings("unchecked")
 	@RequestMapping("/addPaper.action")
-	public String addPaper(@RequestParam int selectNum,@RequestParam int inputNum,
-			@RequestParam int descNum,Paper paper,Model model, HttpSession session){
-		Map map = new HashMap();
-		List<Question> selectList = null;
-		List<Question> inputList = null;
-		List<Question> descList = null;
-		List<Question> paperList = new ArrayList<Question>();
-		map.put("gradeId", paper.getGradeId());
-		map.put("courseId", paper.getCourseId());
-		if(selectNum>0){//选择题
-			map.put("num", selectNum);
-			map.put("typeId", 1);
-			selectList = questionService.createPaper(map);
-			paperList.addAll(selectList);
-		}
-		if(inputNum>0){//判断题
-			map.put("num", inputNum);
-			map.put("typeId", 4);
-			inputList = questionService.createPaper(map);
-			paperList.addAll(inputList);
-		}
-		if(descNum > 0 ){//描述题
-			map.put("num", descNum);
-			map.put("typeId", 5);
-			descList = questionService.createPaper(map);
-			paperList.addAll(descList);
-		}
-		String quesId = "";
-		for(Question ques : paperList){
-			quesId+=ques.getQuestionId()+",";
-		}
-		if(!quesId.isEmpty()){
-			quesId = removeLast(quesId);
-		}
-		paper.setQuestionId(quesId);
-		paper.setPaperState(0);
-		paperService.insert(paper);
+//	public String addPaper(@RequestParam int selectNum,@RequestParam int inputNum,
+//			@RequestParam int descNum,Paper paper,Model model, HttpSession session){
+	public String addPaper(@RequestParam int quesNo,Paper paper,Model model, HttpSession session){
+//		Map map = new HashMap();
+//		List<Question> selectList = null;
+//		List<Question> inputList = null;
+//		List<Question> descList = null;
+//		List<Question> paperList = new ArrayList<Question>();
+//		map.put("gradeId", paper.getGradeId());
+//		map.put("courseId", paper.getCourseId());
+//		if(selectNum>0){//选择题
+//			map.put("num", selectNum);
+//			map.put("typeId", 1);
+//			selectList = questionService.createPaper(map);
+//			paperList.addAll(selectList);
+//		}
+//		if(inputNum>0){//判断题
+//			map.put("num", inputNum);
+//			map.put("typeId", 4);
+//			inputList = questionService.createPaper(map);
+//			paperList.addAll(inputList);
+//		}
+//		if(descNum > 0 ){//描述题
+//			map.put("num", descNum);
+//			map.put("typeId", 5);
+//			descList = questionService.createPaper(map);
+//			paperList.addAll(descList);
+//		}
+//		String quesId = "";
+//		for(Question ques : paperList){
+//			quesId+=ques.getQuestionId()+",";
+//		}
+//		if(!quesId.isEmpty()){
+//			quesId = removeLast(quesId);
+//		}
+//		paper.setQuestionId(quesId);
+//		paper.setPaperState(0);
+//		paperService.insert(paper);
 		return "redirect:/toPaperPage.action";
 	}
 	
@@ -211,6 +218,9 @@ public class PaperController {
 		String quesId = paper.getQuestionId();
 		List<Question> quesList =new ArrayList<Question>();
 		Question question = null;
+		if (paper.getCourseId() == null) {
+			return "redirect:/toPaperPage.action"; 
+		}
 		Course course = courseService.get(Integer.parseInt(paper.getCourseId()));
 		paper.setCourseId(course.getCourseName());
 		int selNum=0;
@@ -237,6 +247,12 @@ public class PaperController {
 		paper.setEndTime(desNum+"");
 		model.addAttribute("paper", paper);
 		model.addAttribute("quesList", quesList);
+		
+		List<Grade> gradeList = gradeService.findActive(new Grade());
+		List<Course> courseList = courseService.find(new Course());
+		model.addAttribute("grade", gradeList);
+		model.addAttribute("course", courseList);
+		
 		return "/admin/paper-qry.jsp";
 	}
 	

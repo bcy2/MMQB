@@ -79,6 +79,6 @@ table tr .operate a:hover{ text-decoration:underline;}
 .pagination .pagin-list{float:right;}
 .pagination .goto{float:right;margin-left:10px;}
 .pagination .goto .text{padding:0;}
-.pagination .goto input[type=text]{float:left;width:25px;height:22px;border:1px solid #8EB2D2;outline:none; text-align:center;}
+.pagination .goto input[type=text]{float:left;width:46px;height:22px;border:1px solid #8EB2D2;outline:none; text-align:center; margin:1px;}
 
 

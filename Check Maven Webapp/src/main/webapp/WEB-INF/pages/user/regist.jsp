@@ -47,7 +47,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
             
             <label for="curriculum">Curriculum:</label>
             <select name="curriculum" id="curriculum">
-            	<option value="">Please choose...</option>
+            	<option value="" disabled="disabled" selected="selected">Please choose...</option>
 	            <c:forEach items="${curriculum}" var="curriculum">
 					<option value="${curriculum.courseId }">${curriculum.courseName }</option>
 				</c:forEach>
