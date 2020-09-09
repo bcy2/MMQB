@@ -31,7 +31,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     <body>
 
         <div class="page-container">
-            <h1>Login</h1>
+            <h1>Student Login</h1>
             <form action="${ctx}/toIndex.action" method="post" name="myform" id="myform">
                 <input type="text" name="userId" id="userId" class="username" placeholder="Username">
                 <input type="password" name="userPwd" id="userPwd" class="password" placeholder="Password">
@@ -41,6 +41,8 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
             </form>
             <div class="connect"></div>
             <div align="center">No account? <a href="${ctx}/toRegistPage.action" target="_self" title="mbzj">Register</a></div>
+            <div class="connect"></div>
+            <div align="center"><a href="${ctx}/" target="_self" title="mbzj">Select role</a></div>
         </div>
 
         <!-- Javascript -->

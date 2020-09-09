@@ -157,6 +157,8 @@ public class StuController {
 	 */
 	@RequestMapping("/toIndex.action")
 	public String toIndex(User user, Model model, HttpSession session){
+		User loginUser = (User) session.getAttribute("user");
+		model.addAttribute("user", loginUser);
 		if(session.getAttribute("user")!= null){
 			return "/user/index.jsp";
 		}else{
@@ -176,7 +178,8 @@ public class StuController {
 	public MsgItem checkPwd(User user, Model model, HttpSession session){
 		MsgItem item = new MsgItem();
 		User loginUser = userService.login(user);
-		if(loginUser!=null && loginUser.getUserType() ==0){
+//		if(loginUser!=null && loginUser.getUserType() ==0){
+		if(loginUser!=null){
 			if(loginUser.getUserState()==0 ){
 				item.setErrorNo("1");
 				item.setErrorInfo("Account not verified!");

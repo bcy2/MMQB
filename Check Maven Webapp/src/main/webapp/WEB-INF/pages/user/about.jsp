@@ -62,15 +62,23 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 					</div>
 					
 					<div class="collapse navbar-collapse nav-wil" id="bs-example-navbar-collapse-1">
-						<ul class="nav navbar-nav">
-							<li><a class="hvr-overline-from-center button2" href="${ctx}/toIndex.action">Home</a></li>
-							<li><a class="hvr-overline-from-center button2" href="${ctx}/toUserStatistics.action?userId=${user.userId}">My statistics</a></li>
-<!-- 							<li><a class="hvr-overline-from-center button2" href="onlinecheck.html">在线考试</a></li> -->
-							<li><a class="hvr-overline-from-center button2" href="${ctx}/toScoreQry.action?userId=${user.userId}">Review quizzes</a></li>
-							<li><a class="hvr-overline-from-center button2" href="${ctx}/toMyBooksPage.action?userId=${user.userId}">Question record</a></li>
-							<li><a class="hvr-overline-from-center button2" href="${ctx}/toMyPaperPage.action?userId=${user.userId}">Start working!</a></li>
-							<li><a class="hvr-overline-from-center button2  active" href="${ctx}/toAbout.action">About</a></li>
-						</ul>
+						<c:if test="${user.userType == 0}">
+							<ul class="nav navbar-nav">
+								<li><a class="hvr-overline-from-center button2" href="${ctx}/toIndex.action">Home</a></li>
+								<li><a class="hvr-overline-from-center button2" href="${ctx}/toUserStatistics.action?userId=${user.userId}">My statistics</a></li>
+	<!-- 							<li><a class="hvr-overline-from-center button2" href="onlinecheck.html">在线考试</a></li> -->
+								<li><a class="hvr-overline-from-center button2" href="${ctx}/toScoreQry.action?userId=${user.userId}">Review quizzes</a></li>
+								<li><a class="hvr-overline-from-center button2" href="${ctx}/toMyBooksPage.action?userId=${user.userId}">Question record</a></li>
+								<li><a class="hvr-overline-from-center button2" href="${ctx}/toMyPaperPage.action?userId=${user.userId}">Start working!</a></li>
+								<li><a class="hvr-overline-from-center button2  active" href="${ctx}/toAbout.action">About</a></li>
+							</ul>
+						</c:if>
+						<c:if test="${user.userType != 0}">
+							<ul class="nav navbar-nav">
+								<li><a class="hvr-overline-from-center button2" href="${ctx}/toIndex.action">Home</a></li>
+								<li><a class="hvr-overline-from-center button2  active" href="${ctx}/toAbout.action">About</a></li>
+							</ul>
+						</c:if>
 						<div class="search-box">
 							<div id="sb-search" class="sb-search">
 								<span class="sb-icon-search" onclick="exitSystem()"></span>

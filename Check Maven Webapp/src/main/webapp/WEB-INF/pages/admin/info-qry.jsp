@@ -78,6 +78,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 </div>
 </form>
 <div class="btn ue-clear">
+	<c:if test="${user.userType == 0}">
+		<a href="${ctx}/admin/toUserStatistics.action?userId=${user.userId}" class="clear">Statistics</a>
+	</c:if>
 	<a href="${ctx}/admin/getAllUser.action" class="confirm">Back</a>
 </div>
 </body>

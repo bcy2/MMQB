@@ -12,7 +12,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	<meta charset="UTF-8">
 	<link rel="stylesheet" href="${ctx}/css/base.css" />
 	<link rel="stylesheet" href="${ctx}/css/login.css" />
-	<title>MM Question Bank - Admin Panel</title>
+	<title>MM Question Bank - Admin Login</title>
 </head>
 <body>
 	<div id="container">
@@ -41,6 +41,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                 </div>
                 </form>
             </div>
+            <div align="center"><a href="${ctx}/" target="_self" title="mbzj">Select role</a></div>
 		</div>
 	</div>
     <div id="ft">Copyright&nbsp;2020,&nbsp; Koding Kingdom (HK) Ltd.</div>
