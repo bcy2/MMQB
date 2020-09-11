@@ -36,7 +36,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	
 	<!-- 新增paper -->
 	<insert id="insertPaper" parameterType="edu.fjnu.online.domain.Paper">
-		insert into quiz
+		insert into paper_record
 		(id,name,curriculum_id,grade_id,username,question_id,expected_duration,score,status,create_time,difficulty)
 		values
 		(#{paperId},#{paperName},#{courseId},#{gradeId},#{userId},#{questionId},#{allowTime},#{score},#{paperState},#{createTime},#{difficulty})
