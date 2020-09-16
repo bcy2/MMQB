@@ -12,13 +12,16 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <meta charset="utf-8">
 <script>
 MathJax = {
+	    tex: {inlineMath: [['$', '$'], ['\\(', '\\)']]}
+	  };
+/* MathJax = {
   tex: {
     inlineMath: [['$', '$'], ['\\(', '\\)']]
   },
   svg: {
     fontCache: 'global'
   }
-};
+}; */
 </script>
 <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 <link rel="stylesheet" href="${ctx}/css/base.css" />
@@ -33,6 +36,7 @@ MathJax = {
 <!-- <div>
 When \(a \ne 0\), there are two solutions to \(ax^2 + bx + c = 0\) and they are
 $$x = {-b \pm \sqrt{b^2-4ac} \over 2a}.$$
+如果 $\frac{78}{54} = \frac{\blacksquare}{27}$，$\blacksquare$是甚麼數？
 </div> -->
 <div class="table-operate ue-clear">
 	<a href="#" class="add" onclick="addUser()">Add</a>

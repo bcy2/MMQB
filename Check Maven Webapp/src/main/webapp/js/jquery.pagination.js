@@ -58,9 +58,11 @@ jQuery.fn.pagination = function(maxentries, opts) {
 		 * 链接
 		 */
 		function drawLinks() {
-			panel.empty();
+//			panel.empty();
 			$pagin.empty();
+			$info.empty();
 			panel.append($pagin);
+			panel.append($info);
 			var interval = getInterval();
 			var np = numPages();
 			var getClickHandler = function(page_id) {
@@ -134,22 +136,22 @@ jQuery.fn.pagination = function(maxentries, opts) {
 			// 记录显示
 			if (opts.display_msg) {
 				if(!maxentries){
-					panel
-						.append('<div class="pxofy">No data to display.</div>');
+					$info
+						.append('<span>No data to display.</span>');
 				}else{
-				panel
-						.append('<div class="pxofy">Showing entry No.&nbsp;'
+					$info
+						.append('<span>Showing entry No.&nbsp;'
 								+ ((current_page * opts.items_per_page) + 1)
 								+ '&nbsp;to No.&nbsp;'
 								+ (((current_page + 1) * opts.items_per_page) > maxentries
 										? maxentries
 										: ((current_page + 1) * opts.items_per_page))
-								+ '&nbsp;out of&nbsp;' + maxentries + '&nbsp;entries.</div>');
+								+ '&nbsp;out of&nbsp;' + maxentries + '&nbsp;entries.</span>');
 				}
 			}
 			//设置跳到第几页
 			if(opts.setPageNo){
-				  $("<div class='goto'><span class='text'>Go to page No.</span><input type='text'/><span class='page'></span><a href='javascript:;'>Go</a></div>").insertBefore($pagin);	
+				$jumpTo.insertBefore($pagin);	
 			}
 		}
 
@@ -160,7 +162,9 @@ jQuery.fn.pagination = function(maxentries, opts) {
 				? 1
 				: opts.items_per_page;
 		var panel = jQuery(this),
-			$pagin = $('<div class="pagin-list"></div>');
+			$info = $('<div class="pxofy"></div>'),
+			$pagin = $('<div class="pagin-list"></div>'),
+			$jumpTo = $("<div class='goto'><span class='text'>Go to page No.</span><input type='text'/><span class='page'></span><a href='javascript:;'>Go</a></div>");
 			
 		
 		this.selectPage = function(page_id) {
@@ -188,6 +192,7 @@ jQuery.fn.pagination = function(maxentries, opts) {
 		}else{
 			drawLinks();
 		}
+		
 		$(this).find(".goto a").on("click",function(evt){
 			var setPageNo = $(this).parent().find("input").val();
 			if(setPageNo!=null && setPageNo!=""&&setPageNo>0&&setPageNo<=numPages()){
