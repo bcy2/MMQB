@@ -13,31 +13,28 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <link rel="stylesheet" href="${ctx}/css/base.css" />
 <link rel="stylesheet" href="${ctx}/css/info-reg.css" />
 <link rel="stylesheet" href="${ctx}/css/jquery.searchableSelect.css" />
-<title>移动办公自动化系统</title>
+<title>iframe</title>
 </head>
 
 <body>
-<div class="title"><h2>新增年级</h2></div>
+<div class="title"><h2>Add grade</h2></div>
 <form action="${ctx}/addGrade.action" method="post" name="myform" id="myform">
 <div class="main">
     <p class="short-input ue-clear">
-    	<label><span style="color:red">*</span>年级名称：</label>
+    	<label><span style="color:red">*</span>Name:</label>
         <input type="text" name="gradeName" id="gradeName" maxlength="10"/>
     </p>
-	<p class="short-input ue-clear">
-    	<label><span style="color:red">*</span>包含课程：</label>
-    </p>
-   	<c:forEach items="${dataList}" var="o">
-    	<p class="short-input ue-clear">
-    		<label><span style= "width:100px "> &nbsp; </span></label>
-    		<input type="checkbox" name="courseId" id="courseId" value="${o.courseId}"/>${o.courseName}
-    	</p>
-	</c:forEach>
+    <div class="short-input select ue-clear">
+    	<label><span style="color:red">*</span>Curr.:</label>
+	    <c:forEach items="${dataList}" var="course">
+			<input type="radio" name="courseId" id="courseId" maxlength="10" value="${course.courseId}" checked/>${course.courseName}
+		</c:forEach>
+    </div>
 </div>
 </form>
 <div class="btn ue-clear">
-	<a href="javascript:;" class="confirm" onclick="addGrade()">确定</a>
-    <a href="${ctx}/toGradePage.action" class="clear">返回</a>
+	<a href="javascript:;" class="confirm" onclick="addGrade()">Add</a>
+    <a href="${ctx}/toGradePage.action" class="clear">Cancel</a>
 </div>
 </body>
 <script type="text/javascript" src="${ctx}/js/jquery.js"></script>

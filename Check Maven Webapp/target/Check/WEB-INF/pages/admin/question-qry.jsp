@@ -10,57 +10,82 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <html>
 <head>
 <meta charset="utf-8">
+<script>
+MathJax = {
+	    tex: {inlineMath: [['$', '$'], ['\\(', '\\)']]}
+	  };
+/* MathJax = {
+  tex: {
+    inlineMath: [['$', '$'], ['\\(', '\\)']]
+  },
+  svg: {
+    fontCache: 'global'
+  }
+}; */
+</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 <link rel="stylesheet" href="${ctx}/css/base.css" />
 <link rel="stylesheet" href="${ctx}/css/info-reg.css" />
 <link rel="stylesheet" href="${ctx}/css/jquery.searchableSelect.css" />
-<title>移动办公自动化系统</title>
+<title>iframe</title>
 </head>
 
 <body>
-<div class="title"><h2>题目详细</h2></div>
+<div class="title"><h2>Question Details</h2></div>
 <div class="main">
 	<p class="short-input ue-clear newstyle">
-    	<label>问题编号：</label>${question.questionId}
+    	<label>No.:</label>${question.questionId}
+    </p>
+	<p class="long-input ue-clear newstyle">
+    	<label>Question:</label>${question.quesName}
+    </p>
+    <p class="short-input ue-clear newstyle">
+    	<label>Curriculum:</label>${question.courseId}
     </p>
 	<p class="short-input ue-clear newstyle">
-    	<label>年级：</label>${question.gradeId}
+    	<label>Grade:</label>${question.gradeId}
+    </p>
+    <p class="long-input ue-clear newstyle">
+    	<label>Difficulty:</label>
+    	<c:if test="${question.difficulty <= 0.33}">Easy</c:if>
+    	<c:if test="${question.difficulty > 0.33 && question.difficulty < 0.67}">Medium</c:if>
+    	<c:if test="${question.difficulty >= 0.67}">Difficult</c:if>
+    </p>
+    <p class="long-input ue-clear newstyle">
+    	<label>Type:</label>${question.typeId}
     </p>
     <p class="short-input ue-clear newstyle">
-    	<label>科目：</label>${question.courseId}
-    </p>
-    <p class="long-input ue-clear newstyle">
-    	<label>难度：</label>${question.difficulty}
-    </p>
-    <p class="long-input ue-clear newstyle">
-    	<label>题型：</label>${question.typeId}
-    </p>
-    <p class="long-input ue-clear newstyle">
-    	<label>问题名称：</label>${question.quesName}
-    </p>
-    <p class="short-input ue-clear newstyle">
-    	<label>选项A：</label>${question.optionA}
+    	<label>Option A:</label>${question.optionA}
     </p>   
     <p class="short-input ue-clear newstyle">
-    	<label>选项B：</label>${question.optionB}
+    	<label>Option B:</label>${question.optionB}
     </p>
     <p class="short-input ue-clear newstyle">
-    	<label>选项C：</label>${question.optionC}
+    	<label>Option C:</label>${question.optionC}
     </p>
     <p class="short-input ue-clear newstyle">
-    	<label>选项D：</label>${question.optionD}
+    	<label>Option D:</label>${question.optionD}
     </p>
     <p class="short-input ue-clear newstyle">
-    	<label>答案：</label>${question.answer}
+    	<label>Answer:</label>${question.answer}
     </p>
     <p class="short-input ue-clear newstyle">
-    	<label>详解：</label>${question.remark}
+    	<label>Attachment:</label>${question.attachmentId}
     </p>
     <p class="short-input ue-clear newstyle">
-    	<label>备注：</label>${question.answerDetail}
+    	<label>Explanation:</label>${question.answerDetail}
     </p>
+    <p class="short-input ue-clear newstyle">
+    	<label>In past paper?</label>
+    	<c:if test="${question.pastPaper}">Yes</c:if>
+    	<c:if test="${!question.pastPaper}">No</c:if>
+    </p>
+<%--     <p class="short-input ue-clear newstyle">
+    	<label>Remarks:</label>${question.answerDetail}
+    </p> --%>
 </div>
 <div class="btn ue-clear">
-	<a href="${ctx}/toQuestionPage.action" class="confirm" onclick="addQuestion()">返回</a>
+	<a href="${ctx}/toQuestionPage.action" class="confirm">Back</a>
 </div>
 </body>
 <script type="text/javascript" src="${ctx}/js/jquery.js"></script>

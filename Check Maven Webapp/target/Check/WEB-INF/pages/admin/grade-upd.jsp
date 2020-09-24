@@ -13,27 +13,42 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <link rel="stylesheet" href="${ctx}/css/base.css" />
 <link rel="stylesheet" href="${ctx}/css/info-reg.css" />
 <link rel="stylesheet" href="${ctx}/css/jquery.searchableSelect.css" />
-<title>移动办公自动化系统</title>
+<title>iframe</title>
 </head>
 
 <body>
-<div class="title"><h2>查看年级信息</h2></div>
+<div class="title"><h2>Grade Details</h2></div>
 <form action="${ctx}/addGrade.action" method="post" name="myform" id="myform">
 <div class="main">
+	<p class="short-input ue-clear">
+    	<label><span style="color:red">*</span>No.:</label>
+    	<input type="text" name="gradeId" id="gradeId" maxlength="10" value="${grade.gradeId}" readonly="readonly"/>
+    </p>
+    
     <p class="short-input ue-clear">
-    	<label><span style="color:red">*</span>年级名称：</label>
+    	<label><span style="color:red">*</span>Name:</label>
         <input type="text" name="gradeName" id="gradeName" maxlength="10" value="${grade.gradeName}" readonly="readonly"/>
     </p>
     
-    <p class="short-input ue-clear">
-    	<label><span style="color:red">*</span>包含课程：</label>
-    	<input type="text" name="courseId" id="courseId" readonly="readonly" value="${grade.courseId}"/>
-    </p>
+    <div class="short-input select ue-clear">
+    	<label><span style="color:red">*</span>Curr.:</label>
+	    <c:forEach items="${course}" var="course">
+			<c:if test="${course.courseId == grade.courseId}">
+				<input type="radio" name="courseId" id="courseId" maxlength="10" value="${course.courseId}" checked/>${course.courseName}
+			</c:if>
+		</c:forEach>
+    </div>
     
+    <div class="short-input select ue-clear">
+    	<label><span style="color:red">*</span>Status:</label>
+    	<input name="gradeStatus" type="radio" value="0" <c:if test="${grade.gradeStatus==0}">checked="checked"</c:if>/>Deactivated
+    	<input name="gradeStatus" type="radio" value="1" <c:if test="${grade.gradeStatus==1}">checked="checked"</c:if>/>Active
+    </div>
 </div>
 </form>
 <div class="btn ue-clear">
-    <a href="${ctx}/toGradePage.action" class="clear">返回</a>
+	<a href="javascript:;" class="confirm" onclick="addGrade()">Update</a>
+    <a href="${ctx}/toGradePage.action" class="clear">Cancel</a>
 </div>
 </body>
 <script type="text/javascript" src="${ctx}/js/jquery.js"></script>
@@ -56,7 +71,7 @@ $(".select-list").on("click","li",function(){
 
 //注册
 function addGrade(){
-	document.myform.attributes["action"].value = "${ctx}/addGrade.action"; 
+	document.myform.attributes["action"].value = "${ctx}/updGrade.action"; 
 	$("form").submit();
 }
 

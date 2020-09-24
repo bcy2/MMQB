@@ -6,48 +6,58 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
 	<!-- 数据库表映射 -->
 	<resultMap id="gradeRM" type="edu.fjnu.online.domain.Grade">
-		<id property="gradeId" column="gradeid"/>
-		<result property="gradeName" column="gradename"/>
-		<result property="courseId" column="courseid"/>
+		<id property="gradeId" column="id"/>
+		<result property="gradeName" column="grade_name"/>
+		<result property="courseId" column="curriculum_id"/>
+		<result property="gradeStatus" column="grade_status"/>
 	</resultMap>
 	
 	<!-- 新增 -->
 	<insert id="insert" parameterType="edu.fjnu.online.domain.Grade">
-		insert into t_grade
-		(gradename,courseid)
+		insert into grade
+		(grade_name,curriculum_id,grade_status)
 		values
-		(#{gradeName},#{courseId})
+		(#{gradeName},#{courseId},#{gradeStatus})
 	</insert>
 	
 	<!-- 修改 -->
 	<update id="update" parameterType="edu.fjnu.online.domain.Grade">
-		update t_grade
+		update grade
 		<set>
 			<if test="gradeName!=null">
-				gradename=#{gradeName},
+				grade_name=#{gradeName},
 			</if>
 			<if test="courseId!=null">
-				courseid=#{courseId},
+				curriculum_id=#{courseId},
+			</if>
+			<if test="gradeStatus!=null">
+				grade_status=#{gradeStatus},
 			</if>
 		</set>
-			where gradeid=#{gradeId}
+			where id=#{gradeId}
 	</update>
 	
 	<!-- 查询所有记录 -->
 	<select id="find" parameterType="int" resultMap="gradeRM">
-		select * from t_grade
+		select * from grade
 		where 1=1
+	</select>
+
+	<!-- 查询所有记录 -->
+	<select id="findActive" parameterType="int" resultMap="gradeRM">
+		select * from grade
+		where grade_status = "1"
 	</select>
 	
 	<!-- 查询一个录 -->
 	<select id="get" parameterType="edu.fjnu.online.domain.Grade" resultMap="gradeRM">
-		select * from t_grade
-		where gradeid=#{id} 
+		select * from grade
+		where id=#{gradeId} 
 	</select>
 	
 	<!-- 删除一条记录 -->
 	<delete id="delete" parameterType="int">
-		delete from t_grade
-		where gradeid=#{id}
+		delete from grade
+		where id=#{gradeId}
 	</delete>
 </mapper>

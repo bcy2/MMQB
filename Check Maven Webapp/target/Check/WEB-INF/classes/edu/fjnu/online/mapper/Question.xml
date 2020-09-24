@@ -6,101 +6,162 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
 	<!-- 数据库表映射 -->
 	<resultMap id="questionRM" type="edu.fjnu.online.domain.Question">
-		<id property="questionId" column="questionid"/>
-		<result property="quesName" column="quesname"/>
-		<result property="optionA" column="optiona"/>
-		<result property="optionB" column="optionb"/>
-		<result property="optionC" column="optionc"/>
-		<result property="optionD" column="optiond"/>
+		<id property="questionId" column="id"/>
+		<result property="quesName" column="question"/>
+		<result property="optionA" column="option_1"/>
+		<result property="optionB" column="option_2"/>
+		<result property="optionC" column="option_3"/>
+		<result property="optionD" column="option_4"/>
 		<result property="answer" column="answer"/>
-		<result property="userAnswer" column="useranswer"/>
-		<result property="courseId" column="courseid"/>
-		<result property="typeId" column="typeid"/>
-		<result property="gradeId" column="gradeid"/>
+		<result property="courseId" column="curriculum_id"/>
+		<result property="typeId" column="type_id"/>
+		<result property="gradeId" column="grade_id"/>
 		<result property="difficulty" column="difficulty"/>
+		<result property="answerDetail" column="explain"/>
+
+		<!-- New in our db -->
+		<result property="topic" column="topic"/>
+		<result property="subtopic" column="subtopic"/>
+		<result property="subtopicId" column="subtopic_id"/>
+		<result property="optionOther" column="option_other"/>
+		<result property="isPastPaper" column="is_past_paper"/>
+		<result property="rawQuestionId" column="raw_question_id"/>
+		<result property="attachmentId" column="attachment_id"/>
+		<result property="script" column="script"/>
+		<result property="scriptParameter" column="script_parameter"/>
+
+		<!-- No followings in our db so will be null -->
+		<result property="userAnswer" column="useranswer"/>
 		<result property="remark" column="remark"/>
-		<result property="answerDetail" column="answerdetail"/>
 	</resultMap>
 	
 	<!-- 新增 -->
 	<insert id="insert" parameterType="edu.fjnu.online.domain.Question">
-		insert into t_question
-		(quesName,optiona,optionb,optionc,optiond,answer,useranswer,courseid,typeid,difficulty,remark,answerdetail,gradeid)
+		insert into question
+		(question,option_1,option_2,option_3,option_4,answer,curriculum_id,type_id,difficulty,explain,grade_id,topic,subtopic,subtopic_id,option_other,is_past_paper,raw_question_id,attachment_id,script,script_parameter)
 		values
-		(#{quesName},#{optionA},#{optionB},#{optionC},#{optionD},#{answer},#{userAnswer},#{courseId},#{typeId},#{difficulty},#{remark},#{answerDetail},#{gradeId})
+		(#{quesName},#{optionA},#{optionB},#{optionC},#{optionD},#{answer},#{courseId},#{typeId},#{difficulty},#{answerDetail},#{gradeId},#{topic},#{subtopic},#{subtopicId},#{optionOther},#{isPastPaper},#{rawQuestionId},,#{attachmentId},#{script},#{scriptParameter})
 	</insert>
 	
 	<!-- 修改 -->
 	<update id="update" parameterType="edu.fjnu.online.domain.Question">
-		update t_question
+		update question
 		<set>
 			<if test="quesName!=null">
-				quesname=#{quesName},
+				question=#{quesName},
 			</if>
 			<if test="optionA!=null">
-				optiona=#{optionA},
+				option_1=#{optionA},
 			</if>
 			<if test="optionB!=null">
-				optionb=#{optionB},
+				option_2=#{optionB},
 			</if>
 			<if test="optionC!=null">
-				optionc=#{optionC},
+				option_3=#{optionC},
 			</if>
 			<if test="optionD!=null">
-				optiond=#{optionD},
+				option_4=#{optionD},
 			</if>
 			<if test="answer!=null">
 				answer=#{answer},
 			</if>
-			<if test="userAnswer!=null">
+<!-- 			<if test="userAnswer!=null">
 				useranswer=#{userAnswer},
-			</if>
+			</if> -->
 			<if test="typeId!=null">
-				typeid=#{typeId},
+				type_id=#{typeId},
 			</if>
 			<if test="gradeId!=null">
-				gradeid=#{gradeId},
+				grade_id=#{gradeId},
 			</if>
 			<if test="difficulty!=null">
 				difficulty=#{difficulty},
 			</if>
-			<if test="remark!=null">
+<!-- 			<if test="remark!=null">
 				remark=#{remark},
-			</if>
+			</if> -->
 			<if test="answerDetail!=null">
-				answerdetail=#{answerDetail},
+				`explain`=#{answerDetail},
 			</if>
 			<if test="courseId!=null">
-				courseid=#{courseId},
+				curriculum_id=#{courseId},
+			</if>
+			<if test="topic!=null">
+				topic=#{topic},
+			</if>
+			<if test="subtopic!=null">
+				subtopic=#{subtopic},
+			</if>
+			<if test="subtopicId!=null">
+				subtopic_id=#{subtopicId},
+			</if>
+			<if test="optionOther!=null">
+				option_other=#{optionOther},
+			</if>
+			<if test="isPastPaper!=null">
+				is_past_paper=#{isPastPaper},
+			</if>
+			<if test="rawQuestionId!=null">
+				raw_question_id=#{rawQuestionId},
+			</if>
+			<if test="attachmentId!=null">
+				attachment_id=#{attachmentId},
+			</if>
+			<if test="script!=null">
+				script=#{script},
+			</if>
+			<if test="scriptParameter!=null">
+				script_parameter=#{scriptParameter},
 			</if>
 		</set>
-			where questionid=#{questionId}
+			where id=#{questionId}
 	</update>
 	
 	<!-- 查询所有记录 -->
 	<select id="find" parameterType="string" resultMap="questionRM">
-		select * from t_question
+		select * from question
 		where 1=1
+	</select>
+
+	<!-- 查询所有subtopic -->
+	<select id="findSubtopic" parameterType="string" resultMap="questionRM">
+		SELECT q.id, q.curriculum_id, g.grade_name as gradeId, q.topic, q.subtopic, q.subtopic_id, q.type_id
+		FROM question as q
+		left join grade as g on q.grade_id = g.id
+		WHERE q.id IN
+		(
+		    SELECT MIN(id)
+		    FROM question
+		    GROUP BY curriculum_id, subtopic_id
+		)
+		and q.curriculum_id = #{courseId}
+		order by q.subtopic_id
 	</select>
 	
 	<!-- 查询一个录 -->
 	<select id="get" parameterType="edu.fjnu.online.domain.Question" resultMap="questionRM">
-		select * from t_question
-		where questionid=#{id} 
+		select * from question
+		where id=#{questionId} 
 	</select>
 	
 	<!-- 删除一条记录 -->
 	<delete id="delete" parameterType="string">
-		delete from t_question
-		where questionid=#{id}
+		delete from question
+		where id=#{questionId}
 	</delete>
 	
 	<!-- 随机生成相应数量的题目 -->
 	<select id="createPaper" parameterType="map" resultMap="questionRM">
-		select * from t_question 
-			where gradeid=#{gradeId}
-			and typeid=#{typeId}
-			and courseid=#{courseId}
+		select * from question 
+			where subtopic_id = #{subtopicId}
+			and curriculum_id = #{courseId}
+			and difficulty &lt;= #{difficulty}
+            and difficulty &gt;= #{difficulty}-1/3
+            and id not in
+            <foreach collection="addedQuestionIdList" item="id" index="index" open="(" close=")" separator=",">
+				#{id}
+			</foreach>
 			ORDER BY RAND() LIMIT #{num} 
+
 	</select>
 </mapper>

@@ -551,6 +551,31 @@ public class PaperMgController {
 		model.addAttribute("paper", paper);
 		model.addAttribute("user", user);
 		model.addAttribute("paperId", paperId);
+		
+		File workingDirectory = new File(session.getServletContext().getRealPath("/")+
+//				System.getProperty("user.dir") + 
+//				File.separator + "src" + 
+//				File.separator + "main" + 
+//				File.separator + "resources" + 
+				File.separator + "paperTexTemplate");
+		File tempDir = new File(workingDirectory.getAbsolutePath() + File.separator + "temp");
+
+        File paperTex1 = new File(tempDir.getAbsolutePath() + File.separator + paperId +".tex");
+        File paperTex2 = new File(tempDir.getAbsolutePath() + File.separator + userId + "_" + paperId +".tex");
+	    if(paperTex1.exists()) {
+	    	if (paperTex1.delete()) { 
+	    		System.out.println("Deleted the file: " + paperTex1.getName());
+	    	} else {
+	    		System.out.println("Failed to delete " + paperTex1.getName());
+	    	} 
+	    }
+	    if(paperTex2.exists()) {
+	    	if (paperTex2.delete()) { 
+	    		System.out.println("Deleted the file: " + paperTex2.getName());
+	    	} else {
+	    		System.out.println("Failed to delete " + paperTex2.getName());
+	    	} 
+	    }
 		TexToPDF.toPDF(session.getServletContext().getRealPath("/"), paper, quesList);
 
 		return "/user/showPaperPage.jsp";
@@ -595,9 +620,9 @@ public class PaperMgController {
 				File.separator + "paperTexTemplate");
 		File tempDir = new File(workingDirectory.getAbsolutePath() + File.separator + "temp");
 
-        File paperTex = new File(tempDir.getAbsolutePath() + File.separator + paperId +".tex");
+        File paperTex = new File(tempDir.getAbsolutePath() + File.separator + userId + "_" + paperId +".tex");
 	    if(!paperTex.exists()) {
-	    	return null;
+	    	throw new RuntimeException(paperId +".tex does not exist.");
 	    }
 	    
 	    String mimeType = session.getServletContext().getMimeType(paperTex.getAbsolutePath());

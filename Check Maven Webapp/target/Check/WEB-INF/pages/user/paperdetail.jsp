@@ -12,10 +12,18 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	 String str_date2 = currentTime.toString(); //将Date型日期时间转换成字符串形式  
 	 request.setAttribute("starttime ", str_date1);
  %> 
+  <%
+   response.addHeader("Cache-Control", "no-cache,no-store,private,must-revalidate"); 
+   response.addHeader("Pragma", "no-cache"); 
+   response.addDateHeader ("Expires", 0);
+   if (session.getAttribute("user")==null) {
+       response.sendRedirect("user/exitSys.action");
+   }
+ %>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
-<title>在线考试系统</title>
+<title>Major Maths Question Bank</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <script type="application/x-javascript"> 
@@ -40,9 +48,12 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			$('html,body').animate({scrollTop:$(this.hash).offset().top},1000);
 		});
 	});
+	function exitSystem(){
+		window.location.href = "${ctx}/user/exitSys.action"	;
+	}
 	var beginTime ="";
 	var startFalg = true;
-	var intDiff = parseInt(60*60*2);//倒计时总秒数量
+	var intDiff = parseInt(60*1*1);//倒计时总秒数量
 	function timer(intDiff){
 		window.setInterval(function(){
 		var day=0,
@@ -151,18 +162,18 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 							<span class="icon-bar"></span>
 							<span class="icon-bar"></span>
 						</button>
-					   	<h3><span>欢迎您，<font color="blue">${userName }</font> 同学</span></h3>
+					   	<h3 style="line-height: normal;"><span style="color: white;">Welcome, <a class="hvr-overline-from-center button2" href="${ctx}/toUserInfo.action?userId=${user.userId}" style="display: inline;vertical-align: bottom"><font color="#2FD828">${userName }</font></a>.</span></h3>
 					</div>
 					
 					<div class="collapse navbar-collapse nav-wil" id="bs-example-navbar-collapse-1">
 						<ul class="nav navbar-nav">
-							<li><a class="hvr-overline-from-center button2" href="${ctx}/user/toIndex.action">首页</a></li>
-							<li><a class="hvr-overline-from-center button2" href="${ctx}/toUserInfo.action">个人中心</a></li>
-							<!-- <li><a class="hvr-overline-from-center button2" href="onlinecheck.html">在线考试</a></li> -->
-							<li><a class="hvr-overline-from-center button2" href="${ctx}/toScoreQry.action?userId=${user.userId}">成绩查询</a></li>
-							<li><a class="hvr-overline-from-center button2" href="${ctx}/toMyBooksPage.action">我的错题本</a></li>
-							<li><a class="hvr-overline-from-center button2  active" href="${ctx}/toMyPaperPage.action">我的试卷</a></li>
-							<li><a class="hvr-overline-from-center button2" href="about.html">关于</a></li>
+							<li><a class="hvr-overline-from-center button2" href="${ctx}/toIndex.action">Home</a></li>
+							<li><a class="hvr-overline-from-center button2" href="${ctx}/toUserStatistics.action?userId=${user.userId}">My statistics</a></li>
+<!-- 							<li><a class="hvr-overline-from-center button2" href="onlinecheck.html">在线考试</a></li> -->
+							<li><a class="hvr-overline-from-center button2" href="${ctx}/toScoreQry.action?userId=${user.userId}">Review quizzes</a></li>
+							<li><a class="hvr-overline-from-center button2  active" href="${ctx}/toMyBooksPage.action?userId=${user.userId}">Question record</a></li>
+							<li><a class="hvr-overline-from-center button2" href="${ctx}/toMyPaperPage.action?userId=${user.userId}">Start working!</a></li>
+							<li><a class="hvr-overline-from-center button2" href="${ctx}/toAbout.action">About</a></li>
 						</ul>
 						<div class="search-box">
 							<div id="sb-search" class="sb-search">
@@ -230,13 +241,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			<c:forEach items="${desList }" var="desType">
 				<p><h4 class="bars" align="left">${desType.quesName }</h4></p>
 				<div class="input-group">
-					<input name="userType" type="radio" value="1"/><font size="4">${desType.optionA }</font></br>
-					<input name="userType" type="radio" value="1"/><font size="4">${desType.optionB }</font></br>
-					<input name="userType" type="radio" value="1"/><font size="4">${desType.optionC }</font></br>
-					<input name="userType" type="radio" value="1"/><font size="4">${desType.optionD }</font></br>
-<%-- 					<p><h4 class="bars"><font color="blue">我的答案：${errorBook.userAnswer } </font></h4></p>
-					<p><h4 class="bars">标准答案：${errorBook.question.answer }（ ${errorBook.question.answerDetail }）</h4></p>
-					<p><h4 class="bars"><font color="red">解析：${errorBook.question.remark }</font></h4></p> --%>
+				  <span class="input-group-addon" id="sizing-addon2">答案：</span>
+				  <input type="text" name="${desType.questionId }" id="${desType.questionId }" 
+				  		class="form-control" placeholder="请在此输入答案...">
 				</div>
 			</c:forEach>
 		<div class="grid_3 grid_5" align="center">

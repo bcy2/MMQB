@@ -1,6 +1,8 @@
 <%@ page language="java" import="java.util.*" pageEncoding="utf-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <c:set var="ctx" value="${pageContext.request.contextPath}"/>
+<c:set var="newLine" value="\\n"/>
 <%
 String path = request.getContextPath();
 String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
@@ -12,10 +14,18 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	 String str_date2 = currentTime.toString(); //将Date型日期时间转换成字符串形式  
 	 request.setAttribute("starttime ", str_date1);
  %> 
+  <%
+   response.addHeader("Cache-Control", "no-cache,no-store,private,must-revalidate"); 
+   response.addHeader("Pragma", "no-cache"); 
+   response.addDateHeader ("Expires", 0);
+   if (session.getAttribute("user")==null) {
+       response.sendRedirect("user/exitSys.action");
+   }
+ %>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
-<title>在线考试系统</title>
+<title>Major Maths Question Bank</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <script type="application/x-javascript"> 
@@ -33,6 +43,17 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <script src="${ctx}/js/modernizr.custom.js"></script>
 <script type="text/javascript" src="${ctx}/js/move-top.js"></script>
 <script type="text/javascript" src="${ctx}/js/easing.js"></script>
+<script>
+MathJax = {
+  tex: {
+    inlineMath: [['$', '$'], ['\\(', '\\)']]
+  },
+  svg: {
+    fontCache: 'global'
+  }
+};
+</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 <script type="text/javascript">
 	jQuery(document).ready(function($) {
 		$(".scroll").click(function(event){		
@@ -74,6 +95,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			timer(intDiff);
 	}	
 	
+	function exitSystem(){
+		window.location.href = "${ctx}/user/exitSys.action"	;
+	}
+	
 	function getNowFormatDate() {
 	    var date = new Date();
 	    var seperator1 = "-";
@@ -110,8 +135,27 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			$("form").submit(); 
 		},"json");
 	}
-</script>
+	
+	/* function pdf() {
+		var doc = new jsPDF();
+		var elementHandler = {
+				  '#actualTime': function (element, renderer) {
+				    return true;
+				  }
+				};
+		var source = window.document.getElementsByClassName("container")[1];
+		doc.fromHTML(
+			    source,
+			    15,
+			    15,
+			    {
+			      'width': 180,'elementHandlers': elementHandler
+			    });
 
+		doc.output("dataurlnewwindow");
+	} */
+</script>
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.debug.js" integrity="sha384-NaWTHo/8YCBYJ59830LTz/P4aQZK1sS0SneOgAvhsIl3zBu8r9RevNg5lHCHAuQ/" crossorigin="anonymous"></script> -->
 </head>
 <body>
 <div class="header">
@@ -125,18 +169,18 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 							<span class="icon-bar"></span>
 							<span class="icon-bar"></span>
 						</button>
-					   	<h3><span>欢迎您，<font color="blue">${userName }</font> 同学</span></h3>
+					   	<h3 style="line-height: normal;"><span style="color: white;">Welcome, <a class="hvr-overline-from-center button2" href="${ctx}/toUserInfo.action?userId=${user.userId}" style="display: inline;vertical-align: bottom"><font color="#2FD828">${userName }</font></a>.</span></h3>
 					</div>
 					
 					<div class="collapse navbar-collapse nav-wil" id="bs-example-navbar-collapse-1">
 						<ul class="nav navbar-nav">
-							<li><a class="hvr-overline-from-center button2" href="${ctx}/user/toIndex.action">首页</a></li>
-							<li><a class="hvr-overline-from-center button2" href="${ctx}/toUserInfo.action">个人中心</a></li>
-							<!-- <li><a class="hvr-overline-from-center button2" href="onlinecheck.html">在线考试</a></li> -->
-							<li><a class="hvr-overline-from-center button2" href="${ctx}/toScoreQry.action?userId=${user.userId}">成绩查询</a></li>
-							<li><a class="hvr-overline-from-center button2" href="${ctx}/toMyBooksPage.action">我的错题本</a></li>
-							<li><a class="hvr-overline-from-center button2  active" href="${ctx}/toMyPaperPage.action">我的试卷</a></li>
-							<li><a class="hvr-overline-from-center button2" href="about.html">关于</a></li>
+							<li><a class="hvr-overline-from-center button2" href="${ctx}/toIndex.action">Home</a></li>
+							<li><a class="hvr-overline-from-center button2" href="${ctx}/toUserStatistics.action?userId=${user.userId}">My statistics</a></li>
+<!-- 							<li><a class="hvr-overline-from-center button2" href="onlinecheck.html">在线考试</a></li> -->
+							<li><a class="hvr-overline-from-center button2 active" href="${ctx}/toScoreQry.action?userId=${user.userId}">Review quizzes</a></li>
+							<li><a class="hvr-overline-from-center button2" href="${ctx}/toMyBooksPage.action?userId=${user.userId}">Question record</a></li>
+							<li><a class="hvr-overline-from-center button2" href="${ctx}/toMyPaperPage.action?userId=${user.userId}">Start working!</a></li>
+							<li><a class="hvr-overline-from-center button2" href="${ctx}/toAbout.action">About</a></li>
 						</ul>
 						<div class="search-box">
 							<div id="sb-search" class="sb-search">
@@ -170,55 +214,125 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <!-- <div class="typrography"> -->
 	 <div class="container">
 	 		<!-- 试卷名称 -->
+	 		<br />
 			<h2 class="bars" align="center"><font color="blue">${paper.paperName }</font></h2>
-	 		<div class="input-group">
-				  <h4 class="bars" align="left"><font color="blue">${selectQ }</font></h4>
-			</div>
+			<h4 class="bars" align="center">Expected time: <font color="green">${paper.allowTime }min</font></h4>
+			<h4 class="bars" align="center" id="actualTime">Actual time: <font color="green">${paper.allowTime }min</font></h4>
+				<%-- <input type="hidden" name="currentQ" id="currentQ" value="${currentQuestion}"/> --%>
 			<input type="hidden" name="paperId" id="paperId" value="${paper.paperId }"/>
-			<c:forEach items="${selList}" var="selType">
-				<p><h4 class="bars" align="left">${selType.quesName }</h4></p>
-				<div class="input-group">
-					<input name="${selType.questionId }" type="radio" value="A" checked="checked"/><font size="4">${selType.optionA }</font></br>
-					<input name="${selType.questionId }" type="radio" value="B"/><font size="4">${selType.optionB }</font></br>
-					<input name="${selType.questionId }" type="radio" value="C"/><font size="4">${selType.optionC }</font></br>
-					<input name="${selType.questionId }" type="radio" value="D"/><font size="4">${selType.optionD }</font></br>
-<%--  					<p><h4 class="bars"><font color="blue">我的答案：${errorBook.userAnswer } </font></h4></p>
-					<p><h4 class="bars">标准答案：${errorBook.question.answer }（ ${errorBook.question.answerDetail }）</h4></p>
-					<p><h4 class="bars"><font color="red">解析：${errorBook.question.remark }</font></h4></p> --%>
-				</div>
-			</c:forEach>
-			<div class="input-group">
-				  <h4 class="bars" align="left"><font color="blue">${inpQ }</font></h4>
+			<div class="question-group">
+				<hr>
+				<c:forEach items="${requestScope.questionRecordList }" var="questionRecordList" varStatus="loop">
+					<h4 class="bars" align="left"><strong><u>Question ${loop.index+1}:</u></strong></h4>
+					<c:if test="${questionRecordList.question.typeId==1}">
+						<div class="questionItem type${questionRecordList.question.typeId } grade${questionRecordList.question.gradeId }">
+						<!-- 选择题 -->
+							<p><h4 class="bars" align="left">${fn:replace(questionRecordList.question.quesName, newLine, "<br />")}</h4></p>
+							<c:if test="${questionRecordList.question.attachmentId != 0}">
+								<img src="data:image/png;base64,${questionRecordList.question.attachmentFile}">
+							</c:if>
+							<div class="input-group">
+								A.&nbsp;<font size="4">${questionRecordList.question.optionA }</font></br>
+								B.&nbsp;<font size="4">${questionRecordList.question.optionB }</font></br>
+								C.&nbsp;<font size="4">${questionRecordList.question.optionC }</font></br>
+								D.&nbsp;<font size="4">${questionRecordList.question.optionD }</font></br>
+								<p><h4 class="bars">My answer:
+									<c:choose>
+										<c:when test="${questionRecordList.correctness}">
+											<font color='green'>${questionRecordList.userAnswer }&nbsp;&check;</font>
+										</c:when>
+										<c:otherwise>
+											<font color='red'>${questionRecordList.userAnswer }&nbsp;&cross;</font>
+										</c:otherwise>
+									</c:choose>
+								</h4></p>
+								<c:if test="${!questionRecordList.correctness}">
+									<p><h4 class="bars">Correct answer: <font color="green">${questionRecordList.question.answer }</font></h4></p>
+								</c:if>
+								<c:if test="${questionRecordList.question.answerDetail}">
+									<p><h4 class="bars">Explanation: ${questionRecordList.question.answerDetail }</h4></p>
+								</c:if>
+								<%-- <p><h4 class="bars">From quiz: <strong>${questionRecordList.quizName }</strong> / Question grade: <strong>${questionRecordList.gradeName }</strong></h4></p> --%>
+							</div>
+						</div>
+					</c:if>
+					
+					<c:if test="${questionRecordList.question.typeId==2}">
+						<div class="questionItem type${questionRecordList.question.typeId } grade${questionRecordList.question.gradeId }">
+						<!-- 填空题 -->
+						<p><h4 class="bars" align="left">${fn:replace(questionRecordList.question.quesName, newLine, "<br />")}</h4></p>
+							<c:if test="${questionRecordList.question.attachmentId != 0}">
+								<img src="data:image/png;base64,${questionRecordList.question.attachmentFile}">
+							</c:if>
+							<div class="input-group">
+								<p><h4 class="bars">My answer:
+									<c:choose>
+										<c:when test="${questionRecordList.correctness}">
+											<font color='green'>${questionRecordList.userAnswer }&nbsp;&check;</font>
+										</c:when>
+										<c:otherwise>
+											<font color='red'>${questionRecordList.userAnswer }&nbsp;&cross;</font>
+										</c:otherwise>
+									</c:choose>
+								</h4></p>
+								<c:if test="${!questionRecordList.correctness}">
+									<p><h4 class="bars">Correct answer: <font color="green">${questionRecordList.question.answer }</font></h4></p>
+								</c:if>
+								<c:if test="${questionRecordList.question.answerDetail}">
+									<p><h4 class="bars"><font color="red">Explanation:${questionRecordList.question.answerDetail }</font></h4></p>
+								</c:if>
+								<%-- <p><h4 class="bars">From quiz: <strong>${questionRecordList.quizName }</strong> / Question grade: <strong>${questionRecordList.gradeName }</strong></h4></p> --%>
+							</div>
+						</div>
+					</c:if>
+					<hr>
+				</c:forEach>
+				<%-- <c:forEach items="${questionList}" var="quesType" varStatus="loop">
+				<p><h4 class="bars" align="left">${loop.index+1}.</h4></p>
+					<c:if test="${quesType.typeId == 1}">
+						<p><h4 class="bars" align="left">${fn:replace(quesType.quesName, newLine, "<br />")}</h4></p>
+						<c:if test="${quesType.attachmentId != 0}">
+							<img src="data:image/png;base64,${quesType.attachmentFile}">
+						</c:if>
+						<div class="input-group">
+							<input name="${quesType.questionId }" type="radio" value="A"/>&nbsp;<font size="4">${quesType.optionA }</font></br>
+							<input name="${quesType.questionId }" type="radio" value="B"/>&nbsp;<font size="4">${quesType.optionB }</font></br>
+							<input name="${quesType.questionId }" type="radio" value="C"/>&nbsp;<font size="4">${quesType.optionC }</font></br>
+							<input name="${quesType.questionId }" type="radio" value="D"/>&nbsp;<font size="4">${quesType.optionD }</font></br>
+						</div>
+					</c:if>
+					
+					<c:if test="${quesType.typeId == 2}">
+						<p><h4 class="bars" align="left">${fn:replace(quesType.quesName, newLine, "<br />")}</h4></p>
+						<c:if test="${quesType.attachmentId != 0}">
+							<img src="data:image/png;base64,${quesType.attachmentFile}">
+						</c:if>
+						<div class="input-group">
+						  <span class="input-group-addon" id="sizing-addon2">Answer:</span>
+						  <input type="text" name="${quesType.questionId }" id="${quesType.questionId }" 
+						  		class="form-control" placeholder="Type in your answer here">
+						  <br />
+						</div>
+					</c:if>
+					
+					<c:if test="${quesType.typeId == 5}">
+						<p><h4 class="bars" align="left">${fn:replace(quesType.quesName, newLine, "<br />")}</h4></p>
+						<div class="input-group">
+						  <span class="input-group-addon" id="sizing-addon2">Answer:</span>
+						  <input type="text" name="${quesType.questionId }" id="${quesType.questionId }" 
+						  		class="form-control" placeholder="Type in your answer here">
+						  <br />
+						</div>
+					</c:if>
+					<hr>
+				</c:forEach> --%>
 			</div>
-			<c:forEach items="${inpList }" var="inpType">
-				<p><h4 class="bars" align="left">${inpType.quesName }</h4></p><br/>
-				<div class="input-group">
-				  <span class="input-group-addon" id="sizing-addon2">答案：</span>
-				  <input type="text" name="${inpType.questionId }" id="${inpType.questionId }" 
-				  		class="form-control" placeholder="请在此输入答案...">
-				</div>
-			</c:forEach>
-			<div class="input-group">
-				  <h4 class="bars" align="left"><font color="blue">${desQ }</font></h4>
-			</div>
-			<c:forEach items="${desList }" var="desType">
-				<p><h4 class="bars" align="left">${desType.quesName }</h4></p>
-				<div class="input-group">
-					<input name="userType" type="radio" value="1"/><font size="4">${desType.optionA }</font></br>
-					<input name="userType" type="radio" value="1"/><font size="4">${desType.optionB }</font></br>
-					<input name="userType" type="radio" value="1"/><font size="4">${desType.optionC }</font></br>
-					<input name="userType" type="radio" value="1"/><font size="4">${desType.optionD }</font></br>
-<%-- 					<p><h4 class="bars"><font color="blue">我的答案：${errorBook.userAnswer } </font></h4></p>
-					<p><h4 class="bars">标准答案：${errorBook.question.answer }（ ${errorBook.question.answerDetail }）</h4></p>
-					<p><h4 class="bars"><font color="red">解析：${errorBook.question.remark }</font></h4></p> --%>
-				</div>
-			</c:forEach>
 		<div class="grid_3 grid_5" align="center">
 		  <h3 class="t-button">
 			<!-- <a href="javascript:;" onclick="submitPaper()"><span class="label label-success">提交试卷</span></a>&nbsp;&nbsp; -->
-			<a href="${ctx}/toScoreQry.action?userId=${user.userId}"><span class="label label-info">返回上一页</span></a>
+			<a href="${ctx}/toScoreQry.action?userId=${user.userId}"><span class="label label-info">Back to quiz review</span></a>
 		  </h3>
-      </div>
+      	</div>
 	</div>
 </form>	  
 <!-- </div> -->

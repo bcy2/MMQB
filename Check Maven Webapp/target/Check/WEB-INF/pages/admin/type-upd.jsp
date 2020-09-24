@@ -13,31 +13,31 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <link rel="stylesheet" href="${ctx}/css/base.css" />
 <link rel="stylesheet" href="${ctx}/css/info-reg.css" />
 <link rel="stylesheet" href="${ctx}/css/jquery.searchableSelect.css" />
-<title>移动办公自动化系统</title>
+<title>iframe</title>
 </head>
 
 <body>
-<div class="title"><h2>更新题型</h2></div>
+<div class="title"><h2>Edit Type</h2></div>
 <form action="${ctx}/addType.action" method="post" name="myform" id="myform">
 <div class="main">
 	 <input type="hidden" name="typeId" id="typeId" maxlength="10" value="${type.typeId }"/>
     <p class="short-input ue-clear">
-    	<label><span style="color:red">*</span>名称：</label>
+    	<label><span style="color:red">*</span>Name:</label>
         <input type="text" name="typeName" id="typeName" maxlength="10" value="${type.typeName }"/>
     </p>
     <p class="short-input ue-clear">
-    	<label>分值：</label>
+    	<label>Scores:</label>
         <input type="text" id="score" name="score" value="${type.score }"/>
     </p>
     <p class="short-input ue-clear">
-    	<label>备注：</label>
+    	<label>Remarks:</label>
         <textarea id="remark" name="remark">${type.remark }</textarea>
     </p>
 </div>
 </form>
 <div class="btn ue-clear">
-	<a href="javascript:;" class="confirm" onclick="addType()">确定</a>
-    <a href="${ctx}/toTypePage.action" class="clear">返回</a>
+	<a href="javascript:;" class="confirm" onclick="addType()">Update</a>
+    <a href="${ctx}/toTypePage.action" class="clear">Cancel</a>
 </div>
 </body>
 <script type="text/javascript" src="${ctx}/js/jquery.js"></script>

@@ -5,11 +5,18 @@
 String path = request.getContextPath();
 String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
 %>
-
+ <%
+   response.addHeader("Cache-Control", "no-cache,no-store,private,must-revalidate"); 
+   response.addHeader("Pragma", "no-cache"); 
+   response.addDateHeader ("Expires", 0);
+   if (session.getAttribute("user")==null) {
+       response.sendRedirect("user/exitSys.action");
+   }
+ %>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
-<title>在线考试系统</title>
+<title>Major Maths Question Bank</title>
 <!-- for-mobile-apps -->
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -26,6 +33,11 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 <link href="${ctx}/css/bootstrap.css" rel="stylesheet" type="text/css" media="all" />
 <link href="${ctx}/css/style.css" rel="stylesheet" type="text/css" media="all" />
 <link rel="stylesheet" href="${ctx}/css/swipebox.css">
+<style type="text/css">
+.rslides li{
+	opacity: 0;
+}
+</style>
 <script src="${ctx}/js/jquery-1.11.1.min.js"></script>
 <script src="${ctx}/js/modernizr.custom.js"></script>
 <script type="text/javascript" src="${ctx}/js/move-top.js"></script>
@@ -56,19 +68,27 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 							<span class="icon-bar"></span>
 							<span class="icon-bar"></span>
 						</button>
-					   	<h3><span>欢迎您，<font color="blue">${userName }</font> 同学</span></h3>
+					   	<h3 style="line-height: normal;"><span style="color: white;">Welcome, <a class="hvr-overline-from-center button2" href="${ctx}/toUserInfo.action?userId=${user.userId}" style="display: inline;vertical-align: bottom"><font color="#2FD828">${userName }</font></a>.</span></h3>
 					</div>
 					
 					<div class="collapse navbar-collapse nav-wil" id="bs-example-navbar-collapse-1">
-						<ul class="nav navbar-nav">
-							<li><a class="hvr-overline-from-center button2  active" href="${ctx}/user/toIndex.action">首页</a></li>
-							<li><a class="hvr-overline-from-center button2" href="${ctx}/toUserInfo.action?userId=${user.userId}">个人中心</a></li>
-<!-- 							<li><a class="hvr-overline-from-center button2" href="onlinecheck.html">在线考试</a></li> -->
-							<li><a class="hvr-overline-from-center button2" href="${ctx}/toScoreQry.action?userId=${user.userId}">成绩查询</a></li>
-							<li><a class="hvr-overline-from-center button2" href="${ctx}/toMyBooksPage.action?userId=${user.userId}">我的错题本</a></li>
-							<li><a class="hvr-overline-from-center button2" href="${ctx}/toMyPaperPage.action?userId=${user.userId}">我的试卷</a></li>
-							<li><a class="hvr-overline-from-center button2" href="about.html">关于</a></li>
-						</ul>
+						<c:if test="${user.userType == 0}">
+							<ul class="nav navbar-nav">
+								<li><a class="hvr-overline-from-center button2  active" href="${ctx}/toIndex.action">Home</a></li>
+								<li><a class="hvr-overline-from-center button2" href="${ctx}/toUserStatistics.action?userId=${user.userId}">My statistics</a></li>
+	<!-- 							<li><a class="hvr-overline-from-center button2" href="onlinecheck.html">在线考试</a></li> -->
+								<li><a class="hvr-overline-from-center button2" href="${ctx}/toScoreQry.action?userId=${user.userId}">Review quizzes</a></li>
+								<li><a class="hvr-overline-from-center button2" href="${ctx}/toMyBooksPage.action?userId=${user.userId}">Question record</a></li>
+								<li><a class="hvr-overline-from-center button2" href="${ctx}/toMyPaperPage.action?userId=${user.userId}">Start working!</a></li>
+								<li><a class="hvr-overline-from-center button2" href="${ctx}/toAbout.action">About</a></li>
+							</ul>
+						</c:if>
+						<c:if test="${user.userType != 0}">
+							<ul class="nav navbar-nav">
+								<li><a class="hvr-overline-from-center button2  active" href="${ctx}/toIndex.action">Home</a></li>
+								<li><a class="hvr-overline-from-center button2" href="${ctx}/toAbout.action">About</a></li>
+							</ul>
+						</c:if>
 						<div class="search-box">
 							<div id="sb-search" class="sb-search">
 								<span class="sb-icon-search" onclick="exitSystem()"></span>
@@ -104,22 +124,12 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 				<ul class="rslides" id="slider3">
 					<li>
 						<div class="banner-info">
-							<h3>Make A Huge Difference Start Your Career journey With Us</h3>
+							<h3>Major Maths Online Platform</h3>
 						</div>
 					</li>
 					<li>
 						<div class="banner-info">
-							<h3>Learning Online Becomes Easier And Faster</h3>
-						</div>
-					</li>
-					<li>
-						<div class="banner-info">
-							<h3>Make A Huge Difference Start Your Career journey With Us</h3>
-						</div>
-					</li>
-					<li>
-						<div class="banner-info">
-							<h3>Learning Online Becomes Easier And Faster</h3>
+							<h3>Improve Your Maths Today!</h3>
 						</div>
 					</li>
 				</ul>
@@ -127,7 +137,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 	</div>
 </div>
 <!-- //banner -->
-<!-- banner-bottom -->
+<%-- <!-- banner-bottom -->
 <div class="banner-bottom">
 	<div class="container">
 		<div class="bottom-grids">
@@ -252,7 +262,36 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 			<div class="clearfix"></div>
 		</div>
 	</div>
+</div> --%>
+<div class="footer">
+	<div class="container">
+		<div class="footer-grids">
+			<div class="col-md-3 footer-grid">
+				<h3>Locations</h3>
+				<ul>
+					<li><a href="#">Whampoa</a></li>	
+					<i style="color: gray;">Rm 11, Office Tower,6/F Harbourfront Landmark, 11 Wan Hoi St, Hung Hom</i>		
+				</ul>
+			</div>
+			<div class="col-md-3 footer-grid">
+				<h3>Contact</h3>
+				<ul>
+					<li><a href="#">+852 5422 0996</a></li>
+					<li><a href="#">info@majormaths.com</a></li>
+				</ul>
+			</div>
+			<div class="col-md-3 footer-grid">
+				<h3>Opening Hours</h3>
+				<ul>
+					<li><a href="#">Mon: 2:30pm - 6:30pm</a></li>
+					<li><a href="#">Tue to Sun: 9:30 am - 6:30 pm</a></li>
+				</ul>
+			</div>
+
+		</div>
+	</div>
 </div>
+<!-- //footer -->
 <script src="${ctx}/js/bootstrap.js"></script>
 <script type="text/javascript">
 	$(document).ready(function() {

@@ -12,55 +12,73 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <meta charset="utf-8">
 <link rel="stylesheet" href="${ctx}/css/base.css" />
 <link rel="stylesheet" href="${ctx}/css/info-reg.css" />
-<title>移动办公自动化系统</title>
+<title>iframe</title>
 </head>
 
 <body>
-<div class="title"><h2>用户信息查询</h2></div>
+<div class="title"><h2>User Details</h2></div>
 <form action="${ctx}/admin/updateUser.action" method="post" name="myform" id="myform">
 <div class="main">
-	<p class="short-input ue-clear">
-    	<label><span style="color:red">*</span>账号：</label>
-        <input type="text" name="userId" id="userId" value="${user.userId }"/>
+	<p class="short-input ue-clear newstyle">
+    	<label>Username:</label>
+        ${user.userId }
     </p>
-    <p class="short-input ue-clear">
-    	<label><span style="color:red">*</span>昵称：</label>
-        <input type="text" placeholder="用户昵称" name="userName" id="userName" value="${user.userName }"/>
+    <p class="short-input ue-clear newstyle">
+    	<label>Nickname:</label>
+        ${user.userName }
     </p>
-    
-    <div class="long-input select ue-clear">
-    	<label><span style="color:red">*</span>年级：</label>
-    	<c:forEach items="${grade}" var="grade">
-			<input name="gradeId" type="radio" value="${grade.gradeId}" 
-				<c:if test="${grade.gradeId eq user.grade  }">checked</c:if> />${grade.gradeName}
+    <p class="short-input ue-clear newstyle">
+    	<label>Status:</label>
+    	<c:if test="${user.userState == 0}">To verify</c:if>
+    	<c:if test="${user.userState == 1}">Active</c:if>
+    	<c:if test="${user.userState == 2}">Deactivated</c:if>
+    </p>
+    <p class="short-input ue-clear newstyle">
+    	<label>Type:</label>
+    	<c:if test="${user.userType == 0}">Student</c:if>
+    	<c:if test="${user.userType == 1}">Teacher</c:if>
+    	<c:if test="${user.userType == 2}">Admin</c:if>
+    </p>
+    <p class="short-input ue-clear newstyle">
+    	<label>Curriculum:</label>
+	    <c:forEach items="${course}" var="course">
+			<c:if test="${course.courseId == user.curriculum}">${course.courseName }</c:if>
 		</c:forEach>
-    </div>
-    <div class="short-input select ue-clear">
-    	<label><span style="color:red">*</span>账号类型：</label>
-    	<input name="userType" type="radio" value="0" checked="checked"/>学生
-    	<input name="userType" type="radio" value="1"/>老师
-    	<input name="userType" type="radio" value="0"/>管理员
-    </div>
-    <p class="short-input ue-clear">
-    	<label><span style="color:red">*</span>邮箱：</label>
-        <input type="text" onfocus="checkEmail()" id="email" name="email" value="${user.email }"/>
+	</p>
+    <p class="short-input ue-clear newstyle">
+    	<label>Grade:</label>
+	    <c:forEach items="${grade}" var="grade">
+			<c:if test="${grade.gradeId == user.grade}">${grade.gradeName }</c:if>
+		</c:forEach>
     </p>
-    <p class="short-input ue-clear">
-    	<label>联系电话：</label>
-        <input type="text" onfocus="checkPhone()" id="telephone" name="telephone" value="${user.telephone }"/>
+    <p class="short-input ue-clear newstyle">
+    	<label>Email:</label>
+        ${user.email }
     </p>
-    <p class="long-input ue-clear">
-    	<label>地址：</label>
-        <input type="text" id="address" name="address" value="${user.address }"/>
+    <p class="short-input ue-clear newstyle">
+    	<label>Contact phone:</label>
+        ${user.telephone }
     </p>
-    <p class="short-input ue-clear">
-    	<label>备注：</label>
-        <textarea placeholder="请输入内容" id="remark" name="remark">${user.remark }</textarea>
+    <p class="short-input ue-clear newstyle">
+    	<label>Parent name:</label>
+        ${user.parentName }
+    </p>
+    <p class="short-input ue-clear newstyle">
+    	<label>Reward Points:</label>
+        ${user.rewardPoints }
+    </p>
+    <%-- <p class="short-input ue-clear newstyle">
+    	<label>Address:</label>
+        ${user.address }
+    </p> --%>
+    <p class="short-input ue-clear newstyle">
+    	<label>Remarks:</label>
+        ${user.remark }
     </p>
 </div>
 </form>
 <div class="btn ue-clear">
-	<a href="${ctx}/admin/getFindPending.action" class="confirm">返回</a>
+	<a href="${ctx}/admin/getAllUser.action" class="confirm">Back</a>
 </div>
 </body>
 <script type="text/javascript" src="${ctx}/js/jquery.js"></script>
@@ -87,7 +105,7 @@ function addUser(){
 
 //情况所有
 function clearAll(){
-	alert("清空所有内容");
+	alert("Clear all.");
 }
 
 showRemind('input[type=text], textarea','placeholder');

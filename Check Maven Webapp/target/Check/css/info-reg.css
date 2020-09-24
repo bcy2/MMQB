@@ -7,7 +7,8 @@ body{ font-family:'微软雅黑';}
 .main p{ margin-top:10px; padding-left:31px; line-height:30px;}
 .main p label{ float:left; width:82px; text-align:left;}
 .main p input{ float:left;}
-.main p input[type="text"]{ width:240px; height:28px;line-height:28px\0;*line-height:28px; padding:0 10px; border:1px solid #c5d6e0; outline:none; background:url(../images/inputbg.png) repeat-x;}
+.main p input[type="text"]{ width:240px; height:28px;line-height:28px;*line-height:28px; padding:0 10px; border:1px solid #c5d6e0; outline:none; background:url(../images/inputbg.png) repeat-x;}
+.main p input[readonly="readonly"]{color:gray;background:lightgray;}
 .main p.long-input input[type="text"]{ width:472px;}
 
 .main p span{ float:left; margin-left:15px; color:#959595;}

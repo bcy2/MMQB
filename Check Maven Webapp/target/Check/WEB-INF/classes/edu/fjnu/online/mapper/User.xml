@@ -6,86 +6,145 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
 	<!-- 数据库表映射 -->
 	<resultMap id="userRM" type="edu.fjnu.online.domain.User">
-		<id property="userId" column="userid"/>
-		<result property="userName" column="username"/>
-		<result property="userPwd" column="userpwd"/>
-		<result property="grade" column="grade"/>
-		<result property="userType" column="usertype"/>
-		<result property="userState" column="userstate"/>
+		<id property="userId" column="username"/> <!-- login with username -->
+		<result property="userName" column="nickname"/> <!-- display name -->
+		<result property="userPwd" column="password"/>
+		<result property="grade" column="grade_id"/>
+		<result property="userType" column="user_type"/>
+		<result property="userState" column="user_status"/>
 		<result property="email" column="email"/>
-		<result property="telephone" column="telephone"/>
+		<result property="telephone" column="tel"/>
+
+		<!-- New in our db -->
+		<result property="userIdGlobal" column="user_id"/> <!-- db userId -->
+		<result property="userFirstName" column="first_name"/>
+		<result property="userLastName" column="last_name"/>
+		<result property="authority" column="auth"/>
+		<result property="parentName" column="parent"/>
+		<result property="parentEmail" column="parent_email"/>
+		<result property="parentPwd" column="parent_password"/>
+		<result property="rewardPoints" column="game_time"/>
+		<result property="curriculum" column="curriculum_id"/>
+
+		<!-- No followings in our db so will be null -->
 		<result property="address" column="address"/>
 		<result property="remark" column="remark"/>
+
+		
 	</resultMap>
 	
 	<!-- 新增 -->
 	<insert id="insert" parameterType="edu.fjnu.online.domain.User">
-		insert into t_user
-		(userid,username,userpwd,grade,usertype,userstate,email,telephone,address,remark)
+		insert into user (username, password, user_type, user_status, email, tel, first_name, last_name, nickname, parent, parent_email, parent_password, auth, game_time, curriculum_id, grade_id)
 		values
-		(#{userId},#{userName},#{userPwd},#{grade},#{userType},'0',#{email},#{telephone},#{address},#{remark})
+		(#{userId},#{userPwd},#{userType},#{userState},#{email},#{telephone},#{userFirstName},#{userLastName},#{userName},#{parentName},#{parentEmail},#{parentPwd},#{authority},#{rewardPoints},#{curriculum},#{grade})
 	</insert>
 	
 	<!-- 修改 -->
 	<update id="update" parameterType="edu.fjnu.online.domain.User">
-		update t_user
+		update user
 		<set>
-			<if test="userName!=null">
-				username=#{userName},
-			</if>
 			<if test="userPwd!=null">
-				userpwd=#{userPwd},
+				password=#{userPwd},
 			</if>
 			<if test="userType!=null">
-				usertype=#{userType},
+				user_type=#{userType},
 			</if>
 			<if test="userState!=null">
-				userstate=#{userState},
+				user_status=#{userState},
 			</if>
 			<if test="email!=null">
 				email=#{email},
 			</if>
 			<if test="telephone!=null">
-				telephone=#{telephone},
+				tel=#{telephone},
 			</if>
-			<if test="address!=null">
-				address=#{address},
+			<if test="userFirstName!=null">
+				first_name=#{userFirstName},
 			</if>
-			<if test="remark!=null">
-				remark=#{remark},
+			<if test="userLastName!=null">
+				last_name=#{userLastName},
+			</if>
+			<if test="userName!=null">
+				nickname=#{userName},
+			</if>
+			<if test="parentName!=null">
+				parent=#{parentName},
+			</if>
+			<if test="parentEmail!=null">
+				parent_email=#{parentEmail},
+			</if>
+			<if test="parentPwd!=null">
+				parent_password=#{parentPwd},
+			</if>
+			<if test="authority!=null">
+				auth=#{authority},
+			</if>
+			<if test="rewardPoints!=null">
+				game_time=#{rewardPoints},
+			</if>
+			<if test="grade!=null">
+				grade_id=#{grade},
+			</if>
+			<if test="userName!=null">
+				nickname=#{userName},
 			</if>
 		</set>
-			where userid=#{userId}
+			where username=#{userId}
 	</update>
 	
 	<!-- 查询所有记录 -->
 	<select id="find" parameterType="string" resultMap="userRM">
-		select * from t_user
-		where 1=1
+		select * from user
+<!-- 		where id > 2 -->
+		order by user_type
+		<!-- select  L.user_id, L.username, L.password, L.user_type, L.user_status, L.email, L.tel, coalesce(s.name, t.name, org.name) as name, coalesce(s.nickname, t.nickname) as nickname, s.parent, s.parent_email, s.parent_password, s.game_time, s.curriculum_id, s.grade, coalesce(s.auth, t.auth, org.auth) as auth
+		from login as L
+		left join student_profile as s on L.user_id = s.id
+		left join teacher_profile as t on L.user_id = t.id
+		left join organization_profile as org on L.user_id = org.id
+		where L.user_id > 2
+		order by L.user_type -->
 	</select>
 	
 	<!-- 查询所有待审核记录 -->
 	<select id="findPending" parameterType="string" resultMap="userRM">
-		select * from t_user
-		where userstate=0
+		select * from user
+		where user_status = 0<!--  and id > 2 -->
+		order by user_type
+		<!-- select L.user_id, L.username, L.password, L.user_type, L.user_status, L.email, L.tel, coalesce(s.name, t.name, org.name) as name, coalesce(s.nickname, t.nickname) as nickname, s.parent, s.parent_email, s.parent_password, s.game_time, s.curriculum_id, s.grade, coalesce(s.auth, t.auth, org.auth) as auth
+		from login as L
+		left join student_profile as s on L.user_id = s.id
+		left join teacher_profile as t on L.user_id = t.id
+		left join organization_profile as org on L.user_id = org.id
+		where L.user_id > 2 and L.user_status = 0
+		order by L.user_type -->
 	</select>
 	
 	<!-- 查询一个录 -->
 	<select id="get" parameterType="edu.fjnu.online.domain.User" resultMap="userRM">
-		select * from t_user
-		where userid=#{id} 
+		select * from user
+		where username=#{userId}
+		<!-- select L.user_id, L.username, L.password, L.user_type, L.user_status, L.email, L.tel, coalesce(s.name, t.name, org.name) as name, coalesce(s.nickname, t.nickname) as nickname, s.parent, s.parent_email, s.parent_password, s.game_time, s.curriculum_id, s.grade, coalesce(s.auth, t.auth, org.auth) as auth
+		from login as L
+		left join student_profile as s on L.user_id = s.id
+		left join teacher_profile as t on L.user_id = t.id
+		left join organization_profile as org on L.user_id = org.id
+		where L.username = #{userId}; -->
+		<!-- deptId = #{employee. deptId, typeHandler = com.convert.type.IntStringTypeHandler} -->
 	</select>
 	
 	<!-- 删除一条记录 -->
 	<delete id="delete" parameterType="string">
-		delete from t_user
-		where userid=#{id}
+		delete from user
+		where username=#{userId}
 	</delete>
 	
 	<!-- 查询一个录 -->
 	<select id="getStu" parameterType="edu.fjnu.online.domain.User" resultMap="userRM">
-		select * from t_user
-		where userid=#{userId}
-		and userstate=1
+		select * from user
+		where username=#{userId}
+		<!-- and user_status=1 -->
+		and user_type=0
 	</select>
 </mapper>

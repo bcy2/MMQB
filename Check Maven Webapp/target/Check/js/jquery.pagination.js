@@ -5,13 +5,13 @@ jQuery.fn.pagination = function(maxentries, opts) {
 				num_display_entries : 4, // 中间显示页码的个数
 				num_edge_entries : 2, // 末尾显示页码的个数
 				link_to : "javascript:;",         //页码点击后的链接
-				prev_text : "&lt;&nbsp;上一页",   //上一页的文字
-				next_text : "下一页&nbsp;&gt;",	   //下一页的文字
+				prev_text : "&lt;&nbsp;Prev",   //上一页的文字
+				next_text : "Next&nbsp;&gt;",	   //下一页的文字
 				ellipse_text : "...",  //页码之间的省略号
 				display_msg : true, // 是否显示记录信息
 				prev_show_always : true, //是否总是显示最前页
 				next_show_always : true,//是否总是显示最后页
-				setPageNo:false,//是否显示跳转第几页
+				setPageNo: true,//是否显示跳转第几页
 				callback : function() {
 					return false;
 				} // 回调函数
@@ -58,9 +58,11 @@ jQuery.fn.pagination = function(maxentries, opts) {
 		 * 链接
 		 */
 		function drawLinks() {
-			panel.empty();
+//			panel.empty();
 			$pagin.empty();
+			$info.empty();
 			panel.append($pagin);
+			panel.append($info);
 			var interval = getInterval();
 			var np = numPages();
 			var getClickHandler = function(page_id) {
@@ -134,22 +136,22 @@ jQuery.fn.pagination = function(maxentries, opts) {
 			// 记录显示
 			if (opts.display_msg) {
 				if(!maxentries){
-					panel
-						.append('<div class="pxofy">暂时无数据可以显示</div>');
+					$info
+						.append('<span>No data to display.</span>');
 				}else{
-				panel
-						.append('<div class="pxofy">显示第&nbsp;'
+					$info
+						.append('<span>Showing entry No.&nbsp;'
 								+ ((current_page * opts.items_per_page) + 1)
-								+ '&nbsp;条到&nbsp;'
+								+ '&nbsp;to No.&nbsp;'
 								+ (((current_page + 1) * opts.items_per_page) > maxentries
 										? maxentries
 										: ((current_page + 1) * opts.items_per_page))
-								+ '&nbsp;条记录，总共&nbsp;' + maxentries + '&nbsp;条</div>');
+								+ '&nbsp;out of&nbsp;' + maxentries + '&nbsp;entries.</span>');
 				}
 			}
 			//设置跳到第几页
 			if(opts.setPageNo){
-				  $("<div class='goto'><span class='text'>转到第</span><input type='text'/><span class='page'>页</span><a href='javascript:;'>转</a></div>").insertBefore($pagin);	
+				$jumpTo.insertBefore($pagin);	
 			}
 		}
 
@@ -160,7 +162,9 @@ jQuery.fn.pagination = function(maxentries, opts) {
 				? 1
 				: opts.items_per_page;
 		var panel = jQuery(this),
-			$pagin = $('<div class="pagin-list"></div>');
+			$info = $('<div class="pxofy"></div>'),
+			$pagin = $('<div class="pagin-list"></div>'),
+			$jumpTo = $("<div class='goto'><span class='text'>Go to page No.</span><input type='text'/><span class='page'></span><a href='javascript:;'>Go</a></div>");
 			
 		
 		this.selectPage = function(page_id) {
@@ -184,10 +188,11 @@ jQuery.fn.pagination = function(maxentries, opts) {
 		}
 		
 		if(maxentries==0){
-			panel.append('<span class="current prev">'+opts.prev_text+'</span><span class="current next">'+opts.next_text+'</span><div class="pxofy">暂时无数据可以显示</div>');
+			panel.append('<span class="current prev">'+opts.prev_text+'</span><span class="current next">'+opts.next_text+'</span><div class="pxofy">No data to display.</div>');
 		}else{
 			drawLinks();
 		}
+		
 		$(this).find(".goto a").on("click",function(evt){
 			var setPageNo = $(this).parent().find("input").val();
 			if(setPageNo!=null && setPageNo!=""&&setPageNo>0&&setPageNo<=numPages()){

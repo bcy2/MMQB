@@ -12,7 +12,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	<meta charset="UTF-8">
 	<link rel="stylesheet" href="${ctx}/css/base.css" />
 	<link rel="stylesheet" href="${ctx}/css/login.css" />
-	<title>在线考试后台管理系统</title>
+	<title>MM Question Bank - Admin Login</title>
 </head>
 <body>
 	<div id="container">
@@ -22,28 +22,29 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
             	<div class="login-top"><!-- <h1 class="logo"></h1> --></div>
                 <div class="login-input">
                 	<p class="user ue-clear">
-                    	<label>账&nbsp;&nbsp;&nbsp;号</label>
-                        <input type="text" id="userId" name="userId"/>
+                    	<label>Username</label>
+                        <input type="text" id="userId" name="userId" style="width:64%;"/>
                     </p>
                     <p class="password ue-clear">
-                    	<label>密&nbsp;&nbsp;&nbsp;码</label>
-                        <input type="password" id="userPwd" name="userPwd"/>
+                    	<label>Password</label>
+                        <input type="password" id="userPwd" name="userPwd" style="width:64%;"/>
                     </p>
                     <div style="color: red" id="tipInfo" align="justify">${message }</div>
                 </div>
                 <div class="login-btn ue-clear">
-                	<a class="btn" onclick="userLogin()">登录</a>
-                    <div class="remember ue-clear">
+                	<a class="btn" onclick="userLogin()">Log in</a>
+                    <!-- <div class="remember ue-clear">
                     	<input type="checkbox" id="remember" />
                         <em></em>
-                        <label for="remember">记住密码</label>
-                    </div>
+                        <label for="remember">Remember me</label>
+                    </div> -->
                 </div>
                 </form>
             </div>
+            <div align="center"><a href="${ctx}/" target="_self" title="mbzj">Select role</a></div>
 		</div>
 	</div>
-    <div id="ft">CopyRight&nbsp;2014&nbsp;&nbsp;<!-- 版权所有&nbsp;&nbsp;uimaker.com专注于ui设计&nbsp;&nbsp;苏ICP备09003079号 --></div>
+    <div id="ft">Copyright&nbsp;2020,&nbsp; Koding Kingdom (HK) Ltd.</div>
 </body>
 <script type="text/javascript" src="${ctx}/js/jquery.js"></script>
 <script type="text/javascript" src="${ctx}/js/common.js"></script>
@@ -59,7 +60,7 @@ $(window).resize(function(){
 	
 });
 
-$('#remember').focus(function(){
+/* $('#remember').focus(function(){
    $(this).blur();
 });
 
@@ -70,18 +71,18 @@ $('#remember').click(function(e) {
 function checkRemember($this){
 	if(!-[1,]){
 		 if($this.prop("checked")){
-			$this.parent().addClass('checked');
+			$this.parent().addClass("checked");
 		}else{
-			$this.parent().removeClass('checked');
+			$this.parent().removeClass("checked");
 		}
 	}
-}
+} */
 
 function userLogin(){
 	var userId = $("#userId").val();
 	var userPwd = $("#userPwd").val();
 	if(userId == "" || userPwd == ""){
-		$("#tipInfo").html("请输入完整的账号和密码！");
+		$("#tipInfo").html("Please input your username/password!");
 		return;
 	}
 	$("form").submit();

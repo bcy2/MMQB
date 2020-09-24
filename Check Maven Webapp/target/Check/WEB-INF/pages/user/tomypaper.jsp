@@ -5,11 +5,18 @@
 String path = request.getContextPath();
 String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
 %>
-
+ <%
+   response.addHeader("Cache-Control", "no-cache,no-store,private,must-revalidate"); 
+   response.addHeader("Pragma", "no-cache"); 
+   response.addDateHeader ("Expires", 0);
+   if (session.getAttribute("user")==null) {
+       response.sendRedirect("user/exitSys.action");
+   }
+ %>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
-<title>在线考试系统</title>
+<title>Major Maths Question Bank</title>
 <!-- for-mobile-apps -->
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -34,6 +41,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			$('html,body').animate({scrollTop:$(this.hash).offset().top},1000);
 		});
 	});
+	function exitSystem(){
+		window.location.href = "${ctx}/user/exitSys.action"	;
+	}
 </script>
 
 </head>
@@ -50,18 +60,18 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 							<span class="icon-bar"></span>
 							<span class="icon-bar"></span>
 						</button>
-					   	<h3><span>欢迎您，<font color="blue">${userName }</font> 同学</span></h3>
+					   	<h3 style="line-height: normal;"><span style="color: white;">Welcome, <a class="hvr-overline-from-center button2" href="${ctx}/toUserInfo.action?userId=${user.userId}" style="display: inline;vertical-align: bottom"><font color="#2FD828">${userName }</font></a>.</span></h3>
 					</div>
 					
 					<div class="collapse navbar-collapse nav-wil" id="bs-example-navbar-collapse-1">
 						<ul class="nav navbar-nav">
-							<li><a class="hvr-overline-from-center button2" href="${ctx}/user/toIndex.action?userId=${user.userId}">首页</a></li>
-							<li><a class="hvr-overline-from-center button2" href="${ctx}/toUserInfo.action?userId=${user.userId}">个人中心</a></li>
+							<li><a class="hvr-overline-from-center button2" href="${ctx}/toIndex.action?userId=${user.userId}">Home</a></li>
+							<li><a class="hvr-overline-from-center button2" href="${ctx}/toUserStatistics.action?userId=${user.userId}">My statistics</a></li>
 							<!-- <li><a class="hvr-overline-from-center button2" href="onlinecheck.html">在线考试</a></li> -->
-							<li><a class="hvr-overline-from-center button2" href="${ctx}/toScoreQry.action?userId=${user.userId}">成绩查询</a></li>
-							<li><a class="hvr-overline-from-center button2" href="${ctx}/toMyBooksPage.action?userId=${user.userId}">我的错题本</a></li>
-							<li><a class="hvr-overline-from-center button2  active" href="${ctx}/toMyPaperPage.action?userId=${user.userId}">我的试卷</a></li>
-							<li><a class="hvr-overline-from-center button2" href="about.html">关于</a></li>
+							<li><a class="hvr-overline-from-center button2" href="${ctx}/toScoreQry.action?userId=${user.userId}">Review quizzes</a></li>
+							<li><a class="hvr-overline-from-center button2" href="${ctx}/toMyBooksPage.action?userId=${user.userId}">Question record</a></li>
+							<li><a class="hvr-overline-from-center button2  active" href="${ctx}/toMyPaperPage.action?userId=${user.userId}">Start working!</a></li>
+							<li><a class="hvr-overline-from-center button2" href="${ctx}/toAbout.action">About</a></li>
 						</ul>
 						<div class="search-box">
 							<div id="sb-search" class="sb-search">

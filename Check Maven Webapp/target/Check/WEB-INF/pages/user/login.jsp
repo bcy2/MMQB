@@ -11,7 +11,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     <head>
 
         <meta charset="utf-8">
-        <title>在线考试系统</title>
+        <title>Major Maths Question Bank</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta name="description" content="">
         <meta name="author" content="">
@@ -31,19 +31,19 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     <body>
 
         <div class="page-container">
-            <h1>用户登录</h1>
-            <form action="${ctx}/user/toIndex.action" method="post" name="myform" id="myform">
-                <input type="text" name="userId" id="userId" class="username" placeholder="用户账号">
-                <input type="password" name="userPwd" id="userPwd" class="password" placeholder="登录密码">
+            <h1>Student Login</h1>
+            <form action="${ctx}/toIndex.action" method="post" name="myform" id="myform">
+                <input type="text" name="userId" id="userId" class="username" placeholder="Username">
+                <input type="password" name="userPwd" id="userPwd" class="password" placeholder="Password">
                <%--  <span>${message }</span> --%>
-                <button type="button" onclick="login()">登录</button>
+                <button type="button" onclick="login()">Log in</button>
                 <div class="error"><span>${message }</span></div>
             </form>
-            <div class="connect">
-
-            </div>
+            <div class="connect"></div>
+            <div align="center">No account? <a href="${ctx}/toRegistPage.action" target="_self" title="mbzj">Register</a></div>
+            <div class="connect"></div>
+            <div align="center"><a href="${ctx}/" target="_self" title="mbzj">Select role</a></div>
         </div>
-        <div align="center">没有账号？ <a href="${ctx}/toRegistPage.action" target="_self" title="模板之家">注册</a></div>
 
         <!-- Javascript -->
         <script src="${ctx}/js/jquery-1.8.2.min.js"></script>
@@ -58,7 +58,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     				if(data.errorNo != "0"){
     					alert(data.errorInfo);
     				}else{
-    					document.myform.attributes["action"].value = "${ctx}/user/toIndex.action"; 
+    					document.myform.attributes["action"].value = "${ctx}/toIndex.action"; 
     					$("form").submit();
     				}
         		},"json");
